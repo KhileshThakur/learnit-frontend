@@ -1,1 +1,0 @@
-export const REACT_APP_API_URL = `https://learnit-backend-2r64.onrender.com`
