@@ -12,8 +12,12 @@ function App() {
   
   return (
     <div>
+
       <h1>{data ? data.message : 'Loading...'}</h1>
       <h2>Hello</h2>
+
+      <h1>{data ? data.message : 'Loading Data...'}</h1>
+
     </div>
   );
 }
