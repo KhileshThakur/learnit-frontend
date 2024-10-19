@@ -13,6 +13,7 @@ function App() {
   return (
     <div>
       <h1>{data ? data.message : 'Loading...'}</h1>
+      <h2>Hello</h2>
     </div>
   );
 }
