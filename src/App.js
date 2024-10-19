@@ -19,6 +19,7 @@ function App() {
       <h1>{data ? data.message : 'Loading Data...'}</h1>
       <h2>Changes Made By Khilesh Thakur</h2>
       <h3>Changes Made in Main</h3>
+      <h3>Changes made by Khushi</h3>
     </div>
   );
 }
