@@ -21,7 +21,6 @@ const Homepage = () => {
           type="text"
           placeholder="Choose Your Role !!"
           className="role-input"
-          disabled
         />
         <button className="go-button">
           GO <span className="arrow">→</span>
