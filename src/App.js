@@ -1,25 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+//Import Components
+import Homepage from './Home/Pages/Homepage';
+
+
 
 function App() {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/api`)
-      .then(response => setData(response.data))
-      .catch(error => console.error(error));
-  }, []);
-  
   return (
-    <div>
-
-      <h1>{data ? data.message : 'Loading...'}</h1>
-      <h2>Hello</h2>
-
-      <h1>{data ? data.message : 'Loading Data...'}</h1>
-      <h2>Changes Made By Khilesh Thakur Again Modified</h2>
-      <h3>Changes Made in Main</h3>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Homepage/>} />
+      </Routes>
+    </Router>
   );
 }
 
