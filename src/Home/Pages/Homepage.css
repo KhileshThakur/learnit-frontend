@@ -1,0 +1,74 @@
+.homepage-conntainer {
+  background-color: #24232b;
+  color: #fff;
+}
+.title {
+  margin: 60px 0;
+}
+.title-one,
+.title-two {
+  font-family: "Inika", serif;
+  font-style: normal;
+  text-align: center;
+  margin: 0;
+}
+.title-one {
+  font-weight: 100;
+  font-size: 35px;
+}
+.title-two {
+  font-weight: 600;
+  font-size: 44px;
+}
+.title-one span {
+  color: #8b5fe9;
+}
+.role-selector {
+  display: flex;
+  align-items: center;
+  background-color: #3f3c47; 
+  border-radius: 15px;
+  padding: 5px;
+  width: fit-content;
+  margin: auto;
+}
+
+.role-input {
+  border: none;
+  background-color: #3f3c47; 
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+  margin: 0 10px;
+}
+
+.go-button {
+  background-color: #7872c2; 
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.go-button:hover {
+  background-color: #5e56a7; /* Slightly darker on hover */
+}
+
+.arrow {
+  margin-left: 5px;
+}
+
+.image {
+    display: flex;
+    justify-content: center;
+    margin: 50px 0;
+}
+.hr-below-img {
+    text-align: center;
+    width: 600px;
+    border-color: #a39dac;
+}

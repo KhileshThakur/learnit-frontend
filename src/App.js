@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+//Import Components
+import Homepage from './Home/Pages/Homepage';
+import Login from './Auth/Login';
+import RegisterLearner from './Auth/RegisterLearner';
+import RegisterInstructor from './Auth/RegisterInstructor';
+
+
 
 function App() {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/api`)
-      .then(response => setData(response.data))
-      .catch(error => console.error(error));
-  }, []);
-  
   return (
+<<<<<<< HEAD
     <div>
 
       <h1>{data ? data.message : 'Loading...'}</h1>
@@ -21,6 +22,16 @@ function App() {
       <h3>Changes Made in Main</h3>
       <h3>Changes made by Khushi</h3>
     </div>
+=======
+    <Router>
+      <Routes>
+        <Route path="/" element={<Homepage/>} />
+        <Route path="/auth" element={<Login/>} />
+        <Route path="/register-learner" element={<RegisterLearner/>} />
+        <Route path="/register-instructor" element={<RegisterInstructor/>} />
+      </Routes>
+    </Router>
+>>>>>>> b096582f85d5bdcffdfda22c41e0c0122f88f315
   );
 }
 

@@ -1,0 +1,35 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: transparent;
+    position: static;
+    padding: 5px 10px;
+    top: 0;
+    z-index: 100;
+}
+nav.nav-links {
+    font-family: "Inter", sans-serif;
+    display: flex;
+    gap: 20px;
+}
+.logo img {
+  height: 70px; 
+}
+nav a {
+    text-decoration: none;
+    color: #FFF;
+    &:hover{
+        color: #8B5FE9;
+    }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+  }
+
+  .nav-links {
+    margin-top: 10px;
+  }
+}
