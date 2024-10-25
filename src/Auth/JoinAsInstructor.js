@@ -5,8 +5,8 @@ const JoinAsInstructor = () => {
     return (
         <div className="full-page">
             <AuthHeader />
-            <h2>Join As Instructor</h2>
-            {/* Add instructor registration logic here */}
+            <h4 className="subtitle">Start Your Teaching Adventure – Sign Up and Inspire </h4>
+            
         </div>
     );
 };
