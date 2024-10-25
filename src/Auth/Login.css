@@ -1,0 +1,151 @@
+/* Full Page Styles */
+.full-page {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    background-color: #1c1c28; 
+}
+
+h2 {
+    color: #9C9C9C;
+}
+
+/* Login Form Styles */
+.login-form {
+    background: linear-gradient(to right, #565656, #444, #333); 
+    padding: 20px; 
+    border-radius: 10px; 
+    max-width: 400px; 
+    min-width: 350px; 
+    width: 100%; 
+    box-sizing: border-box; 
+    margin: 0 auto; 
+}
+
+/* Input Group Styles */
+.input-group {
+    margin-bottom: 15px; 
+}
+
+.input-group label {
+    display: block; 
+    margin-bottom: 5px; 
+}
+
+.input-group input,
+.input-group select {
+    width: 100%; 
+    padding: 10px;
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    background-color: #565656; 
+    color: #fff; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); 
+    margin-top: 5px; 
+    box-sizing: border-box; 
+}
+
+
+.forgot-password {
+    text-align: right; 
+    margin-bottom: 15px;
+}
+
+.forgot-password a {
+    color: #6a4aff; 
+    text-decoration: none;
+}
+
+.login-btn {
+    
+    width: auto; 
+    padding: 10px 30px; 
+    background-color: #6a4aff; 
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    display: block; 
+    margin: 20px auto 0; 
+}
+
+.login-btn:hover {
+    background-color: #4a3bff; 
+}
+
+.divider {
+    margin: 30px 0; 
+    color: #999; 
+    font-size: 1rem; 
+    text-align: center; 
+}
+
+.google-login-btn {
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    background-color: grey; 
+    border: 1px solid black; 
+    border-radius: 10px;
+    padding: 10px 15px; 
+    color: white; 
+    font-size: 1rem; 
+    cursor: pointer; 
+    margin-top: 1px;
+}
+
+.google-icon {
+    margin-right: 20px; 
+    font-size: 1.2rem; 
+}
+
+.register-links {
+    color: white; 
+    
+}
+
+
+.register-links a {
+    color: #6a4aff;
+    text-decoration: none; 
+}
+
+/* Styling for the button group */
+/* .button-group-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+} */
+
+/* .button-group {
+  display: flex;
+  border: 2px solid #000; 
+  border-radius: 25px;
+  overflow: hidden; 
+} */
+
+/* .auth-btn {
+  background-color: grey;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  flex: 1; 
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+}
+
+.auth-btn:hover {
+  background-color: #8a8a8a;
+}
+
+.auth-btn.active {
+  background-color: purple;
+  color: white;
+}
+
+.auth-btn:not(:last-child) {
+  border-right: 1px solid black; 
+} */
