@@ -32,6 +32,7 @@ h2 {
 .input-group label {
     display: block; 
     margin-bottom: 5px; 
+    color: #fff;
 }
 
 .input-group input,
@@ -112,40 +113,54 @@ h2 {
     text-decoration: none; 
 }
 
-/* Styling for the button group */
-/* .button-group-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-} */
-
-/* .button-group {
-  display: flex;
-  border: 2px solid #000; 
-  border-radius: 25px;
-  overflow: hidden; 
-} */
-
-/* .auth-btn {
-  background-color: grey;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  flex: 1; 
-  transition: background-color 0.3s ease;
-  font-size: 16px;
+.button-group-container {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 0 0 50px 0;
+    border: 1px solid;
+    padding: 10px;
+    background-color: #514f4f;
+    border-radius: 10px;
+}
+.full-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #1c1c28;
+}
+.button-group-container {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 0 0 50px 0;
+    border: 1px solid;
+    padding: 10px;
+    background-color: #514f4f;
+    border-radius: 20px;
+    position: fixed;
+    top: 25px;
 }
 
-.auth-btn:hover {
-  background-color: #8a8a8a;
+button.auth-btn.active {
+    background: #a981ff;
+    padding: 7px;
+    border-radius: 10px;
+    color: #000000;
 }
 
-.auth-btn.active {
-  background-color: purple;
-  color: white;
+button.auth-btn {
+    background: transparent;
+    outline: none;
+    border: none;
+    color: #ffffff;
+    font-family: 'Inter';
 }
-
-.auth-btn:not(:last-child) {
-  border-right: 1px solid black; 
-} */
+.content-container {
+    margin-top: 100px;
+}
+form.login-form {
+    width: 400px;
+}

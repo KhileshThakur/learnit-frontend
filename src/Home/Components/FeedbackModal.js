@@ -3,14 +3,14 @@ import './FeedBackModal.css'
 
 const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
   const [message, setMessage] = useState('');
-  const [authorName, setAuthorName] = useState('');
+  const [author, setAuthor] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (message && authorName) {
-      onSubmit({ message, authorName });
+    if (message && author) {
+      onSubmit({ message, author });
       setMessage('');
-      setAuthorName(''); 
+      setAuthor(''); 
       onClose(); 
     }
   };
@@ -24,12 +24,12 @@ const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
           </button>
           <form onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="authorName">Author Name:</label>
+              <label htmlFor="author">Author Name:</label>
               <input
                 type="text"
-                id="authorName"
-                value={authorName}
-                onChange={(e) => setAuthorName(e.target.value)}
+                id="author"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
                 required
               />
             </div>

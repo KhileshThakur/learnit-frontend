@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FaQuoteRight } from "react-icons/fa";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // components 
 import Header from '../../Utility/Components/Header'
 import Footer from '../../Utility/Components/Footer'
 import HomeImage from '../../Utility/Images/HomeImage.png'
-import FeedbackModal from '../../Utility/Components/FeedbackModal';
+import FeedbackModal from '../Components/FeedbackModal';
 
 //css & icons
 import './Homepage.css'
@@ -48,8 +50,6 @@ const Homepage = () => {
     };
     fetchFeedbacks();
   }, [backenduri]);
-
-  console.log(backenduri)
 
   const handlePrevSlide = () => {
     setAnimate(true);
@@ -96,8 +96,10 @@ const Homepage = () => {
       const data = await response.json();
       setSlideData((prevData) => [...prevData, data.feedback]); 
       setIsModalOpen(false);
+      toast.success("Thank You For Feedback!");
     } catch (err) {
       console.error(err.message);
+      toast.error("Something Went Wrong, Try Again");
     }
   };
   
@@ -207,6 +209,7 @@ const Homepage = () => {
       onClose={() => setIsModalOpen(false)}
       onSubmit={handleFeedbackSubmit}
     />
+    <ToastContainer/>
 
 
       <Footer />
