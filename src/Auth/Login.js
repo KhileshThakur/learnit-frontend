@@ -76,7 +76,7 @@ const Login = () => {
     <div className="full-page">
 
       <div className="button-group-container">
-        {/* <div className="button-group"> */}
+        
           <button
             className={`auth-btn ${selectedOption === 'authenticate' ? 'active' : ''}`}
             onClick={() => setSelectedOption('authenticate')}
@@ -95,7 +95,7 @@ const Login = () => {
           >
             Join as Instructor
           </button>
-        {/* </div> */}
+        
       </div>
 
       <div className="content-container">
@@ -113,4 +113,5 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Login; 
+
