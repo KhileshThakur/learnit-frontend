@@ -17,7 +17,7 @@ const Authentication = () => {
   return (
     <div className="full-page">
       <AuthHeader />
-
+      <h4 className="subtitle">Welcome Back! Your Journey to Knowledge Continues Here.</h4>
       <form className="login-form" onSubmit={handleLogin}>
         <div className="input-group">
           <label htmlFor="role">Role</label>
