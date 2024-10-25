@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 //Import Components
 import Homepage from './Home/Pages/Homepage';
-import Login from './Auth/Login';
-import JoinAsLearner from './Auth/Components/JoinAsLearner';
-import JoinAsInstructor from './Auth/Components/JoinAsInstructor';
+import Login from './Auth/Authentication';
+import JoinAsLearner from './Auth/JoinAsLearner';
+import JoinAsInstructor from './Auth/JoinAsInstructor';
 
 
 import AdminAuth from './Admin/Pages/AdminAuth';
