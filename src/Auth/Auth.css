@@ -8,8 +8,10 @@
     background-color: #1c1c28; 
 }
 
-h2 {
+.subtitle {
+    font-family: 'Marmelad';
     color: #9C9C9C;
+    margin: 30px;
 }
 
 /* Login Form Styles */
