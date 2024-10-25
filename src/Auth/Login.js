@@ -25,7 +25,49 @@ const Login = () => {
       case 'authenticate':
       default:
         return (
-          <Login />
+          <form className="login-form" onSubmit={handleLogin}>
+            <div className="input-group">
+              <label htmlFor="role">Role</label>
+              <select
+                id="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                required
+              >
+                <option value="Select Role" disabled>Select Role</option>
+                <option value="learner">Learner</option>
+                <option value="instructor">Instructor</option>
+              </select>
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="forgot-password">
+              <Link to="/forgot-password">Forgot Password?</Link>
+            </div>
+
+            <button type="submit" className="login-btn">Authenticate</button>
+          </form>
         );
     }
   };
@@ -34,6 +76,7 @@ const Login = () => {
     <div className="full-page">
 
       <div className="button-group-container">
+        {/* <div className="button-group"> */}
           <button
             className={`auth-btn ${selectedOption === 'authenticate' ? 'active' : ''}`}
             onClick={() => setSelectedOption('authenticate')}
