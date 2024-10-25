@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { FaQuoteRight } from "react-icons/fa";
-
 
 // components 
 import Header from '../../Utility/Components/Header'
@@ -19,90 +18,89 @@ import { CgSandClock } from "react-icons/cg";
 
 
 const Homepage = () => {
+
+  const backenduri = process.env.REACT_APP_BACKEND;
+
+
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [slideData, setSlideData] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [animate, setAnimate] = useState(false);
   const [colors, setColors] = useState({
     main: '#5E4592',
     prev: '#4396C5',
     next: '#4396C5',
   });
-  const [animate, setAnimate] = useState(false); // State for animation
 
-  const slideData = [
-    {
-      id: 1,
-      message: "This app is incredibly useful, enhancing productivity and streamlining tasks for users in their everyday activities effectively.",
-      author: "John Doe",
-    },
-    {
-      id: 2,
-      message: "I love using this app! It makes my daily routine so much easier and helps me stay organized effortlessly.",
-      author: "Jane Smith",
-    },
-    {
-      id: 3,
-      message: "Fantastic features make this app stand out. It's user-friendly and provides everything I need to get work done.",
-      author: "Alice Johnson",
-    },
-    {
-      id: 4,
-      message: "Great user experience overall! The interface is intuitive, and navigating through its features feels smooth and enjoyable.",
-      author: "Bob Brown",
-    },
-    {
-      id: 5,
-      message: "Highly recommend it! This app has transformed the way I manage my tasks, and it always exceeds my expectations.",
-      author: "Charlie White",
-    },
-    {
-      id: 6,
-      message: "A must-have app for anyone looking to enhance their productivity. It has become an essential tool in my life.",
-      author: "Eve Davis",
-    },
-  ];
 
+  useEffect(() => {
+    const fetchFeedbacks = async () => {
+      try {
+        const response = await fetch(`${backenduri}/feedbacks`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch feedbacks.');
+        }
+        const data = await response.json();
+        setSlideData(data.feedbacks);
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+    fetchFeedbacks();
+  }, [backenduri]);
+
+  console.log(backenduri)
 
   const handlePrevSlide = () => {
-    setAnimate(true); // Trigger animation
-    setCurrentSlide((prev) => {
-      const newSlide = (prev === 0 ? slideData.length - 1 : prev - 1);
-      setColors({
-        main: '#5E4592',
-        prev: '#4396C5',
-        next: '#4396C5',
-      });
-      return newSlide;
+    setAnimate(true);
+    setCurrentSlide((prev) => (prev === 0 ? slideData.length - 1 : prev - 1));
+    setColors({
+      main: '#5E4592',
+      prev: '#4396C5',
+      next: '#4396C5',
     });
   };
 
   const handleNextSlide = () => {
-    setAnimate(true); // Trigger animation
-    setCurrentSlide((prev) => {
-      const newSlide = (prev === slideData.length - 1 ? 0 : prev + 1);
-      setColors({
-        main: '#5E4592',
-        prev: '#4396C5',
-        next: '#4396C5',
-      });
-      return newSlide;
+    setAnimate(true);
+    setCurrentSlide((prev) => (prev === slideData.length - 1 ? 0 : prev + 1));
+    setColors({
+      main: '#5E4592',
+      prev: '#4396C5',
+      next: '#4396C5',
     });
   };
 
   useEffect(() => {
     if (animate) {
-      const timer = setTimeout(() => {
-        setAnimate(false); // Reset animation after a short delay
-      }, 500); // Match the duration with the transition time in CSS
-
-      return () => clearTimeout(timer); // Cleanup on unmount or effect change
+      const timer = setTimeout(() => setAnimate(false), 500);
+      return () => clearTimeout(timer);
     }
   }, [animate]);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleFeedbackSubmit = (feedback) => {
-    console.log('Feedback submitted:', feedback);
-    // You can handle the feedback submission logic here, like sending it to an API.
+  const handleFeedbackSubmit = async (feedback) => {
+    try {
+      const response = await fetch(`${backenduri}/feedback`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(feedback),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to submit feedback.');
+      }
+  
+      const data = await response.json();
+      setSlideData((prevData) => [...prevData, data.feedback]); 
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
+  
 
   return (
     <div className="homepage-conntainer">
@@ -176,19 +174,28 @@ const Homepage = () => {
         <div id="prev-slide" onClick={handlePrevSlide} style={{ background: colors.prev }}>
           Prev
         </div>
-        <div className={`main-slide ${animate ? 'animate' : ''}`} style={{ background: colors.main }}>
-          <div className="feedback-quote"><FaQuoteRight /></div>
-          <h3 className="message">
-            {slideData[currentSlide].message}
-          </h3>
-          <p className="author">
-            - {slideData[currentSlide].author}
-          </p>
-        </div>
+
+        {slideData.length > 0 ? (
+          <div className={`main-slide ${animate ? 'animate' : ''}`} style={{ background: colors.main }}>
+            <div className="feedback-quote"><FaQuoteRight /></div>
+            <h3 className="message">
+              {slideData[currentSlide]?.message}
+            </h3>
+            <p className="author">
+              - {slideData[currentSlide]?.author}
+            </p>
+          </div>
+        ) : (
+          <div className="main-slide">
+            <p>Loading feedback...</p>
+          </div>
+        )}
+
         <div id="next-slide" onClick={handleNextSlide} style={{ background: colors.next }}>
           Next
         </div>
       </section>
+
       <div className="feedback-form-button">
         <button className="join-btn" onClick={() => setIsModalOpen(true)}>
           Fill Feedback Form
@@ -196,13 +203,13 @@ const Homepage = () => {
       </div>
 
       <FeedbackModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleFeedbackSubmit}
-      />
-    
+      isOpen={isModalOpen}
+      onClose={() => setIsModalOpen(false)}
+      onSubmit={handleFeedbackSubmit}
+    />
 
-    <Footer />
+
+      <Footer />
     </div>
   )
 }
