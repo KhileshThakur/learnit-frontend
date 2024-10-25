@@ -26,7 +26,7 @@
 .role-selector {
   display: flex;
   align-items: center;
-  background-color: #3f3c47; 
+  background-color: #3f3c47;
   border-radius: 15px;
   padding: 5px;
   width: fit-content;
@@ -35,7 +35,7 @@
 
 .role-input {
   border: none;
-  background-color: #3f3c47; 
+  background-color: #3f3c47;
   color: #fff;
   font-size: 16px;
   outline: none;
@@ -43,7 +43,8 @@
 }
 
 .go-button {
-  background-color: #7872c2; 
+  text-decoration: none;
+  background-color: #7872c2;
   color: white;
   border: none;
   border-radius: 15px;
@@ -52,10 +53,10 @@
   font-size: 16px;
   display: flex;
   align-items: center;
-}
 
-.go-button:hover {
-  background-color: #5e56a7; /* Slightly darker on hover */
+  &:hover {
+    background-color: #5e56a7;
+  }
 }
 
 .arrow {
@@ -63,12 +64,177 @@
 }
 
 .image {
-    display: flex;
-    justify-content: center;
-    margin: 50px 0;
+  display: flex;
+  justify-content: center;
+  margin: 50px 0;
 }
 .hr-below-img {
-    text-align: center;
-    width: 600px;
-    border-color: #a39dac;
+  text-align: center;
+  width: 600px;
+  border-color: #a39dac;
+}
+.feature-heading {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  text-align: center;
+  margin: 30px;
+}
+.features {
+  display: flex;
+  gap: 30px;
+  margin: 50px;
+}
+.features svg {
+  font-size: 30px;
+}
+.box-hr {
+  border: 0.5px solid #e1e1e1;
+}
+.box1,
+.box2,
+.box3,
+.box4,
+.box5 {
+  border: 1px solid #464646;
+  padding: 15px;
+  width: 20%;
+  font-size: 18px;
+  border-radius: 10px;
+  transition: transform 0.3s ease, background-position 0.5s ease;
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+}
+
+.box1 {
+  background: linear-gradient(90deg, #df91aa, #fa6c9a, #f85186);
+}
+.box2 {
+  background: linear-gradient(90deg, #fcb96e, #e49841, #f19225);
+}
+.box3 {
+  background: linear-gradient(90deg, #69d4f1, #3eb0cf, #21a7cc);
+}
+.box4 {
+  background: linear-gradient(90deg, #9081d3, #7e6dd4, #705cd8);
+}
+.box5 {
+  background: linear-gradient(90deg, #44da65, #258823, #168615);
+}
+.box1:hover,
+.box2:hover,
+.box3:hover,
+.box4:hover,
+.box5:hover {
+  transform: scale(1.1);
+  background-position: 100% 50%;
+}
+
+.quote {
+  text-align: center;
+  font-family: "Marmelad", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 48px;
+  margin: 30px 0;
+}
+
+.quote-left,
+.quote-right {
+  color: #a678dd;
+  font-size: 60px;
+}
+
+.small-quote {
+  text-align: center;
+  font-family: "Marmelad", sans-serif;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.join-buttons {
+  margin: 80px;
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+.join-btn {
+  background-color: #333;
+  border: 1px solid #a678dd;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.join-btn:hover {
+  background-color: #a678dd;
+  border: 1px solid #ffffff;
+}
+
+.slider {
+  margin: 100px 0 0 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.5s ease;
+}
+
+#prev-slide, #next-slide {
+  height: 150px;
+  width: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.5s ease; 
+}
+
+.main-slide {
+  border-radius: 10px;
+  height: 200px;
+  width: 450px;
+  align-items: center;
+  transition: background-color 0.5s ease, transform 0.5s ease;
+  display: grid;
+}
+.feedback-quote {
+  text-align: end;
+  padding: 0 30px;
+}
+.main-slide svg {
+  font-size: 30px;
+}
+.main-slide.animate {
+  transform: scale(1.05);
+}
+
+#prev-slide {
+  border-radius: 10px 0 0 10px;
+}
+
+#next-slide {
+  border-radius: 0 10px 10px 0;
+}
+
+h3.message {
+  padding: 10px 30px;
+  margin: 0;
+  height: 100px;
+  overflow: hidden;
+  font-family: "Marmelad", sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 25px;
+  text-decoration: underline;
+}
+p.author {
+  margin: 0;
+  text-align: end;
+  padding: 0 30px;
+  font-family: "Inter";
+}
+.feedback-form-button {
+  margin: 100px auto;
+  display: flex;
+  justify-content: center;
 }

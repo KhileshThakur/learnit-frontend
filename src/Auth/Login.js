@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Icon } from '@iconify/react';
 import JoinAsLearner from './Components/JoinAsLearner';
 import JoinAsInstructor from './Components/JoinAsInstructor';
 import './Login.css';
@@ -105,15 +104,6 @@ const Login = () => {
 
       {selectedOption === 'authenticate' && (
         <>
-          <div className="divider">
-            <span>Or Continue with</span>
-          </div>
-
-          <button className="google-login-btn">
-            <Icon icon="flat-color-icons:google" className="google-icon" />
-            Google
-          </button>
-     
         <div className="register-links">
           <p>Don’t have an account? <Link to="/register-learner">Join as Learner</Link> or <Link to="/register-instructor">Join as Instructor</Link></p>
         </div>

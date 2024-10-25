@@ -1,0 +1,27 @@
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #282c34; /* Dark background color */
+    color: white; /* Text color */
+  }
+  
+  .footer-left {
+    font-size: 16px; /* Font size for copyright text */
+  }
+  
+  .footer-right {
+    display: flex;
+    gap: 15px; /* Space between icons */
+  }
+  
+  .footer-icon {
+    color: white; /* Icon color */
+    text-decoration: none; /* Remove underline from links */
+  }
+  
+  .footer-icon:hover {
+    color: #61dafb; /* Change color on hover */
+  }
+  

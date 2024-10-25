@@ -32,6 +32,7 @@ h2 {
 .input-group label {
     display: block; 
     margin-bottom: 5px; 
+    color: #fff;
 }
 
 .input-group input,
@@ -111,44 +112,6 @@ h2 {
     color: #6a4aff;
     text-decoration: none; 
 }
-
-/* Styling for the button group */
-/* .button-group-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-} */
-
-/* .button-group {
-  display: flex;
-  border: 2px solid #000; 
-  border-radius: 25px;
-  overflow: hidden; 
-} */
-
-/* .auth-btn {
-  background-color: grey;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  flex: 1; 
-  transition: background-color 0.3s ease;
-  font-size: 16px;
-}
-
-.auth-btn:hover {
-  background-color: #8a8a8a;
-}
-
-.auth-btn.active {
-  background-color: purple;
-  color: white;
-}
-
-.auth-btn:not(:last-child) {
-  border-right: 1px solid black; 
-} */
 
 .button-group-container {
     display: flex;
