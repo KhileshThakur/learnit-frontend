@@ -1,0 +1,25 @@
+.button-group-container {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 30px 0 50px 0;
+    border: 1px solid;
+    padding: 10px;
+    background-color: #514f4f;
+    border-radius: 20px;
+}
+
+button.auth-btn.active {
+    background: #a981ff;
+    padding: 7px;
+    border-radius: 10px;
+    color: #000000;
+}
+
+button.auth-btn {
+    background: transparent;
+    outline: none;
+    border: none;
+    color: #ffffff;
+    font-family: 'Inter';
+}
