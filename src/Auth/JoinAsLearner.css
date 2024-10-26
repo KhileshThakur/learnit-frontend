@@ -83,3 +83,8 @@ button[type="submit"]{
     display: flex;
     gap: 20px;
 }
+.row-checkbox {
+    display: flex;
+    gap: 5px;
+    color: #d1d1d1;
+}
