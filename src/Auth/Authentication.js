@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
 import AuthHeader from './AuthHeader';
-import './Auth.css'
+import './Authentication.css'
 
 const Authentication = () => {
   const [role, setRole] = useState('Select Role');

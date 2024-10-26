@@ -23,7 +23,7 @@
     min-width: 350px; 
     width: 100%; 
     box-sizing: border-box; 
-    margin: 0 auto; 
+    margin: 0 auto 100px; 
 }
 
 /* Input Group Styles */
@@ -115,51 +115,15 @@
     text-decoration: none; 
 }
 
-.button-group-container {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    margin: 0 0 50px 0;
-    border: 1px solid;
-    padding: 10px;
-    background-color: #514f4f;
-    border-radius: 10px;
-}
 .full-page {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: max-content;
     background-color: #1c1c28;
 }
-.button-group-container {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    margin: 0 0 50px 0;
-    border: 1px solid;
-    padding: 10px;
-    background-color: #514f4f;
-    border-radius: 20px;
-    position: fixed;
-    top: 25px;
-}
 
-button.auth-btn.active {
-    background: #a981ff;
-    padding: 7px;
-    border-radius: 10px;
-    color: #000000;
-}
-
-button.auth-btn {
-    background: transparent;
-    outline: none;
-    border: none;
-    color: #ffffff;
-    font-family: 'Inter';
-}
 .content-container {
     margin-top: 100px;
 }
