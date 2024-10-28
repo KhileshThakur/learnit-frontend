@@ -73,3 +73,7 @@
     width: 30px;
     box-shadow: none;
 }
+
+.instructor-container .row-password button {
+    background: #673AB7;
+}

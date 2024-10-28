@@ -90,8 +90,6 @@ button[type="submit"]{
     gap: 5px;
     color: #d1d1d1;
 }
-<<<<<<< HEAD
-=======
 .learner-container #otp {
     width: 175px;
 }
@@ -105,4 +103,3 @@ button[type="submit"]{
 .learner-container .row-password button {
     background: #673AB7;
 }
->>>>>>> cbfccd4b27f1b7f2a7bf5e2aa0eab2d430dd8353
