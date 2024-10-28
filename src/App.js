@@ -6,7 +6,8 @@ import Homepage from './Home/Pages/Homepage';
 import Login from './Auth/Authentication';
 import JoinAsLearner from './Auth/JoinAsLearner';
 import JoinAsInstructor from './Auth/JoinAsInstructor';
-
+import InsDashboard from './Instructor/InsDashboard';
+import LeaDashboard from './Learner/LeaDashboard';
 
 import AdminAuth from './Admin/Pages/AdminAuth';
 import AdminDashboard from './Admin/Pages/AdminDashboard';
@@ -25,6 +26,10 @@ function App() {
         {/* admin routes  */}
         <Route path="/admin/auth" element={<AdminAuth/>} />
         <Route path="/admin/dashboard" element={<AdminDashboard/>} /> {/*Need Authentification */}
+        {/* learner routes  */}
+        <Route path="/learner/dashboard" element={<LeaDashboard/>} />
+        {/* instructor routes */}
+        <Route path="/instructor/dashboard" element={<InsDashboard/>} />
         
       </Routes>
     </Router>

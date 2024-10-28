@@ -1,17 +1,50 @@
-import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
+import React, { useState } from 'react';
+import {useNavigate} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import AuthHeader from './AuthHeader';
-import './Authentication.css'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './Authentication.css';
 
 const Authentication = () => {
-  const [role, setRole] = useState('Select Role');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const backendurl = process.env.REACT_APP_BACKEND;
 
-  const handleLogin = (e) => {
+  const [role, setRole] = useState('Select Role');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Add login logic 
-    console.log('Logging in:', { role, username, password });
+    setLoading(true);
+    
+    const url = role === 'learner' ? '/learner/auth' : '/instructor/auth';
+    const navurl = role === 'learner' ? '/learner/dashboard' : '/instructor/dashboard';
+    
+    try {
+      const response = await fetch(`${backendurl}${url}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('token', data.token); 
+        toast.success('Logged in successfully');
+        navigate(navurl);
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+    
+    setLoading(false);
   };
 
   return (
@@ -34,12 +67,12 @@ const Authentication = () => {
         </div>
 
         <div className="input-group">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="email">Email</label>
           <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -59,8 +92,11 @@ const Authentication = () => {
           <Link to="/forgot-password">Forgot Password?</Link>
         </div>
 
-        <button type="submit" className="login-btn">Authenticate</button>
+        <button type="submit" className="login-btn" disabled={loading}>
+          {loading ? 'Logging in...' : 'Authenticate'}
+        </button>
       </form>
+      <ToastContainer/>
     </div>
   );
 };
