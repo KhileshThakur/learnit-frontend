@@ -1,6 +1,6 @@
 .instructor-container {
     margin: 30px 0 100px 0;
-    background: linear-gradient(180deg, #464444, #2c2a2a, #161616);
+    background: linear-gradient(180deg, #464444, #2c2a2a, #1d1b1b, #161616);
     padding: 20px;
     border-radius: 10px;
     box-sizing: border-box;
@@ -9,7 +9,7 @@
 }
 .instructor-container form {
     display: grid;
-    gap: 10px;
+    row-gap: 20px;
 }
 .instructor-container .row {
     display: flex;
@@ -21,11 +21,12 @@
 .instructor-container .radio-group {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
 }
 .instructor-container .row-email {
     display: flex;
     gap: 20px;
+    justify-content: space-between;
 }
 .instructor-container input, .instructor-container select, .instructor-container button {
     padding: 10px;
@@ -38,11 +39,12 @@
     box-sizing: border-box;
     outline: none;
 }
-.instructor-container label{
+.instructor-container label {
     color: #d1d1d1;
+    display: flex;
+    gap: 5px;
 }
 .instructor-container .subheading {
-    margin: 20px 0;
     color: #dadada;
 }
 .instructor-container .row-qualification, .instructor-container .row-links, .instructor-container .row-check{
@@ -72,4 +74,17 @@
     accent-color: #454d9b;
     width: 30px;
     box-shadow: none;
+}
+.instructor-container #otp {
+    width: 175px;
+}
+.instructor-container .button-container {
+    display: flex;
+    gap: 5px;
+}
+.instructor-container .sent-otp-btn {
+    background: #673AB7;
+}
+.instructor-container .row-password button {
+    background: #673AB7;
 }

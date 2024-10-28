@@ -49,7 +49,7 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 
-.learner-container #email,.learner-container #subjects {
+.learner-container #subjects {
     width: 330px;
 }
 .separation-line {
