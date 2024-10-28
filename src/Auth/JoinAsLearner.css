@@ -83,9 +83,26 @@ button[type="submit"]{
 .learner-container .row-email {
     display: flex;
     gap: 20px;
+    justify-content: space-between;
 }
 .learner-container .row-checkbox {
     display: flex;
     gap: 5px;
     color: #d1d1d1;
 }
+<<<<<<< HEAD
+=======
+.learner-container #otp {
+    width: 175px;
+}
+.learner-container .button-container {
+    display: flex;
+    gap: 5px;
+}
+.learner-container .sent-otp-btn {
+    background: #673AB7;
+}
+.learner-container .row-password button {
+    background: #673AB7;
+}
+>>>>>>> cbfccd4b27f1b7f2a7bf5e2aa0eab2d430dd8353
