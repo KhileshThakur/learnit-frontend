@@ -1,0 +1,51 @@
+.i-logout {
+    height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.logout-warning-modal {
+    width: 45%;
+    padding: 20px;
+    border: 1px solid #000;
+    border-radius: 10px;
+    background: #4d4d4d;
+    box-shadow: 2px 2px 2px #161515;
+}
+.i-logout-btn {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.i-logout-btn button {
+    padding: 5px;
+    width: 50px;
+    border-radius: 5px;
+    border: 1px solid #000;
+}
+button.confirm-btn {
+    background: #94100E;
+    color: #fff;
+}
+button.cancel-btn {
+    background: #634F8E;
+    color: #fff;
+}
+.i-logout h3 {
+    font-family: "Marmelad", sans-serif;
+    font-weight: 100;
+}
+.i-logout p {
+    font-family: "Inter", sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    color: #b7b7b7;
+    line-height: 20px;
+}
+.i-logout h3 {
+    font-family: "Marmelad", sans-serif;
+    font-weight: 100;
+}
+.i-logout span{
+    color: #c79800;
+}

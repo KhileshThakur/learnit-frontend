@@ -1,6 +1,6 @@
 import React from 'react'
 
-const InsDashboard = () => {
+const LeaApp = () => {
   return (
     <div>
       <h1>PAGE UNDER CONSTRUCTION</h1>
@@ -8,4 +8,4 @@ const InsDashboard = () => {
   )
 }
 
-export default InsDashboard
+export default LeaApp

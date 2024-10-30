@@ -1,0 +1,41 @@
+/* SmallLoading.css */
+.small-loading {
+  font-size: 18px;
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.dot {
+  animation: dotFlashing 1.5s infinite linear;
+  font-size: 100px;
+}
+
+@keyframes dotFlashing {
+  0% {
+    opacity: 0.2;
+    color: #ff4d4d;
+  }
+  20% {
+    opacity: 1;
+    color: #ffa64d;
+  }
+  40% {
+    opacity: 0.2;
+    color: #4da6ff;
+  }
+  60% {
+    opacity: 1;
+    color: #b84dff;
+  }
+  80% {
+    opacity: 0.2;
+    color: #4dff88;
+  }
+  100% {
+    opacity: 1;
+    color: #ff4d4d;
+  }
+}

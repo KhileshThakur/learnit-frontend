@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import AuthHeader from './AuthHeader';
 import { ToastContainer, toast } from 'react-toastify';
@@ -18,10 +18,9 @@ const Authentication = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     const url = role === 'learner' ? '/learner/auth' : '/instructor/auth';
-    const navurl = role === 'learner' ? '/learner/dashboard' : '/instructor/dashboard';
-    
+
     try {
       const response = await fetch(`${backendurl}${url}`, {
         method: 'POST',
@@ -32,18 +31,20 @@ const Authentication = () => {
       });
 
       const data = await response.json();
-
       if (response.ok) {
-        localStorage.setItem('token', data.token); 
-        toast.success('Logged in successfully');
-        navigate(navurl);
+        const id = data.id;
+        localStorage.setItem('token', data.token);
+        toast.success('Logged in successfully! Redirecting to dashboard', {
+          onClose: ()=>navigate(`/${role}/${id}/dashboard`)
+        });
+        
       } else {
         alert(data.message);
       }
     } catch (error) {
       console.error('Login error:', error);
     }
-    
+
     setLoading(false);
   };
 
@@ -96,7 +97,7 @@ const Authentication = () => {
           {loading ? 'Logging in...' : 'Authenticate'}
         </button>
       </form>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };

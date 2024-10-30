@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 //Import Components
@@ -6,31 +6,42 @@ import Homepage from './Home/Pages/Homepage';
 import Login from './Auth/Authentication';
 import JoinAsLearner from './Auth/JoinAsLearner';
 import JoinAsInstructor from './Auth/JoinAsInstructor';
-import InsDashboard from './Instructor/InsDashboard';
-import LeaDashboard from './Learner/LeaDashboard';
+import InsApp from './Instructor/Pages/InsApp';
+import LeaApp from './Learner/LeaApp';
 
 import AdminAuth from './Admin/Pages/AdminAuth';
 import AdminDashboard from './Admin/Pages/AdminDashboard';
 
+import ProtectedRoute from './Utility/Components/ProtectedRoute';
+
 
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(Boolean(localStorage.getItem('token')));
+
+
+
   return (
     <Router>
       <Routes>
         {/* auth and register routes  */}
-        <Route path="/" element={<Homepage/>} />
-        <Route path="/auth" element={<Login/>} />
-        <Route path="/register-learner" element={<JoinAsLearner/>} />
-        <Route path="/register-instructor" element={<JoinAsInstructor/>} />
+        <Route path="/" element={<Homepage />} />
+        <Route path="/auth" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="/register-learner" element={<JoinAsLearner />} />
+        <Route path="/register-instructor" element={<JoinAsInstructor />} />
         {/* admin routes  */}
-        <Route path="/admin/auth" element={<AdminAuth/>} />
-        <Route path="/admin/dashboard" element={<AdminDashboard/>} /> {/*Need Authentification */}
-        {/* learner routes  */}
-        <Route path="/learner/dashboard" element={<LeaDashboard/>} />
-        {/* instructor routes */}
-        <Route path="/instructor/dashboard" element={<InsDashboard/>} />
-        
+        <Route path="/admin/auth" element={<AdminAuth />} />
+
+
+        {/* ProtectedRoutes  */}
+        <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />} >
+          {/* admin routes  */}
+          <Route path="/admin/dashboard" element={<AdminDashboard />} /> {/*wrong need to change */}
+          {/* learner routes  */}
+          <Route path="/learner/:id/dashboard" element={<LeaApp />} />
+          {/* instructor routes */}
+          <Route path="/instructor/:id/dashboard" element={<InsApp />} />
+        </Route>
       </Routes>
     </Router>
   );

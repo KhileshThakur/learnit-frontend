@@ -1,0 +1,48 @@
+.i-dashboard {
+  display: flex;
+  height: 100vh;
+  font-family: Inter;
+  background: #24232A;
+  color: #FFFFFF;
+}
+.i-menu {
+  width: 15%;
+  padding: 10px 20px;
+}
+.i-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+.i-logo img {
+  width: 75%;
+}
+.i-menu ul {
+  list-style-type: none;
+  padding: 0;
+  display: grid;
+  margin: 0;
+  gap: 10px;
+}
+.i-menu li {
+  padding: 5px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  color: #d1d1d1;
+  border-radius: 5px;
+}
+
+.i-menu .active {
+  background-color: #A57BFF;
+  color: #fff;
+  border-radius: 5px;
+}
+.i-content {
+  flex-grow: 1;
+  margin: 10px 10px 10px 0;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #d9d9d915;
+  border: 1px solid black;
+  box-shadow: 1px 1px 2px #000;
+}
