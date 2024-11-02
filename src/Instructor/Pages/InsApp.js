@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import InsDashboard from '../Components/InsDashboard'
-import InsLogout from '../Components/InsLogout'
+import Logout from '../../Common/Logout'
 import InsMeetingRequest from '../Components/InsMeetingRequest'
 import './InsApp.css'
 import Logo from '../../Utility/Images/Logo.png'
@@ -32,7 +32,7 @@ const InsApp = () => {
       case 'My Capusule':
         return <InsMeetingRequest />
       case 'Logout':
-        return <InsLogout />;
+        return <Logout />;
       default:
         return <InsDashboard />;
     }

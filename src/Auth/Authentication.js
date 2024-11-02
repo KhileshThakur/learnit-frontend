@@ -35,8 +35,10 @@ const Authentication = () => {
       if (response.ok) {
         const id = data.id;
         localStorage.setItem('token', data.token); 
-        toast.success('Logged in successfully');
-        navigate(`/${role}/${id}/dashboard`);
+        toast.success('Logged in successfully', {
+          onClose: () => navigate(`/${role}/${id}/dashboard`)
+        });
+        
       } else {
         alert(data.message);
       }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './InsLogout.css'
+import './Logout.css'
 
 const Logout = () => {
   const [showWarning, setShowWarning] = useState(false);
