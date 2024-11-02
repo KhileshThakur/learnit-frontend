@@ -7,7 +7,7 @@ import Login from './Auth/Authentication';
 import JoinAsLearner from './Auth/JoinAsLearner';
 import JoinAsInstructor from './Auth/JoinAsInstructor';
 import InsApp from './Instructor/Pages/InsApp';
-import LeaApp from './Learner/LeaApp';
+import LeaApp from './Learner/Pages/LeaApp';
 
 import AdminAuth from './Admin/Pages/AdminAuth';
 import AdminDashboard from './Admin/Pages/AdminDashboard';
