@@ -1,0 +1,42 @@
+.l-dashboard {
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+  }
+  
+
+  .l-menu {
+    width: 20%;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-right: 1px solid #ccc;
+  }
+  
+  .l-menu ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .l-menu li {
+    padding: 10px;
+    cursor: pointer;
+    color: #333;
+    transition: background-color 0.3s;
+  }
+  
+  .l-menu li:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .l-menu .active {
+    background-color: #ccc;
+    font-weight: bold;
+  }
+  
+  .l-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #ffffff;
+  }
+  

@@ -32,12 +32,9 @@ const Authentication = () => {
 
       const data = await response.json();
       if (response.ok) {
-        const id = data.id;
-        localStorage.setItem('token', data.token);
-        toast.success('Logged in successfully! Redirecting to dashboard', {
-          onClose: ()=>navigate(`/${role}/${id}/dashboard`)
-        });
-        
+        localStorage.setItem('token', data.token); 
+        toast.success('Logged in successfully');
+        navigate(navurl);
       } else {
         alert(data.message);
       }
