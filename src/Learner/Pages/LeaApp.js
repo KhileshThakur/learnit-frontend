@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import LeaDashboard from '../Components/LeaDashboard';
-import LeaLogout from '../Components/LeaLogout';
+import Logout from '../../Common/Logout'
 import LeaDiscussionForum from '../Components/LeaDiscussionForum';
 
 
@@ -16,7 +16,7 @@ const LeaApp = () => {
       case 'Dashboard':
         return <LeaDashboard />;
       case 'Logout':
-        return <LeaLogout />;
+        return <Logout />;
       case 'Discussion Forum':
         return <LeaDiscussionForum />;
       // Add cases for other menu options and components
