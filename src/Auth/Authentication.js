@@ -20,7 +20,6 @@ const Authentication = () => {
     setLoading(true);
     
     const url = role === 'learner' ? '/learner/auth' : '/instructor/auth';
-    const navurl = role === 'learner' ? '/learner/dashboard' : '/instructor/dashboard';
     
     try {
       const response = await fetch(`${backendurl}${url}`, {
@@ -34,9 +33,10 @@ const Authentication = () => {
       const data = await response.json();
 
       if (response.ok) {
+        const id = data.id;
         localStorage.setItem('token', data.token); 
         toast.success('Logged in successfully');
-        navigate(navurl);
+        navigate(`/${role}/${id}/dashboard`);
       } else {
         alert(data.message);
       }

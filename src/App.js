@@ -7,7 +7,7 @@ import Login from './Auth/Authentication';
 import JoinAsLearner from './Auth/JoinAsLearner';
 import JoinAsInstructor from './Auth/JoinAsInstructor';
 import InsDashboard from './Instructor/InsDashboard';
-import LeaDashboard from './Learner/LeaDashboard';
+import LeaApp from './Learner/Pages/LeaApp';
 
 import AdminAuth from './Admin/Pages/AdminAuth';
 import AdminDashboard from './Admin/Pages/AdminDashboard';
@@ -27,9 +27,9 @@ function App() {
         <Route path="/admin/auth" element={<AdminAuth/>} />
         <Route path="/admin/dashboard" element={<AdminDashboard/>} /> {/*Need Authentification */}
         {/* learner routes  */}
-        <Route path="/learner/dashboard" element={<LeaDashboard/>} />
+        <Route path="/learner/:id/dashboard" element={<LeaApp/>} />
         {/* instructor routes */}
-        <Route path="/instructor/dashboard" element={<InsDashboard/>} />
+        <Route path="/instructor/:id/dashboard" element={<InsDashboard/>} />
         
       </Routes>
     </Router>
