@@ -1,7 +1,11 @@
-import React from 'react';
+import React from 'react'
 
-const LeaDashboard = () => {
-  return <div>Explore Capsules</div>;
-};
+const LeaExploreCapsules = () => {
+  return (
+    <div>
+      Working
+    </div>
+  )
+}
 
-export default LeaDashboard;
+export default LeaExploreCapsules
