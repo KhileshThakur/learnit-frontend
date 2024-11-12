@@ -1,3 +1,5 @@
+
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -27,7 +29,7 @@ const Authentication = () => {
       return;
     }
 
-    const url = role === 'learner' ? '/learner/auth' : role === 'instructor' ? '/instructor/auth' : '/admin/auth';
+    const url = role === 'learner' ? '/learner/auth' : '/instructor/auth';
 
     try {
       const response = await fetch(`${backendurl}${url}`, {
@@ -43,10 +45,10 @@ const Authentication = () => {
       if (response.ok) {
         const id = data.id;
         localStorage.setItem('token', data.token); 
-
         toast.success('Logged in successfully', {
           onClose: () => navigate(`/${role}/${id}/dashboard`)
         });
+        
       } else {
         alert(data.message);
       }
