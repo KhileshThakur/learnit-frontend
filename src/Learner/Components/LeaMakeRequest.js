@@ -129,7 +129,7 @@ const LeaMakeRequest = () => {
                     justify-content: center;
                 }
                 .popup-content {
-                    background: #fff;
+                    background: #77777;
                     padding: 20px;
                     border-radius: 8px;
                     width: 300px;
