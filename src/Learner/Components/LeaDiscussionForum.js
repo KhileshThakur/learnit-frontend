@@ -1,142 +1,97 @@
-import React, { useState } from 'react';
-import './LeaDiscussionForum.css';
+// LeaDiscussionForum.js
+import React, { useState, useEffect } from "react";
+import Thread from "./Thread";
+import NewPost from "./NewPost";
+import "./LeaDiscussionForum.css";
+import axios from "axios";
 
 const LeaDiscussionForum = () => {
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      question: 'Can you identify and fix the errors in the following C++ code?',
-      answer: 'The constructor is incorrectly assigning the parameters to themselves...',
-      replies: [],
-    },
-  ]);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newQuestion, setNewQuestion] = useState('');
-  
-  // State for handling replies and likes
-  const [replyContent, setReplyContent] = useState('');
-  
-  const openModal = () => {
-    setIsModalOpen(true);
+  const [threads, setThreads] = useState([]);
+  const [selectedThread, setSelectedThread] = useState(null);
+  const addThread = async (question) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/discussion/thread",
+        { question }
+      );
+      setThreads([response.data.thread, ...threads]);
+    } catch (error) {
+      console.error("Error adding thread:", error);
+    }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setNewQuestion('');
-  };
+  const addReply = async (reply) => {
+    if (selectedThread) {
+      try {
+        const response = await axios.post(
+          `http://localhost:5000/api/discussion/thread/${selectedThread._id}/reply`,
+          { content: reply }
+        );
 
-  const postQuestion = () => {
-    if (newQuestion.trim() === '') return;
+        const updatedThread = response.data.thread;
+        const updatedThreads = threads.map((thread) =>
+          thread._id === updatedThread._id ? updatedThread : thread
+        );
 
-    const newPost = {
-      id: Date.now(),
-      question: newQuestion,
-      answer: '',
-      replies: [],
-    };
-
-    setPosts([...posts, newPost]);
-    closeModal();
-  };
-
-  const postReply = (postId) => {
-    if (replyContent.trim() === '') return;
-
-    const newReply = {
-      id: Date.now(),
-      content: replyContent,
-      likes: 0,
-      replyCount: 0,
-      replies: [],
-    };
-
-    const updatedPosts = posts.map(post => {
-      if (post.id === postId) {
-        return { ...post, replies: [...post.replies, newReply] };
+        setThreads(updatedThreads);
+        setSelectedThread(updatedThread);
+      } catch (error) {
+        console.error("Error adding reply:", error);
       }
-      return post;
-    });
-
-    setPosts(updatedPosts);
-    setReplyContent('');
+    }
   };
 
-  const likeReply = (postId, replyId) => {
-    const updatedPosts = posts.map(post => {
-      if (post.id === postId) {
-        const updatedReplies = post.replies.map(reply => {
-          if (reply.id === replyId) {
-            return { ...reply, likes: reply.likes + 1 };
-          }
-          return reply;
-        });
-        return { ...post, replies: updatedReplies };
-      }
-      return post;
-    });
+  useEffect(() => {
+    fetchThreads();
+  }, []);
 
-    setPosts(updatedPosts);
+  const fetchThreads = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/discussion/threads"
+      );
+      setThreads(response.data.threads.reverse()); // reverse for latest first
+    } catch (error) {
+      console.error("Error fetching threads:", error);
+    }
   };
 
   return (
-    <div className="discussion-forum">
-      <button onClick={openModal} className="post-question-button">Post Question</button>
+    <div className="discussion-forum-container">
+      {/* Questions Section (Left Box) */}
+      <div className="questions-section">
+        <h2>Latest Questions</h2>
+        <div className="questions-list">
+          {threads.map((thread) => (
+            <Thread
+              key={thread.id}
+              thread={thread}
+              onClick={() => setSelectedThread(thread)}
+            />
+          ))}
+        </div>
+        <NewPost onAddThread={addThread} />
+      </div>
 
-      {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Post Your Question</h2>
-            <textarea
-              placeholder="Write your question here..."
-              value={newQuestion}
-              onChange={(e) => setNewQuestion(e.target.value)}
-              className="question-input"
-            ></textarea>
-            <div className="modal-buttons">
-              <button onClick={postQuestion} className="post-button">Post</button>
-              <button onClick={closeModal} className="cancel-button">Cancel</button>
+      {/* Answers Section (Right Box) */}
+      <div className="answers-section">
+        {selectedThread ? (
+          <>
+            <h2>{selectedThread.question}</h2>
+            <div className="replies-list">
+              {selectedThread.replies.map((reply, index) => (
+                <div key={reply._id || index} className="reply">
+                  <p>{reply.content}</p> {/* ✅ Only show the reply text */}
+                  {/* Optional: <small>{new Date(reply.createdAt).toLocaleString()}</small> */}
+                </div>
+              ))}
             </div>
-          </div>
-        </div>
-      )}
-
-      {posts.map(post => (
-        <div key={post.id} className="post-row">
-          {/* Question Box */}
-          <div className="question-box">
-            <h3>Question</h3>
-            <p>{post.question}</p>
-          </div>
-
-          {/* Answer Box */}
-          <div className="answer-box">
-            <h3>Answer</h3>
-            <p>{post.answer || "No answers yet. Be the first to answer!"}</p>
-
-            {/* Reply Input */}
-            <textarea
-              placeholder="Write your reply here..."
-              value={replyContent}
-              onChange={(e) => setReplyContent(e.target.value)}
-              className="reply-input"
-            ></textarea>
-            <button onClick={() => postReply(post.id)} className="reply-button">Reply</button>
-
-            {/* Displaying Replies */}
-            {post.replies.map(reply => (
-              <div key={reply.id} className="reply">
-                <p>{reply.content}</p>
-                <button onClick={() => likeReply(post.id, reply.id)} className="like-button">
-                  👍 {reply.likes} Likes
-                </button>
-                <span>{reply.replyCount} Replies</span>
-                {/* Optionally, add nested replies here */}
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
+            <NewPost onAddReply={addReply} />
+          </>
+        ) : (
+          <h2>Select a question to view answers</h2>
+        )}
+      </div>
     </div>
   );
 };
