@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import AuthHeader from './AuthHeader';
 import { ToastContainer, toast } from 'react-toastify';
@@ -18,9 +18,9 @@ const Authentication = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     const url = role === 'learner' ? '/learner/auth' : '/instructor/auth';
-    
+
     try {
       const response = await fetch(`${backendurl}${url}`, {
         method: 'POST',
@@ -35,15 +35,17 @@ const Authentication = () => {
       if (response.ok) {
         const id = data.id;
         localStorage.setItem('token', data.token); 
-        toast.success('Logged in successfully');
-        navigate(`/${role}/${id}/dashboard`);
+        toast.success('Logged in successfully', {
+          onClose: () => navigate(`/${role}/${id}/dashboard`)
+        });
+        
       } else {
         alert(data.message);
       }
     } catch (error) {
       console.error('Login error:', error);
     }
-    
+
     setLoading(false);
   };
 
@@ -96,7 +98,7 @@ const Authentication = () => {
           {loading ? 'Logging in...' : 'Authenticate'}
         </button>
       </form>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };

@@ -13,6 +13,12 @@ const AuthHeader = () => {
     return (
         <div className="button-group-container">
             <button 
+                onClick={() => handleNavigation('/')} 
+                className={`auth-btn ${location.pathname === '/' ? 'active' : ''}`}
+            >
+                Home
+            </button>
+            <button 
                 onClick={() => handleNavigation('/auth')} 
                 className={`auth-btn ${location.pathname === '/auth' ? 'active' : ''}`}
             >

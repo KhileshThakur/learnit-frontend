@@ -9,6 +9,7 @@ import Header from '../../Utility/Components/Header'
 import Footer from '../../Utility/Components/Footer'
 import HomeImage from '../../Utility/Images/HomeImage.png'
 import FeedbackModal from '../Components/FeedbackModal';
+import Loader from '../../Utility/Components/UI/Loader';
 
 //css & icons
 import './Homepage.css'
@@ -23,7 +24,7 @@ const Homepage = () => {
 
   const backenduri = process.env.REACT_APP_BACKEND;
 
-
+  const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slideData, setSlideData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,9 +45,14 @@ const Homepage = () => {
         }
         const data = await response.json();
         setSlideData(data.feedbacks);
+        await new Promise(resolve => setTimeout(resolve, 2000)); 
       } catch (err) {
         console.error(err.message);
       }
+      finally{
+        setLoading(false);
+      }
+      
     };
     fetchFeedbacks();
   }, [backenduri]);
@@ -88,13 +94,13 @@ const Homepage = () => {
         },
         body: JSON.stringify(feedback),
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to submit feedback.');
       }
-  
+
       const data = await response.json();
-      setSlideData((prevData) => [...prevData, data.feedback]); 
+      setSlideData((prevData) => [...prevData, data.feedback]);
       setIsModalOpen(false);
       toast.success("Thank You For Feedback!");
     } catch (err) {
@@ -102,10 +108,14 @@ const Homepage = () => {
       toast.error("Something Went Wrong, Try Again");
     }
   };
-  
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="homepage-conntainer">
+
       <Header />
       <div className="title">
         <h3 className="title-one">Welcome to <span>LearnIT</span></h3>
@@ -205,15 +215,17 @@ const Homepage = () => {
       </div>
 
       <FeedbackModal
-      isOpen={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
-      onSubmit={handleFeedbackSubmit}
-    />
-    <ToastContainer/>
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleFeedbackSubmit}
+      />
+      <ToastContainer />
 
 
       <Footer />
+
     </div>
+
   )
 }
 
