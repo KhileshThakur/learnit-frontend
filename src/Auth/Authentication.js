@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { AuthContext } from './AuthContext'; // Import AuthContext
 import AuthHeader from './AuthHeader';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Authentication.css';
 
 const Authentication = () => {
+  const { login } = useContext(AuthContext); // Use login from AuthContext
   const navigate = useNavigate();
-  const backendurl = process.env.REACT_APP_BACKEND;
+  const backendurl = "http://localhost:5000/api";
 
   const [role, setRole] = useState('Select Role');
   const [email, setEmail] = useState('');
@@ -33,17 +35,14 @@ const Authentication = () => {
       const data = await response.json();
 
       if (response.ok) {
-        const id = data.id;
-        localStorage.setItem('token', data.token); 
-        toast.success('Logged in successfully', {
-          onClose: () => navigate(`/${role}/${id}/dashboard`)
-        });
-        
+        login(data.token, role, data.id); // Call login from AuthContext
+        toast.success('Logged in successfully');
       } else {
-        alert(data.message);
+        toast.error(data.message);
       }
     } catch (error) {
       console.error('Login error:', error);
+      toast.error('Something went wrong. Please try again.');
     }
 
     setLoading(false);

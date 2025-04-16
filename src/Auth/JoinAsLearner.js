@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthContext'; // Import AuthContext
 import AuthHeader from './AuthHeader';
 import './JoinAsLearner.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const JoinAsLearner = () => {
+  const { login } = useContext(AuthContext); // Use login from AuthContext
   const navigate = useNavigate();
 
-  const backenduri = process.env.REACT_APP_BACKEND;
+  const backenduri = "http://localhost:5000/api";
 
   const [university, setUniversity] = useState('');
   const [college, setCollege] = useState('');
@@ -17,6 +19,9 @@ const JoinAsLearner = () => {
   const [otpVerified, setOtpVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -48,7 +53,6 @@ const JoinAsLearner = () => {
 
   const sendOtp = async () => {
     setLoading(true);
-    const email = document.getElementById('email').value;
     const response = await fetch(`${backenduri}/learner/send-otp`, {
       method: 'POST',
       headers: {
@@ -56,6 +60,8 @@ const JoinAsLearner = () => {
       },
       body: JSON.stringify({ email }),
     });
+
+    console.log(response);
 
     if (response.ok) {
       setIsOtpSent(true);
@@ -68,7 +74,6 @@ const JoinAsLearner = () => {
 
   const verifyOtp = async () => {
     setLoading(true);
-    const email = document.getElementById('email').value;
     const response = await fetch(`${backenduri}/learner/verify-otp`, {
       method: 'POST',
       headers: {
@@ -113,11 +118,15 @@ const JoinAsLearner = () => {
         },
         body: JSON.stringify(formData),
       });
+      console.log(response);
+
+      const data = await response.json();
 
       if (response.ok) {
-        toast.success('Account created successfully!', {
-          onClose: () => navigate('/auth') // Redirect after the toast closes
-        });
+        login(data.token, 'learner', data.id); // Automatically log in the user
+        // toast.success('Account created successfully!', {
+        //   onClose: () => navigate('/auth') // Redirect after the toast closes
+        // });
       } else {
         toast.error('Error creating account. Please try again.');
       }
@@ -138,7 +147,13 @@ const JoinAsLearner = () => {
           <div className="row">
             <div className="column">
               <label htmlFor="name">Name</label>
-              <input type="text" id="name" name="name" required />
+              <input
+                type="text"
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
             </div>
             <div className="column">
               <div className="radio-group">
@@ -160,7 +175,13 @@ const JoinAsLearner = () => {
           <div className="row-email">
             <div className="column">
               <label htmlFor="email">Email</label>
-              <input type="email" id="email" name="email" required />
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </div>
             <div className="column">
               <label htmlFor="otp">OTP</label>
@@ -227,7 +248,8 @@ const JoinAsLearner = () => {
             <input
               type={showPassword ? "text" : "password"}
               id="password"
-              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
             <button

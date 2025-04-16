@@ -1,0 +1,106 @@
+@tailwind  base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  @apply bg-gray-50;
+}
+
+.grid-videos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  max-width: 100%;
+}
+
+@media (min-width: 640px) {
+  .grid-videos {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-videos {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid-videos.participants-1 {
+    grid-template-columns: 1fr;
+  }
+  
+  .grid-videos.participants-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .grid-videos.participants-3, .grid-videos.participants-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .grid-videos.participants-5, .grid-videos.participants-6 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.video-container {
+  position: relative;
+  aspect-ratio: 16/9;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #1a1a2e;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Add a subtle animation for transitions */
+.video-container, button {
+  transition: all 0.3s ease;
+}
+
+/* Add hover effects to buttons */
+button:hover {
+  transform: translateY(-2px);
+}
+
+/* Add shadow to video containers */
+.video-container {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Status indicators */
+.status-indicator {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  display: flex;
+  gap: 4px;
+  z-index: 10;
+}
+
+.status-indicator > div {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.screen-share-container {
+  grid-column: span 2;
+}
+
+@media (min-width: 1024px) {
+  .screen-share-container {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+}
+ 
