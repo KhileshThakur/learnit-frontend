@@ -41,6 +41,7 @@ function App() {
           <Route path="/learner/:id/dashboard" element={<LeaApp />} />
           {/* instructor routes */}
           <Route path="/instructor/:id/dashboard" element={<InsApp />} />
+          
         </Route>
       </Routes>
     </Router>
