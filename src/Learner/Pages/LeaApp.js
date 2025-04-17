@@ -7,6 +7,7 @@ import Logo from '../../Utility/Images/Logo.png'
 
 import './LeaApp.css';
 import LeaMeetings from '../Components/LeaMeetings';
+import LeaLearnAI from '../Components/LeaLearnAI';
 
 const LeaApp = () => {
   const [activeComponent, setActiveComponent] = useState('Dashboard'); 
@@ -24,6 +25,8 @@ const LeaApp = () => {
         return <Logout />;
       case 'Discussion Forum':
         return <LeaDiscussionForum />;
+      case 'LearnAI':
+        return <LeaLearnAI />
       default:
         return <LeaDashboard />;
     }
