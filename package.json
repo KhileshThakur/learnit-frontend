@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
+    "date-fns": "^2.30.0",
     "dotenv": "^16.4.5",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.5",
@@ -21,6 +22,7 @@
     "react-toastify": "^10.0.6",
     "reactjs-popup": "^2.0.6",
     "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.8.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

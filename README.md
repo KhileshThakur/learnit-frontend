@@ -68,4 +68,36 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Class Management Features
+
+The application now supports class management features for instructors. Instructors can:
+
+1. **View Classes**: Instructors can view all classes associated with their courses.
+2. **Create Classes**: Instructors can create new classes for their courses with details like:
+   - Title
+   - Description
+   - Date
+   - Start and end times
+   - Meeting links
+   - Stream information
+   
+3. **Edit Classes**: Instructors can modify the details of existing classes.
+4. **Delete Classes**: Instructors can remove classes from their courses.
+
+### Components Overview
+
+- **CourseClasses**: Main component for displaying and managing classes for a specific course.
+- **CreateClass**: Form component for creating new classes.
+- **EditClass**: Form component for modifying existing classes.
+
+### API Integration
+
+The class management features integrate with the backend API through these endpoints:
+- GET `/api/classes/courses/:courseId/classes` - Fetch all classes for a course
+- POST `/api/classes/courses/:courseId/classes` - Create a new class
+- GET `/api/classes/classes/:classId` - Get details of a specific class
+- PATCH `/api/classes/classes/:classId` - Update a class
+- DELETE `/api/classes/classes/:classId` - Delete a class
+
 echo# LearnIt-FrontEnd

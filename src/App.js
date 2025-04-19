@@ -13,6 +13,7 @@ import AdminAuth from './Admin/Pages/AdminAuth';
 import AdminDashboard from './Admin/Pages/AdminDashboard';
 
 import ProtectedRoute from './Utility/Components/ProtectedRoute';
+import Classroom from './Common/VideoConference/components/Classroom';
 
 
 
@@ -43,6 +44,9 @@ function App() {
           <Route path="/instructor/:id/dashboard" element={<InsApp />} />
           
         </Route>
+
+        {/* Add classroom route */}
+        <Route path="/classroom/:classId" element={<Classroom />} />
       </Routes>
     </Router>
   );

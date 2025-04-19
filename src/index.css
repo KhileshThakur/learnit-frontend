@@ -5,9 +5,27 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden; /* Prevent document-level scrolling */
+  height: 100vh; /* Ensure full height */
+}
+
+html {
+  overflow: hidden; /* Prevent document-level scrolling */
+  height: 100vh; /* Ensure full height */
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Make sure root div has full height */
+#root {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Ensure that these styles don't break existing app layouts */
+* {
+  box-sizing: border-box;
 }

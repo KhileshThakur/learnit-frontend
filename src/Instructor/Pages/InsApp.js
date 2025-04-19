@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import InsDashboard from '../Components/InsDashboard'
 import Logout from '../../Common/Logout'
 import InsMeetingRequest from '../Components/InsMeetingRequest'
+import InstructorCourses from '../Components/Courses/InstructorCourses'
+import CreateCourse from '../Components/Courses/CreateCourse'
 import './InsApp.css'
 import Logo from '../../Utility/Images/Logo.png'
 
@@ -20,9 +22,9 @@ const InsApp = () => {
       case 'Scheduled Meetings':
         return <InsMeetingRequest />
       case 'My Courses':
-        return <InsMeetingRequest />
-      case 'Upload Course':
-        return <InsMeetingRequest />
+        return <InstructorCourses />
+      case 'Create Course':
+        return <CreateCourse onCourseCreated={() => setActiveComponent('My Courses')} />
       case 'LearnAI':
         return <InsMeetingRequest />
       case 'Discussion Forum':
@@ -45,7 +47,7 @@ const InsApp = () => {
           <img src={Logo} alt="Logo" />
         </div>
         <ul>
-          {['Dashboard', 'Meeting Requests', 'Scheduled Meetings', 'My Courses', 'Upload Course', 'LearnAI', 'Discussion Forum', 'Create Capsule', 'My Capusule', 'Logout'].map((item) => (
+          {['Dashboard', 'Meeting Requests', 'Scheduled Meetings', 'My Courses', 'Create Course', 'LearnAI', 'Discussion Forum', 'Create Capsule', 'My Capusule', 'Logout'].map((item) => (
             <li
               key={item}
               onClick={() => setActiveComponent(item)}

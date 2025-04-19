@@ -8,7 +8,7 @@ import './Authentication.css';
 
 const Authentication = () => {
   const navigate = useNavigate();
-  const backendurl = process.env.REACT_APP_BACKEND;
+  const backendurl =process.env.REACT_APP_BACKEND;
 
   const [role, setRole] = useState('Select Role');
   const [email, setEmail] = useState('');
@@ -34,16 +34,33 @@ const Authentication = () => {
 
       if (response.ok) {
         const id = data.id;
-        localStorage.setItem('token', data.token); 
+        localStorage.setItem('token', data.token);
+        
+        // Debug log to check the response data
+        console.log('Login response data:', data);
+        
+        // Store user information including role, ensuring name is properly set
+        const userData = {
+          id: data.id,
+          email: email,
+          role: role,
+          name: data.name // Only use the name from the response
+        };
+        
+        // Debug log to check what we're storing
+        console.log('Storing user data:', userData);
+        
+        localStorage.setItem('user', JSON.stringify(userData));
+        
         toast.success('Logged in successfully', {
           onClose: () => navigate(`/${role}/${id}/dashboard`)
         });
-        
       } else {
         alert(data.message);
       }
     } catch (error) {
       console.error('Login error:', error);
+      toast.error('Login failed. Please try again.');
     }
 
     setLoading(false);
