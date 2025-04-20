@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import LeaDashboard from '../Components/LeaDashboard';
 import Logout from '../../Common/Logout'
-import LeaDiscussionForum from '../Components/LeaDiscussionForum';
+import LeaDiscussionForum from '../Components/DiscussionForum/LeaDiscussionForum';
 import LeaMakeRequest from '../Components/LeaMakeRequest';
 import Logo from '../../Utility/Images/Logo.png'
 
