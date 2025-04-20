@@ -6,10 +6,10 @@ import LeaDiscussionForum from '../Components/DiscussionForum/LeaDiscussionForum
 import LeaMakeRequest from '../Components/LeaMakeRequest';
 import Logo from '../../Utility/Images/Logo.png'
 import LeaExploreCapsules from '../Components/LeaExploreCapsules';
-
 import './LeaApp.css';
 import LeaMeetings from '../Components/LeaMeetings';
 import LeaLearnAI from '../Components/LeaLearnAI';
+import LeaMyCapsules from '../Components/LeaMyCapsules';
 
 const LeaApp = () => {
   const [activeComponent, setActiveComponent] = useState('Dashboard'); 
@@ -31,6 +31,8 @@ const LeaApp = () => {
         return <LeaLearnAI />
       case 'Explore Capsules':
         return <LeaExploreCapsules learnerId={learnerId}/>;
+      case 'My Capsules':
+        return <LeaMyCapsules learnerId={learnerId}/>;
       default:
         return <LeaDashboard />;
     }
