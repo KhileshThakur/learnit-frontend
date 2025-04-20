@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import {useParams} from 'react-router-dom';
 import LeaDashboard from '../Components/LeaDashboard';
 import Logout from '../../Common/Logout'
 import LeaDiscussionForum from '../Components/LeaDiscussionForum';
 import LeaMakeRequest from '../Components/LeaMakeRequest';
 import Logo from '../../Utility/Images/Logo.png'
+import LeaExploreCapsules from '../Components/LeaExploreCapsules';
 
 import './LeaApp.css';
 import LeaMeetings from '../Components/LeaMeetings';
@@ -11,7 +13,7 @@ import LeaLearnAI from '../Components/LeaLearnAI';
 
 const LeaApp = () => {
   const [activeComponent, setActiveComponent] = useState('Dashboard'); 
-
+  const { id: learnerId } = useParams();
   // Function to render the component based on the active menu option
   const renderComponent = () => {
     switch (activeComponent) {
@@ -27,6 +29,8 @@ const LeaApp = () => {
         return <LeaDiscussionForum />;
       case 'LearnAI':
         return <LeaLearnAI />
+      case 'Explore Capsules':
+        return <LeaExploreCapsules learnerId={learnerId}/>;
       default:
         return <LeaDashboard />;
     }

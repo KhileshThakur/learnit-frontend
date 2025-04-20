@@ -1,17 +1,20 @@
 import React, { useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 import InsDashboard from '../Components/InsDashboard'
 import Logout from '../../Common/Logout'
 import InsMeetingRequest from '../Components/InsMeetingRequest'
 import InstructorCourses from '../Components/Courses/InstructorCourses'
 import CreateCourse from '../Components/Courses/CreateCourse'
+import CreateCapsule from '../Components/TimeCapsule/CreateCapsule'
 import './InsApp.css'
 import Logo from '../../Utility/Images/Logo.png'
+import MyCapsules from '../Components/TimeCapsule/MyCapsules'
 
 const InsApp = () => {
 
   const [activeComponent, setActiveComponent] = useState("Dashboard");
-
+  const { id: instructorId } = useParams();
 
   const renderComponent = () => {
     switch (activeComponent) {
@@ -30,9 +33,9 @@ const InsApp = () => {
       case 'Discussion Forum':
         return <InsMeetingRequest />
       case 'Create Capsule':
-        return <InsMeetingRequest />
+        return <CreateCapsule instructorId={instructorId}/>
       case 'My Capusule':
-        return <InsMeetingRequest />
+        return <MyCapsules instructorId={instructorId} />
       case 'Logout':
         return <Logout />;
       default:
