@@ -5,12 +5,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden; /* Prevent document-level scrolling */
+  /* overflow: hidden; Prevent document-level scrolling */
   height: 100vh; /* Ensure full height */
 }
 
 html {
-  overflow: hidden; /* Prevent document-level scrolling */
+  /* overflow: hidden; Prevent document-level scrolling */
   height: 100vh; /* Ensure full height */
 }
 
@@ -22,7 +22,7 @@ code {
 /* Make sure root div has full height */
 #root {
   height: 100vh;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 /* Ensure that these styles don't break existing app layouts */
