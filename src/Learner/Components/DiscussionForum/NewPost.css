@@ -1,0 +1,9 @@
+/* NewPost.css */
+.new-post input {
+    background-color: #4b4f58;
+    color: #ffffff;
+  }
+  
+  .new-post button:hover {
+    background-color: #5b5f68;
+  }

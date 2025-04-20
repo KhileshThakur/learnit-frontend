@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {useParams} from 'react-router-dom';
 import LeaDashboard from '../Components/LeaDashboard';
 import Logout from '../../Common/Logout'
-import LeaDiscussionForum from '../Components/LeaDiscussionForum';
+import LeaDiscussionForum from '../Components/DiscussionForum/LeaDiscussionForum';
 import LeaMakeRequest from '../Components/LeaMakeRequest';
 import Logo from '../../Utility/Images/Logo.png'
 import LeaExploreCapsules from '../Components/LeaExploreCapsules';

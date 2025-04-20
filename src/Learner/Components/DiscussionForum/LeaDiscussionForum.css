@@ -1,0 +1,48 @@
+/* LeaDiscussionForum.css */
+.discussion-forum-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background-color: #2c2f33;
+    color: #ffffff;
+  }
+  
+  .questions-section,
+  .answers-section {
+    flex: 1;
+    background-color: #3a3f47;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .questions-list {
+    max-height: 450px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+  }
+  
+  .replies-list {
+    max-height: 450px;
+    overflow-y: auto;
+  }
+  
+  .new-post {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .new-post input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+  }
+  
+  .new-post button {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #7289da;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+  }
