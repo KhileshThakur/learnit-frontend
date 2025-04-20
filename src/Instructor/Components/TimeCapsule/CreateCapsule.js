@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 const CreateCapsule = ({instructorId}) => {
 
+  const backenduri = process.env.REACT_APP_BACKEND;
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -36,7 +38,7 @@ const CreateCapsule = ({instructorId}) => {
     };
 
     try {
-      const res = await fetch("http://localhost:5000/api/instructor/capsule/create", {
+      const res = await fetch(`${backenduri}/instructor/capsule/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./LeaExploreCapsules.css"; // Make sure this CSS file exists or adjust accordingly
 
 const ExploreCapsules = ({ learnerId }) => {
+  const backenduri = process.env.REACT_APP_BACKEND;
   const [capsules, setCapsules] = useState([]);
   const [selectedCapsule, setSelectedCapsule] = useState(null);
   const [message, setMessage] = useState("");
@@ -9,7 +10,7 @@ const ExploreCapsules = ({ learnerId }) => {
   useEffect(() => {
     const fetchCapsules = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/learner/capsule/explore", {
+        const res = await fetch(`${backenduri}/learner/capsule/explore`, {
           method: "GET"
         });
         const data = await res.json();
@@ -25,7 +26,7 @@ const ExploreCapsules = ({ learnerId }) => {
 
   const handleJoin = async (capsuleId, learnerId) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/learner/capsule/request/${capsuleId}`, {
+      const res = await fetch(`${backenduri}/learner/capsule/request/${capsuleId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ learnerId })
