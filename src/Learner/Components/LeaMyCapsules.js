@@ -3,6 +3,7 @@ import Capsule from "./TimeCapsule/Capsule"; // Reuse the existing Capsule compo
 import "./LeaMyCapsules.css"; // Same styling as instructor
 
 const LeaMyCapsules = ({ learnerId }) => {
+  const backenduri = process.env.REACT_APP_BACKEND;
   const [capsules, setCapsules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -11,7 +12,7 @@ const LeaMyCapsules = ({ learnerId }) => {
   useEffect(() => {
     const fetchAcceptedCapsules = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/learner/capsule/my-capsule/${learnerId}`);
+        const res = await fetch(`${backenduri}/learner/capsule/my-capsule/${learnerId}`);
         const data = await res.json();
 
         if (!res.ok) throw new Error(data.message || "Failed to fetch capsules");

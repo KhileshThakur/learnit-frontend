@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 function LeaLearnAI() {
+  const backenduri = process.env.REACT_APP_BACKEND;
   const [prompt, setPrompt] = useState('');
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -11,6 +12,7 @@ function LeaLearnAI() {
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     if (!prompt.trim()) return;
 
@@ -20,7 +22,7 @@ function LeaLearnAI() {
     setLoading(true);
 
     try {
-      const result = await axios.post('http://localhost:5000/learnai', { prompt });
+      const result = await axios.post(`${backenduri}/learnai`, { prompt });
       const botMessage = { type: 'bot', text: result.data.text };
       setChats((prev) => [botMessage, ...prev]);
     } catch (error) {

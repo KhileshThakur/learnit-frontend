@@ -3,6 +3,9 @@ import Capsule from "./Capsule";
 import "./MyCapsule.css";
 
 const MyCapsules = ({ instructorId }) => {
+
+  const backenduri = process.env.REACT_APP_BACKEND;
+
   const [capsules, setCapsules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -11,7 +14,7 @@ const MyCapsules = ({ instructorId }) => {
   useEffect(() => {
     const fetchCapsules = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/instructor/capsules/${instructorId}`);
+        const response = await fetch(`${backenduri}/instructor/capsules/${instructorId}`);
         const data = await response.json();
         if (!response.ok) throw new Error(data.message || "Failed to fetch capsules");
         setCapsules(data.capsules || data || []);

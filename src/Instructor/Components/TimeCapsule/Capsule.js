@@ -8,6 +8,7 @@ import "./Capsule.css";
 import Resources from "./Resources";
 
 const Capsule = ({ capsule, onBack }) => {
+
   const [activeTab, setActiveTab] = useState("details");
 
   const tabs = [

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./ViewRequests.css"; // Optional: Style as needed
 
 const ViewRequests = ({ capsuleId }) => {
+  const backenduri = process.env.REACT_APP_BACKEND;
   const [requests, setRequests] = useState([]);
   const [selectedLearner, setSelectedLearner] = useState(null);
   const [message, setMessage] = useState("");
@@ -9,7 +10,7 @@ const ViewRequests = ({ capsuleId }) => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/instructor/capsule/requests/${capsuleId}`);
+        const res = await fetch(`${backenduri}/instructor/capsule/requests/${capsuleId}`);
         const data = await res.json();
         setRequests(data);
       } catch (err) {
@@ -24,7 +25,7 @@ const ViewRequests = ({ capsuleId }) => {
 
   const handleAction = async (learnerId, action) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/instructor/capsule/handle-request/${capsuleId}/${learnerId}`, {
+      const res = await fetch(`${backenduri}/instructor/capsule/handle-request/${capsuleId}/${learnerId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action }),
