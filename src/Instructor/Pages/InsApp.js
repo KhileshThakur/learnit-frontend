@@ -11,6 +11,7 @@ import './InsApp.css'
 import Logo from '../../Utility/Images/Logo.png'
 import MyCapsules from '../Components/TimeCapsule/MyCapsules'
 import InsLearnAI from '../Components/InsLearnAI'
+import LeaDiscussionForum from '../../Learner/Components/DiscussionForum/LeaDiscussionForum'
 
 const InsApp = () => {
 
@@ -32,7 +33,7 @@ const InsApp = () => {
       case 'LearnAI':
         return <InsLearnAI />
       case 'Discussion Forum':
-        return <InsMeetingRequest />
+        return <LeaDiscussionForum />
       case 'Create Capsule':
         return <CreateCapsule instructorId={instructorId}/>
       case 'My Capusule':
