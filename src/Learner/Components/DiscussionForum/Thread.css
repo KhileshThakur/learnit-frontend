@@ -1,12 +1,13 @@
 /* Thread.css */
 .thread-item {
-    padding: 15px;
-    margin-bottom: 10px;
-    background-color: #4b4f58;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .thread-item:hover {
-    background-color: #5b5f68;
-  }
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #4b4f58;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 300px;
+}
+
+.thread-item:hover {
+  background-color: #5b5f68;
+}

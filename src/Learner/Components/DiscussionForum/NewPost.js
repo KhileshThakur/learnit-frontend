@@ -2,26 +2,33 @@ import React, { useState } from 'react';
 import './NewPost.css';
 
 const NewPost = ({ onAddThread, onAddReply }) => {
-  const [inputText, setInputText] = useState('');
+  const [content, setContent] = useState('');
 
-  const handleSubmit = () => {
-    if (inputText.trim() !== '') {
-      if (onAddThread) onAddThread(inputText);
-      if (onAddReply) onAddReply(inputText);
-      setInputText('');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (content.trim() === '') return;
+
+    if (onAddThread) {
+      onAddThread(content);
+    } else if (onAddReply) {
+      onAddReply(content);
     }
+
+    setContent(''); // clear input after submit
   };
 
   return (
-    <div className="new-post">
-      <input
-        type="text"
-        value={inputText}
-        placeholder="Type your question or reply here..."
-        onChange={(e) => setInputText(e.target.value)}
+    <form className="new-post-form" onSubmit={handleSubmit}>
+      <textarea
+        className="new-post-textarea"
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder={onAddThread ? 'Ask a question...' : 'Write a reply...'}
       />
-      <button onClick={handleSubmit}>Post</button>
-    </div>
+      <button className="new-post-button" type="submit">
+        {onAddThread ? 'Post Question' : 'Post Reply'}
+      </button>
+    </form>
   );
 };
 
