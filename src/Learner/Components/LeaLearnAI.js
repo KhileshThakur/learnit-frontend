@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 function LeaLearnAI() {
   const backenduri = process.env.REACT_APP_BACKEND;
   const [prompt, setPrompt] = useState('');
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [optimizedPrompt, setOptimizedPrompt] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [optimizing, setOptimizing] = useState(false);
 
-  const handlePromptChange = (e) => {
-    setPrompt(e.target.value);
-  };
+  const handlePromptChange = (e) => setPrompt(e.target.value);
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
     if (!prompt.trim()) return;
 
@@ -34,23 +37,93 @@ function LeaLearnAI() {
     }
   };
 
+  const handleOptimize = async () => {
+    if (!prompt || !prompt.trim()) return;
+
+    setOptimizing(true);
+
+    try {
+      const res = await axios.post(`${backenduri}/learnai/optimize`, { prompt });
+
+      if (res && res.data && res.data.optimizedPrompt) {
+        setOptimizedPrompt(res.data.optimizedPrompt);
+        setShowModal(true);
+      } else {
+        alert('Failed to optimize prompt. No valid response.');
+      }
+    } catch (error) {
+      console.error('Optimization Error:', error);
+      alert('Failed to optimize prompt.');
+    } finally {
+      setOptimizing(false);
+    }
+  };
+
+  const handleUseOptimized = () => {
+    setPrompt(optimizedPrompt);
+    setShowModal(false);
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+  };
+
+  const renderMessage = (chat, index) => {
+    const isBot = chat.type === 'bot';
+
+    return (
+      <div
+        key={index}
+        style={{
+          ...styles.chatMessage,
+          alignSelf: isBot ? 'flex-start' : 'flex-end',
+          backgroundColor: isBot ? '#2a2f3a' : '#4caf50',
+          color: '#fff',
+          position: 'relative',
+        }}
+      >
+        {isBot && (
+          <button
+            onClick={() => copyToClipboard(chat.text)}
+            style={styles.copyButton}
+            title="Copy"
+          >
+            📋
+          </button>
+        )}
+        <ReactMarkdown
+          children={chat.text}
+          components={{
+            code({ node, inline, className, children, ...props }) {
+              return !inline ? (
+                <pre style={{ overflowX: 'auto', margin: '10px 0' }}>
+                  <SyntaxHighlighter
+                    style={oneDark}
+                    language={(className || '').replace('language-', '')}
+                    PreTag="div"
+                    {...props}
+                  >
+                    {String(children).replace(/\n$/, '')}
+                  </SyntaxHighlighter>
+                </pre>
+              ) : (
+                <code style={styles.inlineCode} {...props}>
+                  {children}
+                </code>
+              );
+            },
+          }}
+        />
+      </div>
+    );
+  };
+
   return (
     <div style={styles.container}>
       <h2 style={styles.heading}>Learn AI</h2>
 
       <div style={styles.chatBox}>
-        {chats.map((chat, index) => (
-          <div
-            key={index}
-            style={{
-              ...styles.chatMessage,
-              alignSelf: chat.type === 'user' ? 'flex-end' : 'flex-start',
-              backgroundColor: chat.type === 'user' ? '#d1e7dd' : '#f8d7da',
-            }}
-          >
-            {chat.text}
-          </div>
-        ))}
+        {chats.map((chat, index) => renderMessage(chat, index))}
       </div>
 
       <form onSubmit={handleSubmit} style={styles.inputArea}>
@@ -64,7 +137,36 @@ function LeaLearnAI() {
         <button type="submit" disabled={loading} style={styles.button}>
           {loading ? '...' : 'Send'}
         </button>
+        <button type="button" onClick={handleOptimize} disabled={optimizing} style={styles.button}>
+          {optimizing ? '...' : 'Optimize Prompt'}
+        </button>
       </form>
+
+      {showModal && (
+        <div style={styles.modalOverlay}>
+          <div style={styles.modalContent}>
+            <h3>Optimized Prompt</h3>
+            <textarea
+              readOnly
+              value={optimizedPrompt}
+              style={{
+                width: '100%',
+                height: '150px',
+                marginBottom: '10px',
+                padding: '10px',
+                backgroundColor: '#1e1e2f',
+                color: 'white',
+                border: '1px solid #555',
+                borderRadius: '5px',
+              }}
+            />
+            <button onClick={handleUseOptimized} style={styles.button}>Use This Prompt</button>
+            <button onClick={() => setShowModal(false)} style={{ ...styles.button, backgroundColor: '#999', marginLeft: '10px' }}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -77,10 +179,13 @@ const styles = {
     flexDirection: 'column',
     padding: '20px',
     boxSizing: 'border-box',
+    backgroundColor: '#1e1e2f',
+    color: 'white',
   },
   heading: {
     textAlign: 'center',
     marginBottom: '10px',
+    color: 'white',
   },
   chatBox: {
     flex: 1,
@@ -88,17 +193,33 @@ const styles = {
     flexDirection: 'column-reverse',
     overflowY: 'auto',
     padding: '10px',
-    border: '1px solid #ccc',
+    border: '1px solid #333',
     borderRadius: '8px',
     marginBottom: '10px',
-    backgroundColor: '#fafafa',
+    backgroundColor: '#12121a',
+    alignItems: 'stretch',
   },
   chatMessage: {
-    maxWidth: '70%',
+    maxWidth: '80%',
+    width: 'fit-content',
     padding: '10px',
     margin: '5px 0',
     borderRadius: '10px',
     fontSize: '15px',
+    wordWrap: 'break-word',
+    whiteSpace: 'pre-wrap',
+    overflowWrap: 'break-word',
+    wordBreak: 'break-word',
+  },
+  copyButton: {
+    position: 'absolute',
+    top: '5px',
+    right: '5px',
+    background: 'none',
+    border: 'none',
+    color: 'white',
+    cursor: 'pointer',
+    fontSize: '16px',
   },
   inputArea: {
     display: 'flex',
@@ -109,7 +230,9 @@ const styles = {
     padding: '10px',
     fontSize: '16px',
     borderRadius: '5px',
-    border: '1px solid #ccc',
+    border: '1px solid #444',
+    backgroundColor: '#2a2a40',
+    color: 'white',
   },
   button: {
     padding: '10px 16px',
@@ -119,6 +242,30 @@ const styles = {
     borderRadius: '5px',
     cursor: 'pointer',
     fontSize: '16px',
+  },
+  inlineCode: {
+    backgroundColor: '#333',
+    padding: '2px 4px',
+    borderRadius: '4px',
+    fontFamily: 'monospace',
+  },
+  modalOverlay: {
+    position: 'fixed',
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1000,
+  },
+  modalContent: {
+    backgroundColor: '#2c2c3c',
+    color: 'white',
+    padding: '20px',
+    borderRadius: '8px',
+    width: '90%',
+    maxWidth: '500px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
   },
 };
 

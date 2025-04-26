@@ -6,7 +6,7 @@
   color: #FFFFFF;
 }
 .l-menu {
-  width: 15%;
+  width: 25%;
   padding: 10px 20px;
 }
 .l-logo {
@@ -39,7 +39,7 @@
 }
 .l-content {
   flex-grow: 1;
-  margin: 10px 10px 10px 0;
+  margin: 10px 10px 10px 0px;
   border-radius: 10px;
   padding: 10px;
   background-color: #d9d9d915;

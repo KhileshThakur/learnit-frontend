@@ -4,18 +4,10 @@
   font-family: Inter;
   background: #24232A;
   color: #FFFFFF;
-  overflow: hidden; /* Prevent overall page scrolling */
 }
 .i-menu {
-  width: 250px; /* Fixed width instead of percentage */
+  width: 25%;
   padding: 10px 20px;
-  height: 100vh;
-  position: fixed; /* Fix the sidebar */
-  left: 0;
-  top: 0;
-  overflow-y: auto; /* Allow sidebar to scroll if needed */
-  background: #24232A;
-  z-index: 100;
 }
 .i-logo {
   display: flex;
@@ -33,18 +25,13 @@
   gap: 10px;
 }
 .i-menu li {
-  padding: 10px 15px;
+  padding: 5px 15px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s;
   color: #d1d1d1;
   border-radius: 5px;
-  font-size: 15px;
 }
 
-.i-menu li:hover {
-  background-color: rgba(165, 123, 255, 0.2);
-  color: #fff;
-}
 .i-menu .active {
   background-color: #A57BFF;
   color: #fff;
@@ -52,13 +39,10 @@
 }
 .i-content {
   flex-grow: 1;
-  margin: 10px 10px 10px 270px; /* Adjust margin to account for fixed sidebar width */
+  margin: 10px 10px 10px 0px;
   border-radius: 10px;
-  padding: 20px;
+  padding: 10px;
   background-color: #d9d9d915;
   border: 1px solid black;
   box-shadow: 1px 1px 2px #000;
-  overflow-y: auto; /* Allow content to scroll */
-  height: calc(100vh - 20px); /* Full height minus margins */
-  position: relative; /* Create new stacking context */
 }
