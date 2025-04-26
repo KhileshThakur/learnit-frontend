@@ -6,7 +6,7 @@
   color: #FFFFFF;
 }
 .l-menu {
-  width: 25%;
+  width: 17%;
   padding: 10px 20px;
 }
 .l-logo {
@@ -38,6 +38,7 @@
   border-radius: 5px;
 }
 .l-content {
+  width: 80%;
   flex-grow: 1;
   margin: 10px 10px 10px 0px;
   border-radius: 10px;
