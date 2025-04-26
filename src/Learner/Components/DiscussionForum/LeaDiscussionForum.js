@@ -52,31 +52,41 @@ const LeaDiscussionForum = () => {
           `http://localhost:5000/api/discussion/thread/${selectedThread._id}/reply`,
           {
             content: reply,
-            authorType, // Pass role
-            authorId  // Pass userId
+            authorType,
+            authorId
           }
         );
-  
-        const updatedThread = response.data.thread;
-        
+
+        const newReply = response.data.reply;
+
+        // Update the selectedThread with the new reply
+        const updatedSelectedThread = {
+          ...selectedThread,
+          replies: [...selectedThread.replies, newReply]
+        };
+
+        // Update the thread list also
         const updatedThreads = threads.map((thread) =>
-          thread._id === updatedThread._id ? updatedThread : thread
+          thread._id === selectedThread._id ? updatedSelectedThread : thread
         );
-  
+
         setThreads(updatedThreads);
-        setSelectedThread(updatedThread);
+        setSelectedThread(updatedSelectedThread);
+
       } catch (error) {
         console.error('Error adding reply:', error);
       }
     }
   };
-  
+
+
+
 
   return (
     <div className="discussion-forum-container">
       {/* Left: Threads List */}
       <div className="questions-section">
-        <h2>Posts</h2>
+        <h2 className="posts-heading">Posts</h2>
         <div className="questions-list">
           {threads.map((thread) => (
             <Thread
@@ -93,26 +103,29 @@ const LeaDiscussionForum = () => {
       {/* Right: Replies */}
       <div className="answers-section">
         {selectedThread ? (
+          
           <>
-            <h2>{selectedThread.question}</h2>
-            <div className="replies-list">
-              {selectedThread.replies.map((reply, index) => (
-                <div key={reply._id || index} className="reply">
-                  {/* Show Reply Author */}
-                  <h5>{reply.authorId?.name} ({reply.authorType})</h5>
-                  <p>{reply.content}</p>
-                  {/* Optional timestamp:
+            <h2 className="responses-heading">Responses</h2>
+              <h2 className="answer-heading">{selectedThread.question}</h2>
+              <div className="replies-list">
+                {selectedThread.replies.map((reply, index) => (
+                  <div key={reply._id || index} className="reply">
+                    {/* Show Reply Author */}
+                    <h5>{reply.authorId?.name} ({reply.authorType})</h5>
+                    <p>{reply.content}</p>
+                    {/* Optional timestamp:
                   <small>{new Date(reply.createdAt).toLocaleString()}</small> */}
-                </div>
-              ))}
-            </div>
-            <NewPost onAddReply={addReply} />
-          </>
-        ) : (
-          <>
-            <h2>Responses</h2>
-            <p>Select posts to view responses.</p>
-          </>
+                  </div>
+                ))}
+              </div>
+              <NewPost onAddReply={addReply} />
+            </>
+            ) : (
+            <>
+              <h2 className="responses-heading">Responses</h2>
+              <p>Select posts to view responses.</p>
+            </>
+          
         )}
       </div>
     </div>
