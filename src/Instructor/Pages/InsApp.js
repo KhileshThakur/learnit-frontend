@@ -10,6 +10,7 @@ import CreateCapsule from '../Components/TimeCapsule/CreateCapsule'
 import './InsApp.css'
 import Logo from '../../Utility/Images/Logo.png'
 import MyCapsules from '../Components/TimeCapsule/MyCapsules'
+import InsLearnAI from '../Components/InsLearnAI'
 
 const InsApp = () => {
 
@@ -29,7 +30,7 @@ const InsApp = () => {
       case 'Create Course':
         return <CreateCourse onCourseCreated={() => setActiveComponent('My Courses')} />
       case 'LearnAI':
-        return <InsMeetingRequest />
+        return <InsLearnAI />
       case 'Discussion Forum':
         return <InsMeetingRequest />
       case 'Create Capsule':
