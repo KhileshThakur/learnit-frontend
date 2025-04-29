@@ -5,6 +5,8 @@ import Logout from '../../Common/Logout'
 import InsMeetingRequest from '../Components/InsMeetingRequest'
 import './InsApp.css'
 import Logo from '../../Utility/Images/Logo.png'
+import MyCapsules from '../Components/TimeCapsule/MyCapsules'
+import InsScheduledMeetings from '../Components/InsScheduledMeetings'
 
 const InsApp = () => {
 
@@ -18,11 +20,11 @@ const InsApp = () => {
       case 'Meeting Requests':
         return <InsMeetingRequest />
       case 'Scheduled Meetings':
-        return <InsMeetingRequest />
+        return <InsScheduledMeetings instructorId={instructorId} />
       case 'My Courses':
-        return <InsMeetingRequest />
-      case 'Upload Course':
-        return <InsMeetingRequest />
+        return <InstructorCourses />
+      case 'Create Course':
+        return <CreateCourse onCourseCreated={() => setActiveComponent('My Courses')} />
       case 'LearnAI':
         return <InsMeetingRequest />
       case 'Discussion Forum':

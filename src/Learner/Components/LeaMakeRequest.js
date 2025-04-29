@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import './LeaMakeRequest.css';
 
 const LeaMakeRequest = () => {
     const backendurl = process.env.REACT_APP_BACKEND;
-    const { id: learnerId } = useParams(); // Retrieve learner ID from the URL
+    const { id: learnerId } = useParams();
 
     const [instructors, setInstructors] = useState([]);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -14,8 +15,9 @@ const LeaMakeRequest = () => {
         time: '',
         instructor_id: ''
     });
-    const [loading, setLoading] = useState(true); // Loading state for instructors
-    const [formError, setFormError] = useState(''); // Error state for form validation
+    const [loading, setLoading] = useState(true);
+    const [formError, setFormError] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
 
     // Fetch instructors on component mount
     useEffect(() => {
@@ -26,7 +28,7 @@ const LeaMakeRequest = () => {
             } catch (error) {
                 console.error('Error fetching instructors:', error);
             } finally {
-                setLoading(false); // Stop loading once data is fetched
+                setLoading(false);
             }
         };
         fetchInstructors();
@@ -42,7 +44,7 @@ const LeaMakeRequest = () => {
     const closePopup = () => {
         setIsPopupOpen(false);
         setMeetingForm({ subject: '', topic: '', time: '', instructor_id: '' });
-        setFormError(''); // Clear any existing form errors
+        setFormError('');
     };
 
     // Handle form input change
@@ -51,18 +53,28 @@ const LeaMakeRequest = () => {
         setMeetingForm({ ...meetingForm, [name]: value });
     };
 
+    // Handle search input change
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    // Filter instructors based on search term
+    const filteredInstructors = instructors.filter(instructor => 
+        instructor.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        instructor.expertise?.some(exp => exp.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
     // Submit meeting request
     const submitMeetingRequest = async () => {
-        // Validate form fields
         if (!meetingForm.subject || !meetingForm.topic || !meetingForm.time || !meetingForm.instructor_id) {
             setFormError('Please fill in all fields.');
             return;
         }
 
         try {
-            await axios.post(`${backendurl}/meeting/request`, { // Updated endpoint without learner ID in URL
+            await axios.post(`${backendurl}/meeting/request`, {
                 ...meetingForm,
-                learner_id: learnerId, // Add learner ID to the request body
+                learner_id: learnerId,
                 status: "pending"
             });
             alert('Meeting request submitted successfully');
@@ -74,23 +86,59 @@ const LeaMakeRequest = () => {
     };
 
     return (
-        <div>
-            <h2>Instructors</h2>
+        <div className="make-request-container">
+            <div className="search-bar">
+                <input
+                    type="text"
+                    placeholder="Search by instructor name or Subject name"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                />
+            </div>
+
             {loading ? (
-                <p>Loading instructors...</p>
+                <div className="loading-spinner">Loading instructors...</div>
             ) : (
-                instructors.length > 0 ? (
-                    <ul>
-                        {instructors.map((instructor) => (
-                            <li key={instructor._id}>
-                                {instructor.name} - {instructor.expertise.join(', ')}
-                                <button onClick={() => openPopup(instructor._id)}>Request Meeting</button>
-                            </li>
+                <div className="instructors-scrollable">
+                    <div className="instructors-grid">
+                        {filteredInstructors.map((instructor) => (
+                            <div key={instructor._id} className="instructor-card">
+                                <div className="instructor-info">
+                                    <div className="instructor-avatar">
+                                        <img src={instructor.avatar || 'https://via.placeholder.com/60'} alt={instructor.name} />
+                                    </div>
+                                    <div className="instructor-details">
+                                        <div className="instructor-name">{instructor.name}</div>
+                                        <div className="instructor-education">
+                                            {instructor.education?.join(', ') || 'B.Tech - Computer'}
+                                        </div>
+                                        <div className="instructor-schedule">6:00pm - 10:00pm</div>
+                                        <div className="instructor-expertise">
+                                            <div className="expertise-label">Expertise in :</div>
+                                            <div className="expertise-items">
+                                                {instructor.expertise?.map((exp, index) => (
+                                                    <span key={index} className="expertise-item">
+                                                        {exp}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="instructor-meta">
+                                    <div className="experience">Experience : {instructor.experience || '20+ years'}</div>
+                                    <div className="fees">Fees : ${instructor.fees || '50'} per hr</div>
+                                    <button 
+                                        className="request-button"
+                                        onClick={() => openPopup(instructor._id)}
+                                    >
+                                        Request
+                                    </button>
+                                </div>
+                            </div>
                         ))}
-                    </ul>
-                ) : (
-                    <p>No instructors available at the moment.</p>
-                )
+                    </div>
+                </div>
             )}
 
             {/* Meeting Request Popup */}
@@ -98,52 +146,41 @@ const LeaMakeRequest = () => {
                 <div className="popup" role="dialog" aria-modal="true">
                     <div className="popup-content">
                         <h3>Request Meeting</h3>
-                        {formError && <p style={{ color: 'red' }}>{formError}</p>}
-                        <label>
-                            Subject:
-                            <input type="text" name="subject" value={meetingForm.subject} onChange={handleInputChange} />
-                        </label>
-                        <label>
-                            Topic:
-                            <input type="text" name="topic" value={meetingForm.topic} onChange={handleInputChange} />
-                        </label>
-                        <label>
-                            Time:
-                            <input type="datetime-local" name="time" value={meetingForm.time} onChange={handleInputChange} />
-                        </label>
-                        <button onClick={submitMeetingRequest}>Submit</button>
-                        <button onClick={closePopup}>Cancel</button>
+                        {formError && <div className="error-message">{formError}</div>}
+                        <div className="form-group">
+                            <label>Subject:</label>
+                            <input 
+                                type="text" 
+                                name="subject" 
+                                value={meetingForm.subject} 
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Topic:</label>
+                            <input 
+                                type="text" 
+                                name="topic" 
+                                value={meetingForm.topic} 
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Time:</label>
+                            <input 
+                                type="datetime-local" 
+                                name="time" 
+                                value={meetingForm.time} 
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className="form-actions">
+                            <button className="cancel-btn" onClick={closePopup}>Cancel</button>
+                            <button className="submit-btn" onClick={submitMeetingRequest}>Submit</button>
+                        </div>
                     </div>
                 </div>
             )}
-            <style jsx>{`
-                .popup {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0, 0, 0, 0.5);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-                .popup-content {
-                    background: #fff;
-                    padding: 20px;
-                    border-radius: 8px;
-                    width: 300px;
-                }
-                label {
-                    display: block;
-                    margin-bottom: 10px;
-                }
-                input {
-                    width: 100%;
-                    padding: 8px;
-                    margin-top: 4px;
-                }
-            `}</style>
         </div>
     );
 };

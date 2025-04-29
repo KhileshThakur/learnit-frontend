@@ -1,0 +1,12 @@
+.rejection-text {
+  color: #ff6b6b;
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.4;
+  margin-top: 4px;
+  display: block;
+  padding: 8px;
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid #ff6b6b;
+} 

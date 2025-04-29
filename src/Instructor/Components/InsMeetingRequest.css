@@ -1,0 +1,214 @@
+.meeting-requests-container {
+  padding: 20px;
+  color: #fff;
+}
+
+.meetings-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.meetings-tab-btn {
+  background: #353146;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.meetings-tab-btn.active {
+  background: #7c5cff;
+}
+
+.meetings-tab-btn:hover:not(.active) {
+  background: #454158;
+}
+
+.meeting-requests-scrollable {
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.meeting-request-card {
+  background: #2f273a;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.meeting-request-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.meeting-request-avatar img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.meeting-request-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meeting-request-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.meeting-request-id {
+  font-size: 13px;
+  color: #aaa;
+}
+
+.meeting-request-date,
+.meeting-request-time {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.meeting-request-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.schedule-btn {
+  background: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-bottom: 6px;
+}
+
+.reject-btn {
+  background: #d32f2f;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.meeting-rejection-reason {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(211, 47, 47, 0.1);
+  border-left: 3px solid #d32f2f;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #ff6b6b;
+}
+
+.meetings-loading {
+  text-align: center;
+  color: #ccc;
+  font-size: 16px;
+  padding: 24px;
+}
+
+.no-meeting-requests {
+  text-align: center;
+  color: #aaa;
+  font-size: 16px;
+  padding: 24px;
+}
+
+/* Popup dark styling */
+.popup-dark {
+  background: #23202b;
+  color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.popup-dark h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.popup-dark-input {
+  background: #2f273a;
+  color: #fff;
+  border: 1px solid #3a3f47;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.rejection-note {
+  color: #fff;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.rejection-reason-input {
+  width: 100%;
+  min-width: 300px;
+  background: #2f273a;
+  color: #fff;
+  border: 1px solid #3a3f47;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.rejection-reason-input::placeholder {
+  color: #666;
+}
+
+.popup-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.cancel-btn {
+  background: #3a3f47;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cancel-btn:hover {
+  background: #4a4f57;
+}
+
+.reject-btn:hover {
+  background: #c62828;
+}
+
+.popup-dark {
+  min-width: 400px;
+} 

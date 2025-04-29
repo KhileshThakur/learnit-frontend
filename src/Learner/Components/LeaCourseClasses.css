@@ -1,0 +1,289 @@
+.lea-course-classes {
+  padding: 20px;
+  max-width: 100%;
+}
+
+.classes-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.back-btn {
+  background-color: transparent;
+  border: none;
+  color: #0066cc;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 5px 10px;
+  font-size: 15px;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.back-btn:hover {
+  color: #004c99;
+}
+
+.classes-header h2 {
+  margin: 0;
+  color: #333;
+  border-bottom: 2px solid #0066cc;
+  padding-bottom: 10px;
+  flex: 1;
+}
+
+/* Course overview */
+.course-overview {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.course-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.course-description {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.course-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Status counts */
+.class-status-counts {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  max-width: 500px;
+}
+
+.status-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  min-width: 100px;
+}
+
+.status-label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.status-label.live {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-label.upcoming {
+  background-color: #e3f2fd;
+  color: #0066cc;
+}
+
+.status-label.past {
+  background-color: #f5f5f5;
+  color: #757575;
+}
+
+.status-count {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Class list */
+.classes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.class-card {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #ddd;
+}
+
+.class-card.live {
+  border-left-color: #2e7d32;
+}
+
+.class-card.upcoming {
+  border-left-color: #0066cc;
+}
+
+.class-card.past {
+  border-left-color: #757575;
+}
+
+.class-info {
+  padding: 15px;
+  position: relative;
+}
+
+.class-title {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #333;
+}
+
+.class-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.class-time,
+.class-duration,
+.class-instructor {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  font-size: 13px;
+  color: #757575;
+  margin-bottom: 3px;
+}
+
+.detail-value {
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+}
+
+.class-status {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-badge.live {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-badge.upcoming {
+  background-color: #e3f2fd;
+  color: #0066cc;
+}
+
+.status-badge.past {
+  background-color: #f5f5f5;
+  color: #757575;
+}
+
+.class-actions {
+  padding: 0 15px 15px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.join-class-btn {
+  padding: 8px 20px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.2s;
+}
+
+.join-class-btn:hover {
+  background-color: #1b5e20;
+}
+
+.upcoming-info,
+.past-info {
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.upcoming-info {
+  background-color: #e3f2fd;
+  color: #0066cc;
+}
+
+.past-info {
+  background-color: #f5f5f5;
+  color: #757575;
+}
+
+/* Loading and error states */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  font-size: 18px;
+  color: #0066cc;
+}
+
+.error-message {
+  padding: 15px;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 4px;
+  margin: 20px 0;
+}
+
+.no-classes-message {
+  padding: 30px;
+  text-align: center;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  color: #666;
+  font-size: 16px;
+  margin: 20px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .class-details {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .class-status {
+    position: static;
+    margin-top: 10px;
+  }
+  
+  .class-actions {
+    justify-content: center;
+  }
+} 

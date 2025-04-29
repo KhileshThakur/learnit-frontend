@@ -8,6 +8,13 @@ import Logo from '../../Utility/Images/Logo.png'
 import './LeaApp.css';
 import LeaMeetings from '../Components/LeaMeetings';
 import LeaLearnAI from '../Components/LeaLearnAI';
+<<<<<<< Updated upstream
+=======
+import LeaMyCapsules from '../Components/LeaMyCapsules';
+import LeaExploreCourses from '../Components/LeaExploreCourses';
+import LeaEnrolledCourses from '../Components/LeaEnrolledCourses';
+import LeaCapsuleRequests from '../Components/LeaCapsuleRequests';
+>>>>>>> Stashed changes
 
 const LeaApp = () => {
   const [activeComponent, setActiveComponent] = useState('Dashboard'); 
@@ -27,6 +34,19 @@ const LeaApp = () => {
         return <LeaDiscussionForum />;
       case 'LearnAI':
         return <LeaLearnAI />
+<<<<<<< Updated upstream
+=======
+      case 'Explore Courses':
+        return <LeaExploreCourses />;
+      case 'Enrolled Courses':
+        return <LeaEnrolledCourses />;
+      case 'Explore Capsules':
+        return <LeaExploreCapsules learnerId={learnerId}/>;
+      case 'Capsule Requests':
+        return <LeaCapsuleRequests />;
+      case 'My Capsules':
+        return <LeaMyCapsules learnerId={learnerId}/>;
+>>>>>>> Stashed changes
       default:
         return <LeaDashboard />;
     }
