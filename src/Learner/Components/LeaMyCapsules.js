@@ -26,7 +26,7 @@ const LeaMyCapsules = ({ learnerId }) => {
     };
 
     fetchAcceptedCapsules();
-  }, [learnerId]);
+  }, [learnerId, backenduri]);
 
   if (loading) return <p className="loading-message">Loading capsules...</p>;
   if (error) return <p className="error-message">{error}</p>;
