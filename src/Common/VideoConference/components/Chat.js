@@ -1,107 +1,123 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { IoMdSend } from 'react-icons/io';
 import './Chat.css';
 
-const Chat = ({ roomId, userName, socket, onClose }) => {
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
+const Chat = ({ messages, onSendMessage, currentUser }) => {
+  const [message, setMessage] = useState('');
   const messagesEndRef = useRef(null);
-
-  // Initialize with a system message
+  
+  // Auto scroll to bottom on new messages
   useEffect(() => {
-    setMessages([{
-      sender: 'System',
-      text: 'Welcome to the chat!',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    }]);
-  }, []);
-
-  // Set up socket listener for incoming messages
-  useEffect(() => {
-    if (socket) {
-      socket.on('chatMessage', (message) => {
-        setMessages(prev => [...prev, message]);
-      });
-    }
-    
-    return () => {
-      if (socket) {
-        socket.off('chatMessage');
-      }
-    };
-  }, [socket]);
-
-  // Auto scroll to bottom when new messages arrive
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollToBottom();
   }, [messages]);
-
+  
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+  
   const handleSendMessage = (e) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
-
-    const newMsg = {
-      sender: userName,
-      text: newMessage,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
+    if (message.trim() === '') return;
     
-    // Send to server if socket exists
-    if (socket) {
-      socket.emit('sendMessage', {
-        roomId,
-        message: newMsg
-      });
-    }
-    
-    // Also add to local state for immediate feedback
-    setMessages([...messages, newMsg]);
-    setNewMessage('');
+    onSendMessage(message);
+    setMessage('');
   };
+  
+  // Format timestamp to human readable format
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return '';
+    
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: true 
+    });
+  };
+  
+  // Get sender initials for avatar
+  const getInitials = (name) => {
+    if (!name) return '?';
+    
+    return name
+      .split(' ')
+      .map(part => part.charAt(0))
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
+  };
+
+  // Check if there are any messages
+  const hasMessages = Array.isArray(messages) && messages.length > 0;
 
   return (
     <div className="chat-container">
       <div className="chat-header">
-        <h3>Chat</h3>
-        <button onClick={onClose} className="close-btn">
-          ✕
-        </button>
+        <h3>Meeting Chat</h3>
       </div>
       
-      <div className="messages-container">
-        {messages.map((msg, index) => (
-          <div 
-            key={index} 
-            className={`message ${
-              msg.sender === userName 
-                ? 'self-message' 
-                : msg.sender === 'System'
-                  ? 'system-message'
-                  : 'other-message'
-            }`}
-          >
-            {msg.sender !== userName && msg.sender !== 'System' && (
-              <p className="message-sender">{msg.sender}</p>
-            )}
-            <p className="message-text">{msg.text}</p>
-            <p className="message-time">{msg.time}</p>
+      <div className="chat-messages">
+        {!hasMessages ? (
+          <div className="no-messages">
+            <p>No messages yet</p>
+            <p>Be the first to send a message!</p>
           </div>
-        ))}
+        ) : (
+          messages.map((msg, index) => {
+            // Safely handle message object structure with fallbacks
+            const senderId = msg.sender?.id || '';
+            const senderName = msg.sender?.name || 'Unknown';
+            const content = msg.content || msg.text || '';
+            const time = msg.timestamp || Date.now();
+            const isOwnMessage = senderId === currentUser.id;
+            
+            return (
+              <div 
+                key={index} 
+                className={`chat-message ${isOwnMessage ? 'own-message' : ''}`}
+              >
+                <div className="message-avatar">
+                  {getInitials(senderName)}
+                </div>
+                <div className="message-bubble">
+                  <div className="message-content-wrapper">
+                    <div className="message-header">
+                      <span className="message-sender">
+                        {isOwnMessage ? 'You' : senderName}
+                      </span>
+                      {msg.sender?.role && (
+                        <span className="sender-role">
+                          {msg.sender.role === 'instructor' ? '(Instructor)' : 
+                           msg.sender.role === 'admin' ? '(Admin)' : ''}
+                        </span>
+                      )}
+                    </div>
+                    <div className="message-content">{content}</div>
+                    <div className="message-timestamp">
+                      {formatTimestamp(time)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
         <div ref={messagesEndRef} />
       </div>
       
-      <form onSubmit={handleSendMessage} className="message-form">
+      <form className="chat-input" onSubmit={handleSendMessage}>
         <input
           type="text"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
           placeholder="Type a message..."
-          className="message-input"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
         />
         <button 
-          type="submit"
-          className="send-btn"
+          type="submit" 
+          disabled={!message.trim()}
+          title={message.trim() ? "Send message" : "Type a message to send"}
         >
-          Send
+          <IoMdSend />
         </button>
       </form>
     </div>
