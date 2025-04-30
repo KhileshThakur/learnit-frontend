@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './LeaEnrolledClasses.css';
 
 const LeaEnrolledClasses = ({ courseId }) => {
@@ -7,13 +8,18 @@ const LeaEnrolledClasses = ({ courseId }) => {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [joinStatus, setJoinStatus] = useState({});
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchClasses = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${backendurl}/api/classes/courses/${courseId}/classes`);
+        const response = await fetch(`${backendurl}/classes/courses/${courseId}/classes`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         
         if (!response.ok) {
           throw new Error('Failed to fetch classes');
@@ -32,37 +38,49 @@ const LeaEnrolledClasses = ({ courseId }) => {
     if (courseId) {
       fetchClasses();
     }
-  }, [courseId, backendurl]);
+  }, [courseId, backendurl, token]);
 
-  // Check if learner can join each live class
-  useEffect(() => {
-    const checkJoinStatus = async () => {
-      const liveClasses = classes.filter(c => c.isLive);
-      
-      for (const classItem of liveClasses) {
-        try {
-          const response = await fetch(`${backendurl}/api/classes/${classItem._id}/can-join`);
-          if (response.ok) {
-            const data = await response.json();
-            setJoinStatus(prev => ({
-              ...prev,
-              [classItem._id]: data
-            }));
-          }
-        } catch (error) {
-          console.error(`Error checking join status for class ${classItem._id}:`, error);
+  const handleJoinClass = async (classId) => {
+    try {
+      // First check if the class can be joined
+      const checkResponse = await fetch(`${backendurl}/classes/classes/${classId}/can-join`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
+      });
+
+      const checkData = await checkResponse.json();
+
+      if (!checkData.canJoin) {
+        toast.info(checkData.message || 'Class is not available for joining yet');
+        return;
       }
-    };
-    
-    if (classes.length > 0) {
-      checkJoinStatus();
-      
-      // Set up a timer to refresh join status every minute
-      const intervalId = setInterval(checkJoinStatus, 60000);
-      return () => clearInterval(intervalId);
+
+      // If class can be joined, redirect to classroom
+      toast.success('✅ You have joined the class!');
+      navigate(`/classroom/${classId}`);
+    } catch (error) {
+      console.error('Error joining class:', error);
+      toast.error('Failed to join class. Please try again.');
     }
-  }, [classes, backendurl]);
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString(undefined, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const formatTime = (timeString) => {
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+  };
 
   if (loading) return <div className="loading">Loading classes...</div>;
   if (error) return <div className="error-message">{error}</div>;
@@ -77,57 +95,51 @@ const LeaEnrolledClasses = ({ courseId }) => {
         </div>
       ) : (
         <div className="classes-list">
-          {classes.map((classItem) => {
-            const canJoin = classItem.isLive && joinStatus[classItem._id]?.canJoin;
-            const joinMessage = joinStatus[classItem._id]?.message;
-            
-            return (
-              <div key={classItem._id} className="class-card">
-                <div className="class-header">
-                  <h4>{classItem.title}</h4>
-                  {classItem.isLive && (
-                    <span className="live-badge">LIVE</span>
-                  )}
-                </div>
-                <div className="class-details">
-                  <div className="class-schedule">
-                    <div className="schedule-item">
-                      <strong>Date:</strong> {new Date(classItem.date).toLocaleDateString()}
-                    </div>
-                    <div className="schedule-item">
-                      <strong>Time:</strong> {classItem.startTime} - {classItem.endTime}
-                    </div>
+          {classes.map((classItem) => (
+            <div key={classItem._id} className="class-card">
+              <div className="class-header">
+                <h4>{classItem.title}</h4>
+                {classItem.isLive && (
+                  <span className="live-badge">LIVE</span>
+                )}
+              </div>
+              
+              <div className="class-details">
+                <div className="class-schedule">
+                  <div className="schedule-item">
+                    <strong>Date:</strong> {formatDate(classItem.date)}
                   </div>
-                  
+                  <div className="schedule-item">
+                    <strong>Time:</strong> {formatTime(classItem.startTime)} - {formatTime(classItem.endTime)}
+                  </div>
+                </div>
+                
+                {classItem.description && (
                   <p className="class-description">{classItem.description}</p>
-                  
+                )}
+                
+                <div className="class-actions">
                   {classItem.isLive ? (
-                    <div className="class-actions">
-                      {canJoin ? (
-                        <Link to={`/classroom/${classItem._id}`} className="join-class-btn">
-                          Join Live Class
-                        </Link>
-                      ) : (
-                        <div className="class-waiting">
-                          <span className="waiting-badge">Waiting</span>
-                          <p className="waiting-message">{joinMessage || "Class will be available soon."}</p>
-                        </div>
-                      )}
-                    </div>
+                    <button
+                      className="join-class-btn"
+                      onClick={() => handleJoinClass(classItem._id)}
+                    >
+                      Join Live Class
+                    </button>
                   ) : (
                     <div className="class-status">
-                      <span className="scheduled-badge">
-                        Scheduled
+                      <span className="status-badge not-started">
+                        Not Started
                       </span>
-                      <span className="schedule-time">
-                        {new Date(classItem.date).toLocaleDateString()} at {classItem.startTime}
-                      </span>
+                      <p className="status-message">
+                        Class will start on {formatDate(classItem.date)} at {formatTime(classItem.startTime)}
+                      </p>
                     </div>
                   )}
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       )}
     </div>

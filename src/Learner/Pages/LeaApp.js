@@ -10,6 +10,8 @@ import './LeaApp.css';
 import LeaMeetings from '../Components/LeaMeetings';
 import LeaLearnAI from '../Components/LeaLearnAI';
 import LeaMyCapsules from '../Components/LeaMyCapsules';
+import LeaExploreCourses from '../Components/LeaExploreCourses';
+import LeaEnrolledCourses from '../Components/LeaEnrolledCourses';
 
 const LeaApp = () => {
   const [activeComponent, setActiveComponent] = useState('Dashboard'); 
@@ -33,6 +35,10 @@ const LeaApp = () => {
         return <LeaExploreCapsules learnerId={learnerId}/>;
       case 'My Capsules':
         return <LeaMyCapsules learnerId={learnerId}/>;
+      case 'Explore Courses':
+        return <LeaExploreCourses learnerId={learnerId}/>;
+      case 'Enrolled Courses':
+        return <LeaEnrolledCourses learnerId={learnerId}/>;
       default:
         return <LeaDashboard />;
     }
