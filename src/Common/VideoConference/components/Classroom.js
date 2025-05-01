@@ -7,125 +7,95 @@ const Classroom = () => {
   const { classId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [canJoin, setCanJoin] = useState(false);
-  const [classDetails, setClassDetails] = useState(null);
-  const [timeRemaining, setTimeRemaining] = useState(null);
-  
   const backendurl = process.env.REACT_APP_BACKEND;
   const currentUser = JSON.parse(localStorage.getItem('user')) || {};
-  const isInstructor = currentUser.role === 'instructor';
   const token = localStorage.getItem('token');
-  
-  // Check URL for starting=true parameter
+
+  // Compute initial states
+  const isInstructor = currentUser.role === 'instructor';
   const isStarting = new URLSearchParams(location.search).get('starting') === 'true';
+  const initialCanJoin = isInstructor && isStarting;
   
+  // States
+  const [loading, setLoading] = useState(!initialCanJoin);
+  const [error, setError] = useState(null);
+  const [canJoin, setCanJoin] = useState(initialCanJoin);
+  const [classDetails, setClassDetails] = useState(null);
+  const [timeRemaining, setTimeRemaining] = useState(null);
+
   // Debug logs
-  console.log('Current user role:', isInstructor ? 'Instructor' : 'Learner');
-  console.log('Starting parameter present:', isStarting);
-  
-  // Immediately set canJoin to true if instructor is starting class
-  useEffect(() => {
-    if (isInstructor && isStarting) {
-      console.log('Instructor is starting class, enabling immediate join');
-      setCanJoin(true);
-      setLoading(false);
-    }
-  }, [isInstructor, isStarting]);
-  
+  console.log('=== CLASSROOM COMPONENT DEBUG ===');
+  console.log('Class ID:', classId);
+  console.log('User:', currentUser);
+  console.log('Is Instructor:', isInstructor);
+  console.log('Is Starting:', isStarting);
+  console.log('Can Join:', canJoin);
+  console.log('==============================');
+
   useEffect(() => {
     const checkClassStatus = async () => {
       try {
-        console.log('Class ID:', classId);
-        console.log('Backend URL:', backendurl);
-        
-        // If instructor is starting class, skip the class check
+        // Skip check if instructor is starting class
         if (isInstructor && isStarting) {
-          console.log('Skipping class status check for starting instructor');
           return;
         }
-        
-        // First get class details with authorization
+
+        // Get class details
         const classResponse = await fetch(`${backendurl}/classes/classes/${classId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
+
         if (!classResponse.ok) {
-          console.error('Class fetch failed with status:', classResponse.status);
           throw new Error('Class not found');
         }
-        
+
         const classData = await classResponse.json();
-        console.log('Class data:', classData);
         setClassDetails(classData.class);
-        
-        // Check if the class is live (already started)
-        const isClassLive = classData.class && classData.class.isLive;
-        console.log('Is class live:', isClassLive);
-        
-        // If user is instructor, they can always join if the class is live or they're starting it
-        if (isInstructor && (isClassLive || isStarting)) {
-          console.log('Instructor can join: class is live or being started');
+
+        // Handle instructor access
+        if (isInstructor && classData.class.isLive) {
           setCanJoin(true);
           setLoading(false);
           return;
         }
-        
-        // For learners, check if they can join with authorization
-        const joinResponse = await fetch(`${backendurl}/classes/classes/${classId}/can-join`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
+
+        // Handle learner access
+        if (!isInstructor) {
+          const joinResponse = await fetch(`${backendurl}/classes/classes/${classId}/can-join`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (!joinResponse.ok) {
+            throw new Error('Failed to check class join status');
           }
-        });
-        if (!joinResponse.ok) {
-          console.error('Join check failed with status:', joinResponse.status);
-          throw new Error('Failed to check class join status');
-        }
-        
-        const joinData = await joinResponse.json();
-        
-        if (joinData.canJoin) {
-          setCanJoin(true);
-        } else {
-          // Show waiting message with countdown
-          setTimeRemaining(joinData.message);
+
+          const joinData = await joinResponse.json();
           
-          // Set up timer to check again
-          const timer = setTimeout(() => {
-            checkClassStatus();
-          }, 60000); // Check every minute
-          
-          return () => clearTimeout(timer);
+          if (joinData.canJoin) {
+            setCanJoin(true);
+          } else {
+            setTimeRemaining(joinData.message);
+            // Check again after a minute
+            const timer = setTimeout(checkClassStatus, 60000);
+            return () => clearTimeout(timer);
+          }
         }
       } catch (error) {
-        console.error('Error checking class status:', error);
+        console.error('Error:', error);
         setError(error.message);
       } finally {
         setLoading(false);
       }
     };
-    
+
     checkClassStatus();
   }, [classId, backendurl, isInstructor, isStarting, token]);
-  
-  // Make sure instructor can join if class is live
-  useEffect(() => {
-    if ((classDetails && classDetails.isLive && isInstructor) || (isInstructor && isStarting)) {
-      console.log('Setting canJoin=true for instructor with live class or starting param');
-      setCanJoin(true);
-    }
-  }, [classDetails, isInstructor, isStarting]);
-  
-  // Debug-only: force show video conference for instructors
-  useEffect(() => {
-    if (isInstructor && !canJoin) {
-      console.log('DEBUG: Forcing canJoin=true for instructor due to lingering issue');
-      setTimeout(() => setCanJoin(true), 500);
-    }
-  }, [isInstructor, canJoin]);
-  
+
+  // Loading state
   if (loading && !isStarting) {
     return (
       <div className="classroom-loading">
@@ -134,7 +104,8 @@ const Classroom = () => {
       </div>
     );
   }
-  
+
+  // Error state
   if (error) {
     return (
       <div className="classroom-error">
@@ -144,10 +115,9 @@ const Classroom = () => {
       </div>
     );
   }
-  
-  // Force instructors to see video conference when starting=true is in URL
+
+  // Instructor starting class
   if (isInstructor && isStarting) {
-    console.log('Rendering video conference due to instructor starting class');
     return (
       <div className="classroom-container">
         <div className="classroom-header">
@@ -160,7 +130,8 @@ const Classroom = () => {
       </div>
     );
   }
-  
+
+  // Waiting state
   if (!canJoin) {
     return (
       <div className="classroom-waiting">
@@ -178,7 +149,8 @@ const Classroom = () => {
       </div>
     );
   }
-  
+
+  // Main classroom view
   return (
     <div className="classroom-container">
       <div className="classroom-header">

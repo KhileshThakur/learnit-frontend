@@ -59,12 +59,12 @@ const LeaEnrolledClasses = ({ courseId }) => {
       // If class can be joined, redirect to classroom
       toast.success('✅ You have joined the class!');
       navigate(`/classroom/${classId}`);
-    } catch (error) {
+        } catch (error) {
       console.error('Error joining class:', error);
       toast.error('Failed to join class. Please try again.');
-    }
-  };
-
+      }
+    };
+    
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString(undefined, {
       weekday: 'long',
@@ -96,35 +96,35 @@ const LeaEnrolledClasses = ({ courseId }) => {
       ) : (
         <div className="classes-list">
           {classes.map((classItem) => (
-            <div key={classItem._id} className="class-card">
-              <div className="class-header">
-                <h4>{classItem.title}</h4>
-                {classItem.isLive && (
-                  <span className="live-badge">LIVE</span>
-                )}
-              </div>
-              
-              <div className="class-details">
-                <div className="class-schedule">
-                  <div className="schedule-item">
-                    <strong>Date:</strong> {formatDate(classItem.date)}
-                  </div>
-                  <div className="schedule-item">
-                    <strong>Time:</strong> {formatTime(classItem.startTime)} - {formatTime(classItem.endTime)}
-                  </div>
+              <div key={classItem._id} className="class-card">
+                <div className="class-header">
+                  <h4>{classItem.title}</h4>
+                  {classItem.isLive && (
+                    <span className="live-badge">LIVE</span>
+                  )}
                 </div>
-                
+              
+                <div className="class-details">
+                  <div className="class-schedule">
+                    <div className="schedule-item">
+                    <strong>Date:</strong> {formatDate(classItem.date)}
+                    </div>
+                    <div className="schedule-item">
+                    <strong>Time:</strong> {formatTime(classItem.startTime)} - {formatTime(classItem.endTime)}
+                    </div>
+                  </div>
+                  
                 {classItem.description && (
                   <p className="class-description">{classItem.description}</p>
                 )}
-                
+                  
                 <div className="class-actions">
                   {classItem.isLive ? (
                     <button
                       className="join-class-btn"
                       onClick={() => handleJoinClass(classItem._id)}
                     >
-                      Join Live Class
+                          Join Live Class
                     </button>
                   ) : (
                     <div className="class-status">

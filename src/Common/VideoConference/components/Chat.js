@@ -76,23 +76,23 @@ const Chat = ({ messages, onSendMessage, currentUser }) => {
                 key={index} 
                 className={`chat-message ${isOwnMessage ? 'own-message' : ''}`}
               >
-                <div className="message-avatar">
-                  {getInitials(senderName)}
-                </div>
+                  <div className="message-avatar">
+                    {getInitials(senderName)}
+                  </div>
                 <div className="message-bubble">
                   <div className="message-content-wrapper">
                     <div className="message-header">
                       <span className="message-sender">
-                        {isOwnMessage ? 'You' : senderName}
+                    {isOwnMessage ? 'You' : senderName}
                       </span>
-                      {msg.sender?.role && (
-                        <span className="sender-role">
+                    {msg.sender?.role && (
+                      <span className="sender-role">
                           {msg.sender.role === 'instructor' ? '(Instructor)' : 
                            msg.sender.role === 'admin' ? '(Admin)' : ''}
-                        </span>
-                      )}
-                    </div>
-                    <div className="message-content">{content}</div>
+                      </span>
+                    )}
+                  </div>
+                  <div className="message-content">{content}</div>
                     <div className="message-timestamp">
                       {formatTimestamp(time)}
                     </div>

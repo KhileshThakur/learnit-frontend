@@ -7,7 +7,7 @@ const VideoContainer = ({ children, name, role, isSelf = false, isMuted = false 
       {children}
       <div className="video-info">
         <div className="video-name">
-          {name}
+        {name}
           {role && <span className="video-role">{role}</span>}
           {isSelf && <span className="self-indicator">(You)</span>}
         </div>

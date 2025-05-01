@@ -8,7 +8,13 @@ class MediasoupClient {
     this.producerTransport = null;
     this.consumerTransport = null;
     this.producers = new Map(); // Map of producers (audio, video, screen)
-    this.consumers = new Map(); // Map of consumers
+    this.consumers = new Map(); // Map of consumers by ID
+    this.pendingConsumers = new Map(); // Map of pending consumers by peer ID
+    
+    // Initialize type-specific producer maps
+    this.audioProducers = new Map();
+    this.videoProducers = new Map();
+    this.screenProducers = new Map();
     
     this.isConnected = false;
     this.roomId = null;
@@ -62,7 +68,7 @@ class MediasoupClient {
           userName: this.userName,
           userRole: this.userRole
         });
-
+        
         this.socket = io(socketUrl, {
           path: '/socket.io',
           reconnectionAttempts: 5,
@@ -128,12 +134,41 @@ class MediasoupClient {
       this.log('User Role:', user.role || 'unknown');
       this.log('======================');
       
-      this.peers.set(user.peerId, {
+      // Create peer if doesn't exist
+      if (!this.peers.has(user.peerId)) {
+        const newPeer = {
         id: user.peerId,
         name: user.peerName,
         role: user.role,
-        consumers: new Map()
-      });
+          consumers: []
+        };
+        this.peers.set(user.peerId, newPeer);
+        
+        // Check for any pending consumers for this peer
+        const pendingConsumers = this.pendingConsumers.get(user.peerId);
+        if (pendingConsumers && pendingConsumers.length > 0) {
+          this.log(`Processing ${pendingConsumers.length} pending consumers for peer ${user.peerName}`);
+          pendingConsumers.forEach(consumer => {
+            newPeer.consumers.push(consumer);
+            this.log(`Added pending consumer for ${user.peerName}:`, consumer);
+          });
+          this.pendingConsumers.delete(user.peerId);
+          
+          // Notify about new consumers
+          if (this.onNewConsumer) {
+            pendingConsumers.forEach(consumer => {
+              this.onNewConsumer({
+                peerId: user.peerId,
+                peerName: user.peerName,
+                consumerId: consumer.id,
+                mediaType: consumer.mediaType,
+                kind: consumer.track?.kind || 'video',
+                track: consumer.track
+              });
+            });
+          }
+        }
+      }
       
       if (this.onUserJoined) this.onUserJoined(user);
     });
@@ -148,30 +183,63 @@ class MediasoupClient {
     
     // New producer
     this.socket.on('newProducer', async (data) => {
-      this.log('New producer:', data);
+      this.log('=== NEW PRODUCER ===');
+      this.log('Producer:', data);
+      this.log('Current User ID:', this.userId);
+      this.log('Producer Peer ID:', data.peerId);
+      
       if (data.peerId !== this.userId) {
         try {
+          // Create consumer
           const consumer = await this.consume(data.producerId);
           
-          if (!this.peers.has(data.peerId)) {
-            this.peers.set(data.peerId, {
-              id: data.peerId,
-              name: data.peerName,
-              consumers: new Map()
-            });
+          if (!consumer) {
+            this.error('Failed to create consumer');
+            return;
           }
-          
-          // Store this consumer
-          const peer = this.peers.get(data.peerId);
-          peer.consumers.set(data.mediaType, consumer);
+
+          // Get or create peer
+          let peer = this.peers.get(data.peerId);
+          if (!peer) {
+            this.log('Peer not found, creating temporary peer entry');
+            peer = {
+              id: data.peerId,
+              name: data.peerName || 'Unknown',
+              consumers: []
+            };
+            this.peers.set(data.peerId, peer);
+            
+            // Store consumer in pending map
+            let pendingConsumers = this.pendingConsumers.get(data.peerId);
+            if (!pendingConsumers) {
+              pendingConsumers = [];
+              this.pendingConsumers.set(data.peerId, pendingConsumers);
+            }
+            const consumerData = {
+              id: consumer.id,
+              mediaType: data.mediaType,
+              track: consumer.track
+            };
+            pendingConsumers.push(consumerData);
+            this.log('Added to pending consumers:', consumerData);
+          } else {
+            // Add consumer to peer
+            const consumerData = {
+              id: consumer.id,
+              mediaType: data.mediaType,
+              track: consumer.track
+            };
+            peer.consumers.push(consumerData);
+            this.log('Added consumer to peer:', consumerData);
+          }
           
           if (this.onNewConsumer) {
             this.onNewConsumer({
               peerId: data.peerId,
-              peerName: data.peerName,
+              peerName: peer.name,
               consumerId: consumer.id,
               mediaType: data.mediaType,
-              kind: data.kind,
+              kind: consumer.kind,
               track: consumer.track
             });
           }
@@ -346,15 +414,26 @@ class MediasoupClient {
         throw new Error(rtpError);
       }
       
-      // 2. Initialize mediasoup device
+      // 2. Initialize mediasoup device with proper error handling
+      try {
       this.device = new mediasoupClient.Device();
       await this.device.load({ routerRtpCapabilities: rtpCapabilities });
+        this.log('Device loaded with RTP capabilities:', {
+          loaded: this.device.loaded,
+          canProduce: this.device.canProduce('video'),
+          rtpCapabilities: this.device.rtpCapabilities
+        });
+      } catch (error) {
+        this.error('Failed to load mediasoup device:', error);
+        throw new Error(`Failed to initialize mediasoup device: ${error.message}`);
+      }
       
       // 3. Join room through signaling
       const { peers, producers, joined, peerId, error } = await this.request('joinRoom', { 
         roomId,
         userName: this.userName,
-        userRole: this.userRole
+        userRole: this.userRole,
+        rtpCapabilities: this.device.rtpCapabilities
       });
       
       if (error) {
@@ -369,36 +448,10 @@ class MediasoupClient {
       
       this.roomId = roomId;
       
-      // 4. Update peer RTP capabilities
-      const { updated, error: updateError } = await this.request('updateRtpCapabilities', {
-        roomId,
-        rtpCapabilities: this.device.rtpCapabilities
-      });
-      
-      if (updateError) {
-        throw new Error(updateError);
-      }
-      
-      if (!updated) {
-        throw new Error('Failed to update RTP capabilities');
-      }
-      
-      // 5. Create transports
+      // 4. Create transports
       await this.createTransports(roomId);
       
-      // 6. Process existing producers
-      if (producers && producers.length > 0) {
-        this.log(`Room ${roomId} has ${producers.length} active producers`);
-        for (const producer of producers) {
-          try {
-            await this.consume(producer.producerId);
-          } catch (error) {
-            this.error(`Failed to consume producer ${producer.producerId}:`, error);
-          }
-        }
-      }
-      
-      // 7. Store peer data
+      // 5. Process existing peers first
       if (peers && peers.length > 0) {
         this.log(`Room ${roomId} has ${peers.length} peers:`);
         peers.forEach(peer => {
@@ -408,12 +461,50 @@ class MediasoupClient {
               id: peer.id,
               name: peer.name,
               role: peer.role,
-              consumers: new Map()
+              consumers: []
             });
           }
         });
+      }
+      
+      // 6. Process existing producers
+      if (producers && producers.length > 0) {
+        this.log(`Room ${roomId} has ${producers.length} active producers:`);
+        for (const producer of producers) {
+          this.log(`- Producer ${producer.producerId} (${producer.kind}) from peer ${producer.peerId}`);
+          try {
+            const consumer = await this.consume(producer.producerId);
+            if (consumer) {
+              // Get the peer and update its consumers
+              const peer = this.peers.get(producer.peerId);
+              if (peer) {
+                const consumerData = {
+                  id: consumer.id,
+                  mediaType: producer.kind,
+                  track: consumer.track
+                };
+                peer.consumers.push(consumerData);
+                this.log(`Added consumer to peer ${peer.name}:`, consumerData);
+
+                // Notify about new consumer
+                if (this.onNewConsumer) {
+                  this.onNewConsumer({
+                    peerId: producer.peerId,
+                    peerName: peer.name,
+                    consumerId: consumer.id,
+                    mediaType: producer.kind,
+                    kind: consumer.kind,
+                    track: consumer.track
+                  });
+                }
+              }
+            }
+          } catch (error) {
+            this.error(`Failed to consume producer ${producer.producerId}:`, error);
+        }
+        }
       } else {
-        this.log(`Room ${roomId} has no other peers`);
+        this.log('No existing producers in room');
       }
       
       return { joined, peers };
@@ -452,7 +543,7 @@ class MediasoupClient {
       });
       
       this.log('Producer transport info received:', producerTransportInfo);
-
+      
       this.producerTransport = this.device.createSendTransport({
         id: producerTransportInfo.id,
         iceParameters: producerTransportInfo.iceParameters,
@@ -460,7 +551,7 @@ class MediasoupClient {
         dtlsParameters: producerTransportInfo.dtlsParameters,
         iceServers: []
       });
-
+      
       // Create consumer transport
       const consumerTransportInfo = await this.request('createWebRtcTransport', {
         roomId,
@@ -490,55 +581,55 @@ class MediasoupClient {
   
   setupTransportHandlers() {
     // Producer transport events
-    this.producerTransport.on('connect', async ({ dtlsParameters }, callback, errback) => {
-      try {
+      this.producerTransport.on('connect', async ({ dtlsParameters }, callback, errback) => {
+        try {
         this.log('Producer transport connect event');
-        await this.request('connectTransport', {
+          await this.request('connectTransport', {
           roomId: this.roomId,
-          transportId: this.producerTransport.id,
-          dtlsParameters,
-          type: 'producer'
-        });
-        callback();
-      } catch (error) {
+            transportId: this.producerTransport.id,
+            dtlsParameters,
+            type: 'producer'
+          });
+          callback();
+        } catch (error) {
         this.error('Producer transport connect error:', error);
-        errback(error);
-      }
-    });
-
-    this.producerTransport.on('produce', async ({ kind, rtpParameters, appData }, callback, errback) => {
-      try {
+          errback(error);
+        }
+      });
+      
+      this.producerTransport.on('produce', async ({ kind, rtpParameters, appData }, callback, errback) => {
+        try {
         this.log('Producer transport produce event:', { kind, appData });
-        const { id } = await this.request('produce', {
+          const { id } = await this.request('produce', {
           roomId: this.roomId,
-          transportId: this.producerTransport.id,
-          kind,
-          rtpParameters,
-          mediaType: appData.mediaType
-        });
-        callback({ id });
-      } catch (error) {
+            transportId: this.producerTransport.id,
+            kind,
+            rtpParameters,
+            mediaType: appData.mediaType
+          });
+          callback({ id });
+        } catch (error) {
         this.error('Producer transport produce error:', error);
-        errback(error);
-      }
-    });
-
+          errback(error);
+        }
+      });
+      
     // Consumer transport events
-    this.consumerTransport.on('connect', async ({ dtlsParameters }, callback, errback) => {
-      try {
+      this.consumerTransport.on('connect', async ({ dtlsParameters }, callback, errback) => {
+        try {
         this.log('Consumer transport connect event');
-        await this.request('connectTransport', {
+          await this.request('connectTransport', {
           roomId: this.roomId,
-          transportId: this.consumerTransport.id,
-          dtlsParameters,
-          type: 'consumer'
-        });
-        callback();
-      } catch (error) {
+            transportId: this.consumerTransport.id,
+            dtlsParameters,
+            type: 'consumer'
+          });
+          callback();
+        } catch (error) {
         this.error('Consumer transport connect error:', error);
-        errback(error);
-      }
-    });
+          errback(error);
+        }
+      });
   }
   
   async produce(track, mediaType = 'video') {
@@ -547,24 +638,67 @@ class MediasoupClient {
         throw new Error('Producer transport not created');
       }
       
+      this.log('=== PRODUCING MEDIA ===');
+      this.log('Media Type:', mediaType);
+      this.log('Track:', track);
+      this.log('Track Settings:', track.getSettings());
+      this.log('Track Constraints:', track.getConstraints());
+      this.log('User ID:', this.userId);
+      this.log('Room ID:', this.roomId);
+      
       const producer = await this.producerTransport.produce({
         track,
         encodings: this.getEncodings(mediaType),
         codecOptions: this.getCodecOptions(mediaType),
-        appData: { mediaType }
+        appData: { mediaType, peerId: this.userId }
       });
       
       this.producers.set(mediaType, producer);
+      this.log('Producer created successfully:', {
+        id: producer.id,
+        mediaType: mediaType,
+        paused: producer.paused,
+        closed: producer.closed
+      });
       
+      // Handle producer events
       producer.on('transportclose', () => {
         this.log(`Producer ${producer.id} transport closed`);
         this.producers.delete(mediaType);
+        if (mediaType === 'audio') this.audioProducers.delete(this.userId);
+        if (mediaType === 'video') this.videoProducers.delete(this.userId);
+        if (mediaType === 'screen') this.screenProducers.delete(this.userId);
       });
       
       producer.on('trackended', () => {
         this.log(`Producer ${producer.id} track ended`);
         this.closeProducer(mediaType);
       });
+
+      // Store in type-specific maps and emit event
+      try {
+        if (mediaType === 'audio') {
+          this.log('Storing audio producer');
+          this.audioProducers.set(this.userId, producer);
+        } else if (mediaType === 'video') {
+          this.log('Storing video producer');
+          this.videoProducers.set(this.userId, producer);
+        } else if (mediaType === 'screen') {
+          this.log('Storing screen producer');
+          this.screenProducers.set(this.userId, producer);
+        }
+        this.log(`Successfully stored ${mediaType} producer for peer ${this.userId}`);
+
+        // Emit event to notify server about new producer
+        this.socket.emit('producerCreated', {
+          producerId: producer.id,
+          mediaType: mediaType,
+          userId: this.userId,
+          roomId: this.roomId
+        });
+      } catch (error) {
+        this.error(`Error storing ${mediaType} producer:`, error);
+      }
       
       return producer;
     } catch (error) {
@@ -578,38 +712,38 @@ class MediasoupClient {
       if (!this.consumerTransport) {
         throw new Error('Consumer transport not created');
       }
-
-      if (!this.device || !this.device.rtpCapabilities) {
-        throw new Error('Device RTP capabilities not set');
+      
+      if (!this.device || !this.device.loaded) {
+        throw new Error('Device not loaded');
       }
 
-      if (!this.userId) {
-        throw new Error('Peer ID not set');
-      }
-
-      this.log('Attempting to consume producer:', producerId);
-      this.log('Current user ID:', this.userId);
-      this.log('Current room ID:', this.roomId);
-
-      const { id, kind, rtpParameters, type, producerPeerId, paused, error } = 
-        await this.request('consume', {
-          roomId: this.roomId,
-          producerId,
-          rtpCapabilities: this.device.rtpCapabilities,
-          consumerPeerId: this.userId
-        });
-
-      if (error) {
-        throw new Error(error);
-      }
-
-      this.log('Consumer parameters received:', {
-        id,
-        kind,
-        type,
-        producerPeerId
+      this.log('=== CONSUMING PRODUCER ===');
+      this.log('Producer ID:', producerId);
+      this.log('Consumer Transport State:', {
+        id: this.consumerTransport.id,
+        connectionState: this.consumerTransport.connectionState,
+        appData: this.consumerTransport.appData
       });
 
+      // Get consume response from server
+      const consumeResponse = await this.request('consume', {
+          roomId: this.roomId,
+          producerId,
+        rtpCapabilities: this.device.rtpCapabilities
+      });
+
+      if (consumeResponse.error) {
+        throw new Error(consumeResponse.error);
+      }
+
+      const { id, kind, rtpParameters, type, producerPeerId } = consumeResponse;
+
+      // Verify we can consume this producer
+      if (!this.device.rtpCapabilities || !rtpParameters) {
+        throw new Error('Invalid RTP parameters or capabilities');
+      }
+
+      // Create the consumer
       const consumer = await this.consumerTransport.consume({
         id,
         producerId,
@@ -617,13 +751,68 @@ class MediasoupClient {
         rtpParameters,
         appData: { producerPeerId, mediaType: type }
       });
+      
+      this.log('Consumer created:', {
+        id: consumer.id,
+        kind: consumer.kind,
+        track: consumer.track ? {
+          kind: consumer.track.kind,
+          enabled: consumer.track.enabled,
+          muted: consumer.track.muted,
+          readyState: consumer.track.readyState
+        } : 'missing',
+        paused: consumer.paused,
+        producerPaused: consumer.producerPaused
+      });
 
+      // Store the consumer
       this.consumers.set(consumer.id, consumer);
-      this.log('Consumer created successfully:', consumer.id);
 
+      // Add to peer's consumers if peer exists
+      const peer = this.peers.get(producerPeerId);
+      if (peer) {
+        this.log('Adding consumer to existing peer:', {
+          peerId: producerPeerId,
+          peerName: peer.name,
+          consumerType: type
+        });
+        const consumerData = {
+          id: consumer.id,
+          mediaType: type,
+          track: consumer.track
+        };
+        peer.consumers.push(consumerData);
+        this.log('Added consumer to peer:', consumerData);
+      } else {
+        this.log('Peer not found, storing as pending consumer:', {
+          producerPeerId,
+          consumerType: type
+        });
+        let pendingConsumers = this.pendingConsumers.get(producerPeerId);
+        if (!pendingConsumers) {
+          pendingConsumers = [];
+          this.pendingConsumers.set(producerPeerId, pendingConsumers);
+        }
+        const consumerData = {
+          id: consumer.id,
+          mediaType: type,
+          track: consumer.track
+        };
+        pendingConsumers.push(consumerData);
+        this.log('Added to pending consumers:', consumerData);
+      }
+
+      // Resume the consumer
+      try {
+        await this.resumeConsumer(consumer.id);
+        this.log(`Consumer ${consumer.id} resumed successfully`);
+      } catch (error) {
+        this.error(`Error resuming consumer ${consumer.id}:`, error);
+      }
+      
       return consumer;
     } catch (error) {
-      this.error('Error consuming media:', error);
+      this.error('Error in consume():', error);
       throw error;
     }
   }
@@ -693,7 +882,13 @@ class MediasoupClient {
   
   async startCamera() {
     try {
-      this.localStream = await navigator.mediaDevices.getUserMedia({
+      this.log('=== STARTING CAMERA ===');
+      this.log('User Role:', this.userRole);
+
+      // Request media devices for all users
+      this.log('Requesting media devices');
+      
+      const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
         video: {
           width: { ideal: 1280 },
@@ -702,20 +897,45 @@ class MediasoupClient {
         }
       });
       
+      this.log('Media stream obtained:', {
+        tracks: stream.getTracks().map(t => ({
+          kind: t.kind,
+          enabled: t.enabled,
+          muted: t.muted,
+          readyState: t.readyState
+        }))
+      });
+
+      this.localStream = stream;
+    
       // Produce video
-      const videoTrack = this.localStream.getVideoTracks()[0];
+      const videoTrack = stream.getVideoTracks()[0];
       if (videoTrack) {
+        this.log('Producing video track:', {
+          enabled: videoTrack.enabled,
+          muted: videoTrack.muted,
+          settings: videoTrack.getSettings()
+        });
         await this.produce(videoTrack, 'video');
       }
       
       // Produce audio
-      const audioTrack = this.localStream.getAudioTracks()[0];
+      const audioTrack = stream.getAudioTracks()[0];
       if (audioTrack) {
+        this.log('Producing audio track:', {
+          enabled: audioTrack.enabled,
+          muted: audioTrack.muted,
+          settings: audioTrack.getSettings()
+        });
         await this.produce(audioTrack, 'audio');
       }
       
-      return this.localStream;
+      return stream;
     } catch (error) {
+      if (error.name === 'NotAllowedError' || error.name === 'NotFoundError') {
+        this.log('Media access denied or device busy:', error);
+        return null;
+      }
       this.error('Error starting camera:', error);
       throw error;
     }
