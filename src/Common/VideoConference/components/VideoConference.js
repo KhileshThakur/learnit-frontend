@@ -15,14 +15,14 @@ const VideoConference = () => {
   // Get user info from localStorage
   const currentUser = JSON.parse(localStorage.getItem('user')) || {};
   const token = localStorage.getItem('token');
-  const backendUrl = process.env.REACT_APP_BACKEND || 'http://localhost:5000';
-  const socketUrl = process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000';
   
-  // Log for debugging
-  console.log("Using backend URL:", backendUrl);
-  console.log("Using socket URL:", socketUrl);
+  // URLs for backend and socket
+  const backendUrl = process.env.REACT_APP_BACKEND || 
+    (window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://learnit-backend.onrender.com');
+  const socketUrl = process.env.REACT_APP_SOCKET_URL || 
+    (window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://learnit-backend.onrender.com');
   
-  // Component state
+  // Component states
   const [isConnected, setIsConnected] = useState(false);
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
@@ -32,32 +32,41 @@ const VideoConference = () => {
   const [classDetails, setClassDetails] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
-  const [isInstructor, setIsInstructor] = useState(false);
+  const [isInstructor, setIsInstructor] = useState(currentUser.role === 'instructor');
+  const [isEnding, setIsEnding] = useState(false);
   
   // Refs
   const mediasoupClientRef = useRef(null);
   const localVideoRef = useRef(null);
   const videoContainerRef = useRef(null);
   
-  // Initialize media client
+  // Debug logging function
+  const debugLog = (section, message, data = null) => {
+    console.log(`[VideoConference][${section}] ${message}`, data || '');
+  };
+
+  // Initialize MediaSoup client and set up callbacks
   useEffect(() => {
+    debugLog('Init', 'Initializing MediaSoup client');
     mediasoupClientRef.current = new MediasoupClient();
     const mediasoupClient = mediasoupClientRef.current;
     
-    // Setup callbacks
+    // Connection callback
     mediasoupClient.onConnect = () => {
-      console.log('Connected to signaling server');
+      debugLog('Connection', 'Connected to signaling server');
       setIsConnected(true);
     };
     
+    // Disconnection callback
     mediasoupClient.onDisconnect = (reason) => {
-      console.log('Disconnected from signaling server:', reason);
+      debugLog('Connection', 'Disconnected from server', reason);
       setIsConnected(false);
-      setErrorMessage(`Disconnected from server: ${reason}`);
+      setErrorMessage(`Disconnected: ${reason}`);
     };
     
+    // New user joined callback
     mediasoupClient.onUserJoined = (user) => {
-      console.log('User joined:', user);
+      debugLog('Participants', 'New user joined', user);
       setPeers(prevPeers => {
         const newPeers = new Map(prevPeers);
         newPeers.set(user.peerId, {
@@ -70,8 +79,9 @@ const VideoConference = () => {
       });
     };
     
+    // User left callback
     mediasoupClient.onUserLeft = (data) => {
-      console.log('User left:', data);
+      debugLog('Participants', 'User left', data);
       setPeers(prevPeers => {
         const newPeers = new Map(prevPeers);
         newPeers.delete(data.peerId);
@@ -79,8 +89,9 @@ const VideoConference = () => {
       });
     };
     
+    // New consumer callback
     mediasoupClient.onNewConsumer = (data) => {
-      console.log('New consumer:', data);
+      debugLog('Media', 'New consumer received', data);
       setPeers(prevPeers => {
         const newPeers = new Map(prevPeers);
         const peer = newPeers.get(data.peerId) || {
@@ -88,270 +99,165 @@ const VideoConference = () => {
           name: data.peerName,
           consumers: []
         };
-        
-        // Add consumer to peer
-        peer.consumers = [...peer.consumers.filter(c => c.mediaType !== data.mediaType), 
-          {
+        peer.consumers = [...peer.consumers.filter(c => c.mediaType !== data.mediaType), {
             id: data.consumerId,
             mediaType: data.mediaType,
             track: data.track
-          }
-        ];
-        
+        }];
         newPeers.set(data.peerId, peer);
         return newPeers;
       });
     };
     
+    // Producer state change callback
     mediasoupClient.onProducerStateChanged = (data) => {
-      console.log('Producer state changed:', data);
+      debugLog('Media', 'Producer state changed', data);
       setPeers(prevPeers => {
         const newPeers = new Map(prevPeers);
         const peer = newPeers.get(data.peerId);
-        
         if (peer) {
           if (data.state === 'closed') {
-            // Remove consumer for this media type
             peer.consumers = peer.consumers.filter(c => c.mediaType !== data.mediaType);
           } else {
-            // Update consumer state
-            peer.consumers = peer.consumers.map(consumer => {
-              if (consumer.mediaType === data.mediaType) {
-                return {
-                  ...consumer,
-                  paused: data.state === 'paused'
-                };
-              }
-              return consumer;
-            });
+            peer.consumers = peer.consumers.map(consumer => 
+              consumer.mediaType === data.mediaType 
+                ? { ...consumer, paused: data.state === 'paused' }
+                : consumer
+            );
           }
-          
           newPeers.set(data.peerId, peer);
         }
-        
         return newPeers;
       });
     };
     
+    // Chat message callback
     mediasoupClient.onChatMessage = (message) => {
-      console.log('Chat message received:', message);
+      debugLog('Chat', 'New message received', message);
       setChatMessages(prevMessages => [...prevMessages, message]);
     };
     
-    // Clean up when component unmounts
     return () => {
-      if (mediasoupClient) {
+      debugLog('Cleanup', 'Disconnecting MediaSoup client');
         mediasoupClient.disconnect().catch(console.error);
-      }
     };
   }, []);
   
-  // Fetch class details
+  // Connect to server and join room
   useEffect(() => {
-    const fetchClassDetails = async () => {
+    const initializeConnection = async () => {
+      if (!mediasoupClientRef.current) {
+        debugLog('Error', 'MediaSoup client not initialized');
+        return;
+        }
+
       try {
-        const response = await fetch(`${backendUrl}/classes/classes/${classId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
+        debugLog('Connection', 'Starting connection process', {
+          userId: currentUser.id,
+          userName: currentUser.name,
+          role: currentUser.role
         });
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch class details');
-        }
-        
-        const data = await response.json();
-        setClassDetails(data.class);
-        
-        // Set instructor status based on the class data
-        if (data.class && data.class.instructor === currentUser.id) {
-          setIsInstructor(true);
-        }
-      } catch (error) {
-        console.error('Error fetching class details:', error);
-        setErrorMessage('Failed to load class information');
-      }
-    };
-    
-    fetchClassDetails();
-  }, [classId, backendUrl, token, currentUser.id]);
-  
-  // Connect to server when component mounts
-  useEffect(() => {
-    if (mediasoupClientRef.current) {
-      // Console log user info
-      console.log('=== VIDEO CONFERENCE: USER INFORMATION ===');
-      console.log('User ID:', currentUser.id);
-      console.log('User Name:', currentUser.name);
-      console.log('User Role:', currentUser.role);
-      console.log('Is Instructor:', isInstructor);
-      console.log('=======================================');
       
-      // Explicitly set user information before connecting
-      mediasoupClientRef.current.userId = currentUser.id;
-      mediasoupClientRef.current.userName = currentUser.name || 'Unknown User';
-      mediasoupClientRef.current.userRole = currentUser.role || (isInstructor ? 'instructor' : 'learner');
-      
-      mediasoupClientRef.current.connect(socketUrl, token, {
+        // Connect to signaling server
+        await mediasoupClientRef.current.connect(socketUrl, token, {
         userId: currentUser.id,
         userName: currentUser.name,
-        userRole: currentUser.role || (isInstructor ? 'instructor' : 'learner')
-      })
-        .then(() => {
-          console.log(`Attempting to join room: ${classId}`);
-          return mediasoupClientRef.current.joinRoom(classId, {
+          userRole: currentUser.role
+        });
+
+        debugLog('Room', 'Attempting to join room', { classId });
+
+        // Join the room
+        const { joined, peers } = await mediasoupClientRef.current.joinRoom(classId, {
             name: currentUser.name,
-            role: currentUser.role || (isInstructor ? 'instructor' : 'learner')
+          role: currentUser.role
           });
-        })
-        .then(async ({ joined, peers }) => {
+
           if (joined) {
-            console.log(`Successfully joined room: ${classId}`);
-            console.log('=== ROOM PARTICIPANTS ===');
-            console.log('Number of peers already in room:', peers ? peers.length : 0);
-            
-            if (peers && peers.length > 0) {
-              peers.forEach(peer => {
-                console.log(`Peer: ${peer.name} (${peer.id}), Role: ${peer.role || 'unknown'}`);
+          debugLog('Room', 'Successfully joined room', { 
+            peersCount: peers?.length || 0 
           });
-        }
-            console.log('========================');
       
             // Start camera and microphone
             const stream = await mediasoupClientRef.current.startCamera();
-            
-            // Display local video
-          if (localVideoRef.current) {
+            if (stream && localVideoRef.current) {
+            debugLog('Media', 'Local stream obtained and attached');
             localVideoRef.current.srcObject = stream;
+              setIsCameraOn(true);
+              setIsMicOn(true);
+            } else {
+            debugLog('Media', 'No local stream or video ref not ready');
+              setIsCameraOn(false);
+              setIsMicOn(false);
           }
           }
-        })
-        .catch(error => {
-          console.error('Error connecting to server:', error);
+      } catch (error) {
+        debugLog('Error', 'Connection failed', error);
           setErrorMessage(`Failed to connect: ${error.message}`);
-        });
-    }
-    
-    return () => {
-      // Cleanup body class
-      document.body.classList.remove('video-conference-active');
+      }
     };
-  }, [classId, socketUrl, token, currentUser.id, currentUser.name, currentUser.role, isInstructor]);
+
+    initializeConnection();
+  }, [classId, socketUrl, token, currentUser.id, currentUser.name, currentUser.role]);
   
-  // Attach streams to video elements when peers change
-  useEffect(() => {
-    // For each peer, attach their streams to video elements
-    peers.forEach((peer, peerId) => {
-      peer.consumers.forEach(consumer => {
-        const videoElement = document.getElementById(`video-${peerId}-${consumer.mediaType}`);
-        if (videoElement && consumer.track) {
-          // Create a new MediaStream with the consumer track
-          const stream = new MediaStream([consumer.track]);
-          
-          // Only set if not already set with this track
-          if (videoElement.srcObject !== stream) {
-            videoElement.srcObject = stream;
-          }
-        }
-      });
-    });
-  }, [peers]);
-  
-  // Handle toggle microphone
+  // Handle media controls
   const toggleMicrophone = async () => {
     try {
-      if (mediasoupClientRef.current) {
-        await mediasoupClientRef.current.toggleMicrophone(!isMicOn);
+      debugLog('Controls', `Toggling microphone to ${!isMicOn}`);
+      await mediasoupClientRef.current?.toggleMicrophone(!isMicOn);
         setIsMicOn(!isMicOn);
-      }
     } catch (error) {
-      console.error('Error toggling microphone:', error);
-      setErrorMessage(`Failed to toggle microphone: ${error.message}`);
+      debugLog('Error', 'Failed to toggle microphone', error);
+      setErrorMessage(`Microphone control failed: ${error.message}`);
     }
   };
   
-  // Handle toggle camera
   const toggleCamera = async () => {
     try {
-      if (mediasoupClientRef.current) {
-        await mediasoupClientRef.current.toggleCamera(!isCameraOn);
+      debugLog('Controls', `Toggling camera to ${!isCameraOn}`);
+      await mediasoupClientRef.current?.toggleCamera(!isCameraOn);
         setIsCameraOn(!isCameraOn);
-      }
     } catch (error) {
-      console.error('Error toggling camera:', error);
-      setErrorMessage(`Failed to toggle camera: ${error.message}`);
+      debugLog('Error', 'Failed to toggle camera', error);
+      setErrorMessage(`Camera control failed: ${error.message}`);
     }
   };
   
-  // Handle screen sharing
   const toggleScreenShare = async () => {
     try {
-      if (mediasoupClientRef.current) {
+      debugLog('Controls', `Toggling screen share to ${!isScreenSharing}`);
         if (isScreenSharing) {
-          await mediasoupClientRef.current.stopScreenSharing();
+        await mediasoupClientRef.current?.stopScreenSharing();
         } else {
-          await mediasoupClientRef.current.startScreenSharing();
-        }
-        
-        setIsScreenSharing(!isScreenSharing);
+        await mediasoupClientRef.current?.startScreenSharing();
       }
+      setIsScreenSharing(!isScreenSharing);
     } catch (error) {
-      console.error('Error toggling screen share:', error);
-      
-      // Handle permission denied errors gracefully without full screen overlay
-      if (error.name === 'NotAllowedError' || error.message.includes('Permission denied')) {
-        // Create a temporary message that disappears after a few seconds
-        const screenShareError = document.createElement('div');
-        screenShareError.className = 'screen-share-error';
-        screenShareError.innerHTML = `
-          <p>Failed to toggle screen share: Permission denied</p>
-          <button>Dismiss</button>
-        `;
-        
-        document.body.appendChild(screenShareError);
-        
-        // Add click event to dismiss button
-        const dismissButton = screenShareError.querySelector('button');
-        dismissButton.addEventListener('click', () => {
-          document.body.removeChild(screenShareError);
-        });
-        
-        // Auto dismiss after 5 seconds
-        setTimeout(() => {
-          if (document.body.contains(screenShareError)) {
-            document.body.removeChild(screenShareError);
-          }
-        }, 5000);
-      } else {
-        // For other errors, use the full error overlay
-        setErrorMessage(`Failed to toggle screen share: ${error.message}`);
-      }
+      debugLog('Error', 'Screen sharing failed', error);
+      setErrorMessage(`Screen share failed: ${error.message}`);
     }
   };
   
-  // Handle leaving the meeting
+  // Handle meeting controls
   const leaveMeeting = async () => {
     try {
-      if (mediasoupClientRef.current) {
-        await mediasoupClientRef.current.disconnect();
-      }
-      
-      // Navigate back to the previous page
+      debugLog('Controls', 'Leaving meeting');
+      await mediasoupClientRef.current?.disconnect();
       navigate(-1);
     } catch (error) {
-      console.error('Error leaving meeting:', error);
-      // Force navigate even if error occurs
+      debugLog('Error', 'Error leaving meeting', error);
       navigate(-1);
           }
   };
         
-  // Handle ending the meeting for all participants (instructor only)
   const endMeeting = async () => {
     try {
-      if (mediasoupClientRef.current) {
-        // First end the class in database
+      // Set ending state to show transition UI
+      setIsEnding(true);
+      console.log('=== END MEETING PROCESS STARTED ===');
+
+      // Step 1: Backend API Call
+      console.log('Step 1: Making backend API call to end class');
         const response = await fetch(`${backendUrl}/classes/classes/${classId}/end`, {
           method: 'PATCH',
           headers: {
@@ -361,50 +267,180 @@ const VideoConference = () => {
           body: JSON.stringify({ instructorId: currentUser.id }),
         });
 
+      const data = await response.json();
+      console.log('Backend API Response:', data);
+
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to end class');
+        console.error('Backend API Error:', data);
+        throw new Error(data.message || 'Failed to end meeting');
         }
 
-        // Then end the meeting for all participants
+      // Step 2: MediaSoup Cleanup (with timeout)
+      console.log('Step 2: Starting MediaSoup cleanup');
+      try {
+        const cleanupPromise = Promise.race([
+          (async () => {
+            if (mediasoupClientRef.current) {
+              try {
         await mediasoupClientRef.current.endMeeting(classId);
+                console.log('endMeeting completed');
+              } catch (e) {
+                console.error('Error in endMeeting:', e);
+              }
         
-        // Disconnect and navigate back
+              try {
         await mediasoupClientRef.current.disconnect();
-        navigate(-1);
+                console.log('disconnect completed');
+              } catch (e) {
+                console.error('Error in disconnect:', e);
+              }
+            }
+          })(),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('MediaSoup cleanup timeout')), 2000))
+        ]);
+
+        await cleanupPromise;
+      } catch (mediaError) {
+        console.error('MediaSoup cleanup error or timeout:', mediaError);
       }
+
+      // Step 3: Local Resource Cleanup
+      console.log('Step 3: Cleaning up local resources');
+      try {
+        if (localVideoRef.current && localVideoRef.current.srcObject) {
+          const tracks = localVideoRef.current.srcObject.getTracks();
+          tracks.forEach(track => {
+            try {
+              track.stop();
+            } catch (e) {
+              console.error('Error stopping track:', e);
+            }
+          });
+          localVideoRef.current.srcObject = null;
+        }
+      } catch (cleanupError) {
+        console.error('Local cleanup error:', cleanupError);
+      }
+
+      // Step 4: State Cleanup
+      console.log('Step 4: Clearing state');
+      setPeers(new Map());
+      setIsConnected(false);
+
+      // Step 5: Navigation with delay for transition
+      console.log('Step 5: Preparing navigation');
+      const navigationPath = isInstructor 
+        ? `/instructor/${currentUser.id}/dashboard`
+        : `/learner/${currentUser.id}/dashboard`;
+
+      // Wait for transition animation
+      setTimeout(() => {
+        window.location.replace(navigationPath);
+      }, 1000);
+
     } catch (error) {
-      console.error('Error ending meeting:', error);
-      // Even if ending class fails, try to disconnect and navigate back
-      if (mediasoupClientRef.current) {
-        await mediasoupClientRef.current.disconnect();
-      }
-      navigate(-1);
+      console.error('=== END MEETING ERROR ===');
+      console.error('Error details:', error);
+      setIsEnding(false);
+      
+      const fallbackPath = isInstructor 
+        ? `/instructor/${currentUser.id}/dashboard`
+        : `/learner/${currentUser.id}/dashboard`;
+      
+      window.location.replace(fallbackPath);
     }
   };
   
-  // Handle sending chat message
-  const sendChatMessage = (message) => {
-    if (mediasoupClientRef.current) {
-      // The message will be sent with the current user's information from the socket server
-      // Making sure the client is configured with the current user ID
-      mediasoupClientRef.current.userId = currentUser.id;
-      mediasoupClientRef.current.sendChatMessage(message);
-    
-      // We don't need to add the message locally as it will come back via the socket
-      // with the proper sender information
-    }
-  };
-  
-  // Toggle chat sidebar
+  // Chat functions
   const toggleChat = () => {
+    debugLog('Chat', `Toggling chat to ${!isChatOpen}`);
     setIsChatOpen(!isChatOpen);
   };
-  
-  // Render video for a participant
+
+  const sendChatMessage = (message) => {
+    debugLog('Chat', 'Sending message', message);
+    if (mediasoupClientRef.current) {
+      mediasoupClientRef.current.sendChatMessage(message);
+    }
+  };
+
+  // Add a new useEffect for handling video streams
+  useEffect(() => {
+    const attachStreams = () => {
+      debugLog('Streams', 'Updating video streams', {
+        peersCount: peers.size,
+        peersData: Array.from(peers.entries()).map(([id, peer]) => ({
+          id,
+          name: peer.name,
+          role: peer.role,
+          consumersCount: peer.consumers.length,
+          consumers: peer.consumers.map(consumer => ({
+            id: consumer.id,
+            type: consumer.mediaType,
+            hasTrack: !!consumer.track,
+            trackEnabled: consumer.track?.enabled,
+            trackMuted: consumer.track?.muted
+          }))
+        }))
+      });
+
+      peers.forEach((peer, peerId) => {
+        debugLog('Peer', `Processing streams for peer ${peer.name}`, {
+          peerId,
+          consumers: peer.consumers
+        });
+
+        peer.consumers.forEach(consumer => {
+          if (!consumer.track) {
+            debugLog('Error', `No track found for consumer ${consumer.id}`);
+            return;
+          }
+
+          const elementId = `video-${peerId}-${consumer.mediaType}`;
+          const videoElement = document.getElementById(elementId);
+
+          if (videoElement && videoElement instanceof HTMLVideoElement) {
+            if (!videoElement.srcObject || videoElement.srcObject.getTracks().length === 0) {
+              debugLog('Stream', `Attaching ${consumer.mediaType} stream for peer ${peer.name}`, {
+                elementId,
+                trackId: consumer.track.id
+              });
+
+              try {
+                const stream = new MediaStream([consumer.track]);
+                videoElement.srcObject = stream;
+                videoElement.play().catch(error => {
+                  debugLog('Error', `Failed to play ${consumer.mediaType} for peer ${peer.name}`, error);
+                });
+              } catch (error) {
+                debugLog('Error', `Failed to create MediaStream for peer ${peer.name}`, error);
+              }
+            }
+          } else {
+            debugLog('Error', `Video element not found for peer ${peer.name}`, {
+              elementId
+            });
+          }
+        });
+      });
+    };
+
+    attachStreams();
+  }, [peers]);
+
+  // Update the renderParticipantVideo function
   const renderParticipantVideo = (peer) => {
+    debugLog('Render', 'Rendering participant video', {
+      peerId: peer.id,
+      name: peer.name,
+      role: peer.role,
+      consumers: peer.consumers
+    });
+
     const videoConsumer = peer.consumers.find(c => c.mediaType === 'video');
     const screenConsumer = peer.consumers.find(c => c.mediaType === 'screen');
+    const audioConsumer = peer.consumers.find(c => c.mediaType === 'audio');
+    const hasVideo = videoConsumer || screenConsumer;
     
     return (
       <div key={peer.id} className="participant-container">
@@ -421,15 +457,25 @@ const VideoConference = () => {
               id={`video-${peer.id}-video`}
               autoPlay
               playsInline
-              className="participant-video"
+              className={`participant-video ${!hasVideo ? 'camera-off' : ''}`}
             />
+          )}
+          {!hasVideo && (
+            <div className="no-video-overlay">
+              <div className="no-video-avatar">
+                {peer.name.charAt(0).toUpperCase()}
+              </div>
+            </div>
           )}
           <div className="participant-info">
             <div className="participant-name">
-              {peer.name} {peer.role === 'instructor' && '(Instructor)'}
+              {peer.name} 
+              {peer.role === 'instructor' && (
+                <span className="instructor-badge">Teacher</span>
+              )}
             </div>
             <div className="participant-controls">
-              {!peer.consumers.find(c => c.mediaType === 'audio' && !c.paused) && (
+              {!audioConsumer && (
                 <FaMicrophoneSlash className="participant-muted-icon" />
               )}
             </div>
@@ -439,23 +485,28 @@ const VideoConference = () => {
     );
   };
   
-  // Calculate optimal grid layout for videos
+  // Calculate grid layout
   const calculateGridLayout = () => {
-    const participantCount = peers.size + 1; // +1 for local video
-    
-    if (participantCount <= 2) {
-      return 'grid-cols-1';
-    } else if (participantCount <= 4) {
-      return 'grid-cols-2';
-    } else if (participantCount <= 9) {
-      return 'grid-cols-3';
-    } else {
+    const participantCount = peers.size + 1;
+    if (participantCount <= 2) return 'grid-cols-1';
+    if (participantCount <= 4) return 'grid-cols-2';
+    if (participantCount <= 9) return 'grid-cols-3';
       return 'grid-cols-4';
-    }
   };
   
+  // Main render
   return (
-    <div className={`video-conference-container ${isChatOpen ? 'chat-open' : ''}`}>
+    <div className={`video-conference-container ${isChatOpen ? 'chat-open' : ''} ${isEnding ? 'ending' : ''}`}>
+      {isEnding && (
+        <div className="ending-overlay">
+          <div className="ending-content">
+            <div className="ending-spinner"></div>
+            <h2>Ending Meeting...</h2>
+            <p>Please wait while we clean up...</p>
+          </div>
+        </div>
+      )}
+
       {errorMessage && (
         <div className="error-overlay">
         <div className="error-message">
@@ -466,7 +517,7 @@ const VideoConference = () => {
       )}
 
       <div className="meeting-info">
-        <h2>{classDetails ? classDetails.name : 'Class Meeting'}</h2>
+        <h2>{classDetails?.title || 'Live Class'}</h2>
         <div className="participants-count">
           Participants: {peers.size + 1}
         </div>
@@ -550,7 +601,6 @@ const VideoConference = () => {
         </button>
 
         {isInstructor ? (
-          // Instructor gets "End Meeting" button that ends for all
           <button 
             className="control-button end-button" 
             onClick={endMeeting}
@@ -560,7 +610,6 @@ const VideoConference = () => {
             <span>End Meeting</span>
           </button>
         ) : (
-          // Non-instructors get "Leave Meeting" button
         <button
             className="control-button leave-button" 
           onClick={leaveMeeting}
