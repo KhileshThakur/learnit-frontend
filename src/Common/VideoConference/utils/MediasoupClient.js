@@ -536,6 +536,20 @@ class MediasoupClient {
     try {
       this.log('Creating WebRTC transports for room:', roomId);
 
+      // Fetch TURN server credentials
+      const turnResponse = await fetch(`${process.env.REACT_APP_BACKEND}/turn/token`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!turnResponse.ok) {
+        throw new Error('Failed to get TURN credentials');
+      }
+
+      const { iceServers } = await turnResponse.json();
+      this.log('Received ICE servers:', iceServers);
+
       // Create producer transport
       const producerTransportInfo = await this.request('createWebRtcTransport', {
         roomId,
@@ -549,7 +563,7 @@ class MediasoupClient {
         iceParameters: producerTransportInfo.iceParameters,
         iceCandidates: producerTransportInfo.iceCandidates,
         dtlsParameters: producerTransportInfo.dtlsParameters,
-        iceServers: []
+        iceServers: iceServers // Add TURN servers here
       });
       
       // Create consumer transport
@@ -565,7 +579,7 @@ class MediasoupClient {
         iceParameters: consumerTransportInfo.iceParameters,
         iceCandidates: consumerTransportInfo.iceCandidates,
         dtlsParameters: consumerTransportInfo.dtlsParameters,
-        iceServers: []
+        iceServers: iceServers // Add TURN servers here
       });
 
       // Set up transport event handlers
@@ -886,9 +900,9 @@ class MediasoupClient {
       this.log('User Role:', this.userRole);
 
       // Request media devices for all users
-      this.log('Requesting media devices');
-      
-      const stream = await navigator.mediaDevices.getUserMedia({
+        this.log('Requesting media devices');
+        
+        const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
         video: {
           width: { ideal: 1280 },
@@ -897,40 +911,40 @@ class MediasoupClient {
         }
       });
       
-      this.log('Media stream obtained:', {
-        tracks: stream.getTracks().map(t => ({
-          kind: t.kind,
-          enabled: t.enabled,
-          muted: t.muted,
-          readyState: t.readyState
-        }))
-      });
-
-      this.localStream = stream;
-    
-      // Produce video
-      const videoTrack = stream.getVideoTracks()[0];
-      if (videoTrack) {
-        this.log('Producing video track:', {
-          enabled: videoTrack.enabled,
-          muted: videoTrack.muted,
-          settings: videoTrack.getSettings()
+        this.log('Media stream obtained:', {
+          tracks: stream.getTracks().map(t => ({
+            kind: t.kind,
+            enabled: t.enabled,
+            muted: t.muted,
+            readyState: t.readyState
+          }))
         });
+
+        this.localStream = stream;
+      
+      // Produce video
+        const videoTrack = stream.getVideoTracks()[0];
+      if (videoTrack) {
+          this.log('Producing video track:', {
+            enabled: videoTrack.enabled,
+            muted: videoTrack.muted,
+            settings: videoTrack.getSettings()
+          });
         await this.produce(videoTrack, 'video');
       }
       
       // Produce audio
-      const audioTrack = stream.getAudioTracks()[0];
+        const audioTrack = stream.getAudioTracks()[0];
       if (audioTrack) {
-        this.log('Producing audio track:', {
-          enabled: audioTrack.enabled,
-          muted: audioTrack.muted,
-          settings: audioTrack.getSettings()
-        });
+          this.log('Producing audio track:', {
+            enabled: audioTrack.enabled,
+            muted: audioTrack.muted,
+            settings: audioTrack.getSettings()
+          });
         await this.produce(audioTrack, 'audio');
       }
       
-      return stream;
+        return stream;
     } catch (error) {
       if (error.name === 'NotAllowedError' || error.name === 'NotFoundError') {
         this.log('Media access denied or device busy:', error);

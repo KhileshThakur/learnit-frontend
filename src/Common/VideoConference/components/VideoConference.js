@@ -17,11 +17,8 @@ const VideoConference = () => {
   const token = localStorage.getItem('token');
   
   // URLs for backend and socket
-  const backendUrl = process.env.REACT_APP_BACKEND || 
-    (window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://learnit-backend.onrender.com');
-  const socketUrl = process.env.REACT_APP_SOCKET_URL || 
-    (window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://learnit-backend.onrender.com');
-  
+  const backendUrl = process.env.REACT_APP_BACKEND 
+  const socketUrl = process.env.REACT_APP_SOCKET_URL 
   // Component states
   const [isConnected, setIsConnected] = useState(false);
   const [isMicOn, setIsMicOn] = useState(true);
@@ -396,30 +393,54 @@ const VideoConference = () => {
             return;
           }
 
+          // Verify track is ready and enabled
+          if (!consumer.track.enabled || consumer.track.readyState === 'ended') {
+            debugLog('Error', `Track not ready or enabled for consumer ${consumer.id}`);
+            return;
+          }
+
           const elementId = `video-${peerId}-${consumer.mediaType}`;
           const videoElement = document.getElementById(elementId);
+          
+          if (!videoElement) {
+            debugLog('Error', `Video element not found: ${elementId}`);
+            return;
+          }
 
-          if (videoElement && videoElement instanceof HTMLVideoElement) {
-            if (!videoElement.srcObject || videoElement.srcObject.getTracks().length === 0) {
-              debugLog('Stream', `Attaching ${consumer.mediaType} stream for peer ${peer.name}`, {
-                elementId,
-                trackId: consumer.track.id
-              });
+          if (!(videoElement instanceof HTMLVideoElement)) {
+            debugLog('Error', `Element is not a video element: ${elementId}`);
+            return;
+          }
 
-              try {
-                const stream = new MediaStream([consumer.track]);
-                videoElement.srcObject = stream;
-                videoElement.play().catch(error => {
+          // Check if we need to update the stream
+          const currentTrack = videoElement.srcObject?.getTracks()[0];
+          if (currentTrack === consumer.track) {
+            debugLog('Stream', `Stream already attached for ${consumer.mediaType} of peer ${peer.name}`);
+            return;
+          }
+
+          try {
+            debugLog('Stream', `Attaching ${consumer.mediaType} stream for peer ${peer.name}`, {
+              elementId,
+              trackId: consumer.track.id
+            });
+
+            const stream = new MediaStream([consumer.track]);
+            videoElement.srcObject = stream;
+
+            // Add loadedmetadata event listener
+            videoElement.addEventListener('loadedmetadata', () => {
+              videoElement.play()
+                .then(() => {
+                  debugLog('Stream', `Successfully playing ${consumer.mediaType} for peer ${peer.name}`);
+                })
+                .catch(error => {
                   debugLog('Error', `Failed to play ${consumer.mediaType} for peer ${peer.name}`, error);
                 });
-              } catch (error) {
-                debugLog('Error', `Failed to create MediaStream for peer ${peer.name}`, error);
-              }
-            }
-          } else {
-            debugLog('Error', `Video element not found for peer ${peer.name}`, {
-              elementId
-            });
+            }, { once: true });
+
+          } catch (error) {
+            debugLog('Error', `Failed to create MediaStream for peer ${peer.name}`, error);
           }
         });
       });
@@ -450,14 +471,30 @@ const VideoConference = () => {
               id={`video-${peer.id}-screen`}
               autoPlay
               playsInline
+              muted={!audioConsumer}
               className="participant-video screen-share"
+              onLoadedMetadata={(e) => {
+                debugLog('Video', `Screen share video loaded for peer ${peer.name}`);
+                e.target.play().catch(err => debugLog('Error', `Failed to play screen share: ${err}`));
+              }}
+              onError={(e) => {
+                debugLog('Error', `Screen share video error for peer ${peer.name}`, e);
+              }}
             />
           ) : (
             <video
               id={`video-${peer.id}-video`}
               autoPlay
               playsInline
+              muted={!audioConsumer}
               className={`participant-video ${!hasVideo ? 'camera-off' : ''}`}
+              onLoadedMetadata={(e) => {
+                debugLog('Video', `Video loaded for peer ${peer.name}`);
+                e.target.play().catch(err => debugLog('Error', `Failed to play video: ${err}`));
+              }}
+              onError={(e) => {
+                debugLog('Error', `Video error for peer ${peer.name}`, e);
+              }}
             />
           )}
           {!hasVideo && (
