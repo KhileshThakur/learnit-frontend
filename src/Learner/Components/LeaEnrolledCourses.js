@@ -12,7 +12,7 @@ const LeaEnrolledCourses = ({ learnerId }) => {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const params = useParams();
   const learnerIdToUse = learnerId || params.id;
-  const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000/api';
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
   
   // Default course image
   const defaultCourseImage = 'https://via.placeholder.com/300x180?text=Course+Image';
