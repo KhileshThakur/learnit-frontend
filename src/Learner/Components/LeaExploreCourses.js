@@ -12,7 +12,7 @@ const LeaExploreCourses = ({ learnerId }) => {
   const params = useParams();
   // Use provided learnerId or get from URL params
   const learnerIdToUse = learnerId || params.id;
-  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const backendUrl = process.env.REACT_APP_BACKEND;
   
   // Default course image
   const defaultCourseImage = 'https://via.placeholder.com/300x180?text=Course+Image';
