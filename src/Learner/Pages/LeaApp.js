@@ -18,7 +18,7 @@ const LeaApp = () => {
   const renderComponent = () => {
     switch (activeComponent) {
       case 'Dashboard':
-        return <LeaDashboard />;
+        return <LeaDashboard learnerId={learnerId}/>;
       case 'Make Request':
         return <LeaMakeRequest />
       case 'Meetings':
