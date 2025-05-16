@@ -10,6 +10,9 @@ import CreateCapsule from '../Components/TimeCapsule/CreateCapsule'
 import './InsApp.css'
 import Logo from '../../Utility/Images/Logo.png'
 import MyCapsules from '../Components/TimeCapsule/MyCapsules'
+import InsLearnAI from '../Components/InsLearnAI'
+import LeaDiscussionForum from '../../Learner/Components/DiscussionForum/LeaDiscussionForum'
+import InsScheduledMeetings from '../Components/InsScheduledMeetings'
 
 const InsApp = () => {
 
@@ -23,15 +26,15 @@ const InsApp = () => {
       case 'Meeting Requests':
         return <InsMeetingRequest />
       case 'Scheduled Meetings':
-        return <InsMeetingRequest />
+        return <InsScheduledMeetings />
       case 'My Courses':
         return <InstructorCourses />
       case 'Create Course':
         return <CreateCourse onCourseCreated={() => setActiveComponent('My Courses')} />
       case 'LearnAI':
-        return <InsMeetingRequest />
+        return <InsLearnAI />
       case 'Discussion Forum':
-        return <InsMeetingRequest />
+        return <LeaDiscussionForum />
       case 'Create Capsule':
         return <CreateCapsule instructorId={instructorId}/>
       case 'My Capusule':

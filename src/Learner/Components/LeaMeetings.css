@@ -1,0 +1,327 @@
+/* Main container */
+.lea-meetings-container {
+  background: #1E1E2D;
+  height: calc(100vh - 32px);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  margin: 16px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Tabs section */
+.lea-meetings-tabs {
+  display: flex;
+  gap: 8px;
+  background: rgba(42, 42, 54, 0.8);
+  padding: 6px;
+  border-radius: 25px;
+  width: fit-content;
+  margin-bottom: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.lea-meetings-tab {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 20px;
+  background: none;
+  color: #9CA3AF;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.lea-meetings-tab.active {
+  background: #8B5CF6;
+  color: white;
+}
+
+/* Cards container */
+.lea-meetings-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 12px;
+  margin: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Scrollbar styling */
+.lea-meetings-card-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.lea-meetings-card-list::-webkit-scrollbar-track {
+  background: rgba(42, 42, 54, 0.3);
+  border-radius: 10px;
+}
+
+.lea-meetings-card-list::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.8);
+  border-radius: 10px;
+}
+
+.lea-meetings-card-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 1);
+}
+
+/* Meeting card */
+.lea-meeting-card {
+  background: rgba(35, 35, 43, 0.8);
+  border-radius: 12px;
+  padding: 16px 24px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+  align-items: center;
+  border: 1px solid rgba(53, 52, 58, 0.3);
+  transition: all 0.2s ease;
+}
+
+.lea-meeting-card:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  background: rgba(35, 35, 43, 0.9);
+}
+
+/* Left section with avatar and instructor info */
+.lea-meeting-card-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.lea-meeting-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.lea-meeting-instructor-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lea-meeting-instructor-name {
+  color: #FFFFFF;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.lea-meeting-instructor-qual {
+  color: #9CA3AF;
+  font-size: 0.85rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Center section with date/time and reject reason */
+.lea-meeting-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+/* Status messages for different states */
+.lea-meeting-date,
+.lea-meeting-time {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Scheduled state */
+.lea-meeting-scheduled .lea-meeting-date,
+.lea-meeting-scheduled .lea-meeting-time {
+  color: #3EC46D;
+}
+
+/* Pending state */
+.lea-meeting-pending .lea-meeting-date,
+.lea-meeting-pending .lea-meeting-time {
+  color: #F59E0B;
+}
+
+/* Rejected state styling */
+.lea-meeting-rejected {
+  border-left: 3px solid #EF4444 !important;
+}
+
+.lea-meeting-rejected .lea-meeting-center {
+  gap: 12px;
+}
+
+.lea-meeting-rejected .lea-meeting-date,
+.lea-meeting-rejected .lea-meeting-time {
+  color: #EF4444;
+  opacity: 0.9;
+}
+
+.lea-meeting-status-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.lea-meeting-rejected .lea-meeting-status-label {
+  color: #EF4444;
+}
+
+.lea-meeting-reject-reason {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  padding: 8px 16px;
+  color: #EF4444;
+  font-size: 0.85rem;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  margin: 0;
+}
+
+.lea-meeting-reject-reason::before {
+  content: "Reason: ";
+  font-weight: 600;
+  color: #EF4444;
+}
+
+/* Right section with button */
+.lea-meeting-card-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Button styles for different states */
+.lea-meeting-status-btn {
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+/* Join button - Scheduled state */
+.lea-meeting-status-btn.join {
+  background: #1C8E3D;
+  color: white;
+  border: none;
+}
+
+.lea-meeting-status-btn.join:hover {
+  background: #166E2F;
+}
+
+/* Pending button */
+.lea-meeting-status-btn.pending {
+  background: #F59E0B;
+  color: white;
+  border: none;
+  opacity: 0.9;
+  cursor: default;
+}
+
+/* Rejected button */
+.lea-meeting-status-btn.rejected {
+  background: #EF4444;
+  color: white;
+  border: none;
+  opacity: 0.9;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Tab-specific styles */
+.lea-meetings-tab[data-status="scheduled"].active {
+  background: #3EC46D;
+}
+
+.lea-meetings-tab[data-status="pending"].active {
+  background: #F59E0B;
+}
+
+.lea-meetings-tab[data-status="rejected"].active {
+  background: #EF4444;
+}
+
+/* Loading and empty states */
+.lea-meetings-loading,
+.lea-meetings-error,
+.lea-meetings-empty {
+  text-align: center;
+  color: #9CA3AF;
+  padding: 20px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .lea-meetings-container {
+    padding: 16px;
+    margin: 12px;
+    height: calc(100vh - 24px);
+  }
+
+  .lea-meeting-card {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .lea-meeting-center {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .lea-meeting-reject-reason {
+    text-align: left;
+    max-width: 100%;
+  }
+
+  .lea-meeting-card-right {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .lea-meetings-container {
+    margin: 8px;
+    padding: 12px;
+  }
+
+  .lea-meetings-tabs {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .lea-meetings-tab {
+    padding: 6px 16px;
+    font-size: 0.85rem;
+  }
+
+  .lea-meeting-card {
+    padding: 12px;
+  }
+
+  .lea-meeting-status-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .lea-meeting-reject-reason {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+} 
