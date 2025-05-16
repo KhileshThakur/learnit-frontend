@@ -4,6 +4,7 @@ import Participants from "./Participants";
 import ScheduledMeetings from "./ScheduledMeetings";
 import Resources from "./Resources";
 import "./Capsule.css";
+import CapsuleChat from "./CapsuleChat";
 
 const Capsule = ({learnerId , capsule, onBack}) => {
   const [activeTab, setActiveTab] = useState("details");
@@ -12,7 +13,8 @@ const Capsule = ({learnerId , capsule, onBack}) => {
     { id: "details", label: "Details" },
     { id: "participants", label: "Participants" },
     { id: "resources", label: "Resources" },
-    { id: "scheduled-meetings", label: "Scheduled Meetings" }
+    { id: "scheduled-meetings", label: "Scheduled Meetings" },
+    { id: "chat", label: "Chat" },
   ];
 
   const renderTabContent = () => {
@@ -25,6 +27,8 @@ const Capsule = ({learnerId , capsule, onBack}) => {
         return <Resources capsuleId={capsule._id} learnerId={learnerId}/>;
       case "scheduled-meetings":
         return <ScheduledMeetings capsuleId={capsule._id} learnerId={learnerId}/>;
+      case "chat":
+        return <CapsuleChat capsuleId={capsule._id} learnerId={learnerId}/>;
       default:
         return null;
     }
