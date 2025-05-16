@@ -6,6 +6,7 @@ import ScheduledMeetings from "./ScheduledMeetings";
 import CreateMeeting from "./CreateMeeting";
 import "./Capsule.css";
 import Resources from "./Resources";
+import CapsuleChat from "../../../Learner/Components/TimeCapsule/CapsuleChat";
 
 const Capsule = ({ capsule, onBack }) => {
 
@@ -18,6 +19,7 @@ const Capsule = ({ capsule, onBack }) => {
     { id: "create-meeting", label: "Create Meeting" },
     { id: "resources", label: "Resources" },
     { id: "scheduled-meetings", label: "Scheduled Meetings" },
+    { id: "chat", label: "Chat" },
   ];
 
   const renderTabContent = () => {
@@ -32,6 +34,8 @@ const Capsule = ({ capsule, onBack }) => {
         return <CreateMeeting capsuleId={capsule._id} />;
       case "scheduled-meetings":
         return <ScheduledMeetings capsuleId={capsule._id} />;
+      case "chat":
+        return <CapsuleChat capsuleId={capsule._id} />;
       case "resources":
         return <Resources capsuleId={capsule._id} />;
       default:
