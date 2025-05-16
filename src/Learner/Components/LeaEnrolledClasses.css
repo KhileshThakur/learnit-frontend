@@ -121,9 +121,9 @@
 }
 
 .status-message {
-  color: #666;
+  color: #69c572;
   font-size: 14px;
-  margin: 0;
+  margin: 5px 0;
 }
 
 .loading {

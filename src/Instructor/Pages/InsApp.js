@@ -22,7 +22,7 @@ const InsApp = () => {
   const renderComponent = () => {
     switch (activeComponent) {
       case 'Dashboard':
-        return <InsDashboard />;
+        return <InsDashboard instructorId={instructorId} />;
       case 'Meeting Requests':
         return <InsMeetingRequest />
       case 'Scheduled Meetings':

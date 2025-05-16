@@ -7,11 +7,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
   /* overflow: hidden; Prevent document-level scrolling */
   height: 100vh; /* Ensure full height */
+  
 }
 
 html {
   /* overflow: hidden; Prevent document-level scrolling */
   height: 100vh; /* Ensure full height */
+  
 }
 
 code {

@@ -81,6 +81,7 @@
   align-items: center;
   border: 1px solid rgba(53, 52, 58, 0.3);
   transition: all 0.2s ease;
+  border-left: 2px solid #1C8E3D;
 }
 
 .lea-meeting-card:hover {

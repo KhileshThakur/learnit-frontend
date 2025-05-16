@@ -20,7 +20,7 @@ const LeaApp = () => {
   const renderComponent = () => {
     switch (activeComponent) {
       case 'Dashboard':
-        return <LeaDashboard />;
+        return <LeaDashboard learnerId={learnerId}/>;
       case 'Make Request':
         return <LeaMakeRequest />
       case 'Meetings':
@@ -52,7 +52,7 @@ const LeaApp = () => {
         </div>
         <ul>
           {['Dashboard', 'Make Request', 'Meetings', 'Explore Courses', 'Enrolled Courses', 'LearnAI',
-            'Discussion Forum', 'Explore Capsules', 'Capsule Requests', 'My Capsules', 'Logout'].map((item) => (
+            'Discussion Forum', 'Explore Capsules', 'My Capsules', 'Logout'].map((item) => (
               <li
                 key={item}
                 onClick={() => setActiveComponent(item)}

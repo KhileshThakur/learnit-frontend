@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Capsule from "./TimeCapsule/Capsule"; // Reuse the existing Capsule component
-import "./LeaMyCapsules.css"; // Same styling as instructor
+import "./LeaExploreCapsules"; // Same styling as instructor
 
 const LeaMyCapsules = ({ learnerId }) => {
   const backenduri = process.env.REACT_APP_BACKEND;
@@ -44,7 +44,7 @@ const LeaMyCapsules = ({ learnerId }) => {
             onClick={() => setSelectedCapsule(capsule)}
           >
             <h3 className="capsule-name">{capsule.name}</h3>
-            <p className="capsule-description">{capsule.description}</p>
+            <p className="capsule-desc">{capsule.description}</p>
             <p className="capsule-date">Start: {new Date(capsule.startDate).toLocaleDateString()}</p>
             <p className="capsule-date">End: {new Date(capsule.endDate).toLocaleDateString()}</p>
           </div>

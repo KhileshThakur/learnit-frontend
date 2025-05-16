@@ -1,0 +1,57 @@
+.capsule-detail-container {
+  padding: 24px;
+}
+
+.back-button {
+  color: #1d4ed8;
+  background: none;
+  border: none;
+  margin-bottom: 16px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.capsule-detail-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.capsule-detail-desc {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.capsule-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.tab-button {
+  padding: 6px 12px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tab-button.active-tab {
+  background: #2563eb;
+  color: white;
+}
+
+.tab-content {
+  font-size: 14px;
+  color: #333;
+}
+
+.schedule-list {
+  margin-top: 8px;
+}
+
+.schedule-list ul {
+  padding-left: 20px;
+}
