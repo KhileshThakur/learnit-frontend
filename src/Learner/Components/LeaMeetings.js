@@ -96,7 +96,7 @@ const LeaMeetings = () => {
                         <div className={`lea-meeting-card lea-meeting-${status}`} key={meeting._id}>
                             <div className="lea-meeting-card-left">
                                 <img
-                                    src={meeting.instructor_id?.avatar || '/default-avatar.png'}
+                                    src={`${process.env.PUBLIC_URL}/default-profile.png`}
                                     alt={meeting.instructor_id?.name}
                                     className="lea-meeting-avatar"
                                 />

@@ -52,7 +52,7 @@ const LeaApp = () => {
         </div>
         <ul>
           {['Dashboard', 'Make Request', 'Meetings', 'Explore Courses', 'Enrolled Courses', 'LearnAI',
-            'Discussion Forum', 'Explore Capsules', 'Capsule Requests', 'My Capsules', 'Logout'].map((item) => (
+            'Discussion Forum', 'Explore Capsules', 'My Capsules', 'Logout'].map((item) => (
               <li
                 key={item}
                 onClick={() => setActiveComponent(item)}
