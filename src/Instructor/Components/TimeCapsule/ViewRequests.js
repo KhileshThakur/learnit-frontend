@@ -45,7 +45,6 @@ const ViewRequests = ({ capsuleId }) => {
 
   return (
     <div className="view-requests-container">
-      <h3>Join Requests</h3>
       {message && <p className="status-message">{message}</p>}
 
       {requests.length === 0 ? (

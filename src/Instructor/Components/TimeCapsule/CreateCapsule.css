@@ -1,0 +1,97 @@
+.create-capsule-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 24px;
+    background-color: #5b57619c;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.create-capsule-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-align: center;
+  color: #c2a8fa;
+}
+
+.create-capsule-message {
+  margin-bottom: 16px;
+  color: #6a2fbc;
+  text-align: center;
+}
+
+.create-capsule-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #9a8aeb;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #9a8aeb;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.form-date-group {
+  display: flex;
+  gap: 16px;
+}
+
+.half-width {
+  flex: 1;
+}
+
+.form-schedule-section {
+    display: flex;
+    flex-direction: column;
+    height: 20vh;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.form-label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #9a8aeb;
+}
+
+.add-schedule-btn {
+  margin-top: 8px;
+  color: #6a2fbc;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+}
+
+.add-schedule-btn:hover {
+  text-decoration: underline;
+  color: #9a8aeb;
+}
+
+.submit-btn {
+  background-color: #6a2fbc;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #6122b9;
+}

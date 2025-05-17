@@ -1,7 +1,13 @@
 .capsule-detail-container {
   padding: 24px;
 }
-
+.capsule-title {
+  margin: 0 0 20px 0;
+  color: #be9afd;
+}
+.capsule-container {
+  height: 94vh;
+}
 .back-button {
   color: #1d4ed8;
   background: none;
@@ -25,8 +31,9 @@
 
 .capsule-tabs {
   display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 5px;
+  margin-bottom: 20px;
+  justify-content: center;
 }
 
 .tab-button {
@@ -38,11 +45,14 @@
   font-size: 14px;
 }
 
-.tab-button.active-tab {
-  background: #2563eb;
-  color: white;
+.tab-button.active {
+  background: #6553d4;
+  color: #fff;
 }
-
+.capsule-tab-content {
+  height: 72vh;
+  padding: 5px;
+}
 .tab-content {
   font-size: 14px;
   color: #333;
