@@ -1,0 +1,65 @@
+/* CreateMeeting.css */
+
+.create-meeting-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    font-family: Arial, sans-serif;
+  }
+  
+  .create-meeting-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 1.5rem;
+  }
+  
+  .create-meeting-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .create-meeting-container label {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #444;
+  }
+  
+  .create-meeting-container input[type="datetime-local"] {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+  
+  .create-meeting-container button {
+    padding: 0.75rem;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .create-meeting-container button:hover {
+    background-color: #0056b3;
+  }
+  
+  .create-meeting-container p {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .create-meeting-container p[style*="red"] {
+    color: red;
+  }
+  
+  .create-meeting-container p[style*="green"] {
+    color: green;
+  }
+  

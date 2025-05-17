@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import "./CreateCapsule.css";
 
-const CreateCapsule = ({instructorId}) => {
-
+const CreateCapsule = ({ instructorId }) => {
   const backenduri = process.env.REACT_APP_BACKEND;
 
   const [formData, setFormData] = useState({
@@ -16,17 +16,17 @@ const CreateCapsule = ({instructorId}) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleScheduleChange = (index, value) => {
     const updatedSchedule = [...formData.schedule];
     updatedSchedule[index] = value;
-    setFormData(prev => ({ ...prev, schedule: updatedSchedule }));
+    setFormData((prev) => ({ ...prev, schedule: updatedSchedule }));
   };
 
   const addScheduleField = () => {
-    setFormData(prev => ({ ...prev, schedule: [...prev.schedule, ""] }));
+    setFormData((prev) => ({ ...prev, schedule: [...prev.schedule, ""] }));
   };
 
   const handleSubmit = async (e) => {
@@ -34,20 +34,21 @@ const CreateCapsule = ({instructorId}) => {
 
     const payload = {
       ...formData,
-      instructorId
+      instructorId,
     };
 
     try {
       const res = await fetch(`${backenduri}/instructor/capsule/create`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
-        console.log(data);
+      console.log(data);
+
       if (res.ok) {
         setMessage("Capsule created successfully!");
         setFormData({
@@ -67,18 +68,18 @@ const CreateCapsule = ({instructorId}) => {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Create New Capsule</h2>
-      {message && <p className="mb-4 text-blue-600">{message}</p>}
+    <div className="create-capsule-container">
+      <h2 className="create-capsule-title">Create New Capsule</h2>
+      {message && <p className="create-capsule-message">{message}</p>}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="create-capsule-form">
         <input
           type="text"
           name="name"
           placeholder="Capsule Name"
           value={formData.name}
           onChange={handleChange}
-          className="w-full border p-2 rounded"
+          className="form-input"
           required
         />
 
@@ -87,17 +88,17 @@ const CreateCapsule = ({instructorId}) => {
           placeholder="Capsule Description"
           value={formData.description}
           onChange={handleChange}
-          className="w-full border p-2 rounded"
+          className="form-textarea"
           rows="4"
         />
 
-        <div className="flex gap-4">
+        <div className="form-date-group">
           <input
             type="date"
             name="startDate"
             value={formData.startDate}
             onChange={handleChange}
-            className="w-1/2 border p-2 rounded"
+            className="form-input half-width"
             required
           />
           <input
@@ -105,20 +106,20 @@ const CreateCapsule = ({instructorId}) => {
             name="endDate"
             value={formData.endDate}
             onChange={handleChange}
-            className="w-1/2 border p-2 rounded"
+            className="form-input half-width"
             required
           />
         </div>
 
-        <div>
-          <label className="block mb-2 font-medium">Schedule</label>
+        <div className="form-schedule-section">
+          <label className="form-label">Schedule</label>
           {formData.schedule.map((slot, index) => (
             <input
               key={index}
               type="text"
               value={slot}
               onChange={(e) => handleScheduleChange(index, e.target.value)}
-              className="w-full mb-2 border p-2 rounded"
+              className="form-input"
               placeholder="e.g. Monday 10am-12pm"
               required
             />
@@ -126,16 +127,13 @@ const CreateCapsule = ({instructorId}) => {
           <button
             type="button"
             onClick={addScheduleField}
-            className="text-blue-500 mt-2 hover:underline"
+            className="add-schedule-btn"
           >
             + Add More Schedule
           </button>
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
-        >
+        <button type="submit" className="submit-btn">
           Create Capsule
         </button>
       </form>

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "./CreateMeeting.css"; 
+
 
 const CreateMeeting = ({ capsuleId }) => {
   const [roomName, setRoomName] = useState("");
@@ -63,7 +65,7 @@ const CreateMeeting = ({ capsuleId }) => {
   };
 
   return (
-    <div>
+    <div className="create-meeting-container">
       <h2>Create a Meeting for Capsule ID: {capsuleId}</h2>
 
       {error && <p style={{ color: "red" }}>{error}</p>}

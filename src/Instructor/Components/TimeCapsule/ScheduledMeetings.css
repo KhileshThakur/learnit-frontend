@@ -1,0 +1,58 @@
+.scheduled-meetings {
+    color: #f1f5f9;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: auto;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+.meetings-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #e2e8f0;
+}
+
+.error-message {
+  color: #f87171;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.no-meetings {
+  color: #94a3b8;
+  text-align: center;
+}
+
+.meeting-list {
+  list-style: none;
+  padding: 0;
+}
+
+.meeting-card {
+    background-color: #4527a04a;
+    border: 1px solid #EDE7F6;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.meeting-card a {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
+.meeting-card a:hover {
+  color: #3b82f6;
+}
+
+.how-to-join {
+  cursor: pointer;
+  color: #38bdf8;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.how-to-join:hover {
+  text-decoration: underline;
+}
