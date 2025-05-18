@@ -28,20 +28,25 @@ const InsDashboard = () => {
 
   const handleSave = async (updatedData) => {
     try {
-      const updatedInstructor = {
+      const formattedData = {
         ...updatedData,
         expertise: Array.isArray(updatedData.expertise)
           ? updatedData.expertise
           : updatedData.expertise.split(',').map(item => item.trim())
       };
-
-      const response = await axios.put(`${backendurl}/instructor/${instructorId}`, updatedInstructor);
-      setInstructor(response.data);
+  
+      const response = await axios.put(`${backendurl}/instructor/${instructorId}`, formattedData);
+      
+      console.log("PUT Response:", response.data); // 👈 ADD THIS
+  
+      setInstructor(response.data); // ✅ Updates state
       setShowModal(false);
     } catch (error) {
       console.error('Error updating profile:', error);
     }
   };
+  
+  
 
   const handleProfilePicUpload = async (e) => {
     const file = e.target.files[0];

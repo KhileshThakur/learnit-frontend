@@ -66,7 +66,7 @@ const CreateMeeting = ({ capsuleId }) => {
 
   return (
     <div className="create-meeting-container">
-      <h2>Create a Meeting for Capsule ID: {capsuleId}</h2>
+      <h2>Create a Meeting for Capsule</h2>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
       {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
