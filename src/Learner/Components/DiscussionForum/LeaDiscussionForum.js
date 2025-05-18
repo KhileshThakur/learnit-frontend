@@ -7,6 +7,7 @@ import NewPost from './NewPost';
 import './LeaDiscussionForum.css';
 
 const LeaDiscussionForum = () => {
+  const backendurl = process.env.REACT_APP_BACKEND;
   const [threads, setThreads] = useState([]);
   const [selectedThread, setSelectedThread] = useState(null);
 
@@ -19,11 +20,11 @@ const LeaDiscussionForum = () => {
   // Fetch threads on component mount
   useEffect(() => {
     fetchThreads();
-  }, []);
+  }, [backendurl]);
 
   const fetchThreads = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/discussion/threads');
+      const response = await axios.get(`${backendurl}/discussion/threads`);
       setThreads(response.data.threads.reverse()); // latest first
     } catch (error) {
       console.error('Error fetching threads:', error);
@@ -33,7 +34,7 @@ const LeaDiscussionForum = () => {
   // Add new thread
   const addThread = async (question) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/discussion/thread', {
+      const response = await axios.post(`${backendurl}/discussion/thread`, {
         question,
         authorType,
         authorId,
@@ -49,7 +50,7 @@ const LeaDiscussionForum = () => {
     if (selectedThread) {
       try {
         const response = await axios.post(
-          `http://localhost:5000/api/discussion/thread/${selectedThread._id}/reply`,
+          `${backendurl}/discussion/thread/${selectedThread._id}/reply`,
           {
             content: reply,
             authorType,

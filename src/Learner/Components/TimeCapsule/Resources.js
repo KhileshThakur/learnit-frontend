@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const Resources = ({ capsuleId }) => {
+  const backenduri = process.env.REACT_APP_BACKEND;
   const [resources, setResources] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [file, setFile] = useState(null);
@@ -10,7 +11,7 @@ const Resources = ({ capsuleId }) => {
 
   const fetchResources = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/capsule-resources/${capsuleId}`);
+      const res = await axios.get(`${backenduri}/capsule-resources/${capsuleId}`);
       setResources(res.data.resources);
     } catch (error) {
       console.error("Failed to fetch resources", error);
@@ -25,7 +26,7 @@ const Resources = ({ capsuleId }) => {
     setUserInfo({ id, type });
 
     if (capsuleId) fetchResources();
-  }, [capsuleId]);
+  }, [capsuleId,backenduri]);
 
   const handleUpload = async () => {
     if (!file || !customName) {
@@ -40,7 +41,7 @@ const Resources = ({ capsuleId }) => {
     formData.append("uploaderType", userInfo.type);
 
     try {
-      await axios.post(`http://localhost:5000/api/capsule-resources/upload/${capsuleId}`, formData);
+      await axios.post(`${backenduri}/capsule-resources/upload/${capsuleId}`, formData);
       setShowModal(false);
       setFile(null);
       setCustomName("");
@@ -52,7 +53,7 @@ const Resources = ({ capsuleId }) => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/capsule-resources/${id}`);
+      await axios.delete(`${backenduri}/capsule-resources/${id}`);
       fetchResources();
     } catch (error) {
       console.error("Failed to delete resource", error);

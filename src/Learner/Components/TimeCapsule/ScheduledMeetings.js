@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const ScheduledMeetings = ({ capsuleId }) => {
+  const backenduri = process.env.REACT_APP_BACKEND;
   const [meetings, setMeetings] = useState([]);
   const [error, setError] = useState("");
 
@@ -9,7 +10,7 @@ const ScheduledMeetings = ({ capsuleId }) => {
     const fetchMeetings = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/instructor/capsule/meeting/${capsuleId}`
+          `${backenduri}/instructor/capsule/meeting/${capsuleId}`
         );
         if (res.data.success) {
           setMeetings(res.data.meetings);
@@ -23,7 +24,7 @@ const ScheduledMeetings = ({ capsuleId }) => {
     };
 
     fetchMeetings();
-  }, [capsuleId]);
+  }, [capsuleId,backenduri]);
 
   return (
     <div>

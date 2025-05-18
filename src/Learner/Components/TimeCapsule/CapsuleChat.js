@@ -4,6 +4,9 @@ import axios from "axios";
 import "./CapsuleChat.css"; // Import CSS
 
 const CapsuleChat = ({ capsuleId }) => {
+  const backenduri = process.env.REACT_APP_BACKEND;
+  const wsurl = process.env.REACT_APP_BACKEND_WS;
+
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
   const [userInfo, setUserInfo] = useState({ id: "", type: "" });
@@ -20,12 +23,12 @@ const CapsuleChat = ({ capsuleId }) => {
     const type = parts[1];
     const id = parts[2];
     setUserInfo({ id, type });
-  }, []);
+  }, [backenduri]);
 
   useEffect(() => {
     if (!userInfo.id || !userInfo.type) return;
 
-    socketRef.current = io("http://localhost:5000", {
+    socketRef.current = io(`${wsurl}`, {
       path: "/capsule-chat-socket",
       transports: ["websocket"],
     });
@@ -41,11 +44,11 @@ const CapsuleChat = ({ capsuleId }) => {
     return () => {
       socketRef.current.disconnect();
     };
-  }, [userInfo, capsuleId]);
+  }, [userInfo, capsuleId,wsurl]);
 
   const fetchMessages = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/capsule-chat/${capsuleId}`);
+      const res = await axios.get(`${backenduri}/capsule-chat/${capsuleId}`);
       setMessages(res.data.messages);
       scrollToBottom();
     } catch (err) {
