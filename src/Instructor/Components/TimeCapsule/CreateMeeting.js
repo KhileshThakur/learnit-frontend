@@ -4,6 +4,7 @@ import "./CreateMeeting.css";
 
 
 const CreateMeeting = ({ capsuleId }) => {
+  const backenduri = process.env.REACT_APP_BACKEND;
   const [roomName, setRoomName] = useState("");
   const [roomId, setRoomId] = useState("");
   const [joinUrl, setJoinUrl] = useState("");
@@ -42,7 +43,7 @@ const CreateMeeting = ({ capsuleId }) => {
         };
 
         const saveMeetingResponse = await axios.post(
-          "http://localhost:5000/api/instructor/capsule/meeting/save",
+          `${backenduri}/instructor/capsule/meeting/save`,
           meetingData
         );
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const Participants = ({ capsuleId }) => {
+  const backenduri = process.env.REACT_APP_BACKEND;
   const [instructor, setInstructor] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -11,7 +12,7 @@ const Participants = ({ capsuleId }) => {
     const fetchParticipants = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/instructor/capsule/${capsuleId}/participants`
+          `${backenduri}/instructor/capsule/${capsuleId}/participants`
         );
 
         if (res.data.success) {
@@ -31,7 +32,7 @@ const Participants = ({ capsuleId }) => {
     };
 
     if (capsuleId) fetchParticipants();
-  }, [capsuleId]);
+  }, [capsuleId,backenduri]);
 
   const openPopup = (data) => setSelected(data);
   const closePopup = () => setSelected(null);
