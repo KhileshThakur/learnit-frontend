@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import InsDashboard from '../Components/InsDashboard'
 import Logout from '../../Common/Logout'
 import InsMeetingRequest from '../Components/InsMeetingRequest'
-import InstructorCourses from '../Components/Courses/InstructorCourses'
+import MyCourses from '../Components/Courses/MyCourses'
 import CreateCourse from '../Components/Courses/CreateCourse'
 import CreateCapsule from '../Components/TimeCapsule/CreateCapsule'
 import './InsApp.css'
@@ -22,15 +22,15 @@ const InsApp = () => {
   const renderComponent = () => {
     switch (activeComponent) {
       case 'Dashboard':
-        return <InsDashboard instructorId={instructorId} />;
+        return <InsDashboard instructorId={instructorId} />
       case 'Meeting Requests':
         return <InsMeetingRequest />
       case 'Scheduled Meetings':
         return <InsScheduledMeetings />
       case 'My Courses':
-        return <InstructorCourses />
+        return <MyCourses />
       case 'Create Course':
-        return <CreateCourse onCourseCreated={() => setActiveComponent('My Courses')} />
+        return <CreateCourse instructorId={instructorId}/>
       case 'LearnAI':
         return <InsLearnAI />
       case 'Discussion Forum':

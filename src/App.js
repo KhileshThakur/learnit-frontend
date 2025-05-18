@@ -13,7 +13,7 @@ import AdminAuth from './Admin/Pages/AdminAuth';
 import AdminDashboard from './Admin/Pages/AdminDashboard';
 
 import ProtectedRoute from './Utility/Components/ProtectedRoute';
-import Classroom from './Common/VideoConference/components/Classroom';
+// import Classroom from './Common/VideoConference/components/Classroom';
 
 
 
@@ -45,8 +45,6 @@ function App() {
           
         </Route>
 
-        {/* Add classroom route */}
-        <Route path="/classroom/:classId" element={<Classroom />} />
       </Routes>
     </Router>
   );
