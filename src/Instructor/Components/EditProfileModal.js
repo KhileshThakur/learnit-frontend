@@ -6,8 +6,6 @@ const EditProfileModal = ({ instructor, onClose, onSave }) => {
     name: '',
     phone: '',
     email: '',
-    gdegree: '',
-    pdegree: '',
     expertise: '',
     teachexp: '',
     linkedin: '',
@@ -20,8 +18,6 @@ const EditProfileModal = ({ instructor, onClose, onSave }) => {
         name: instructor.name || '',
         phone: instructor.phone || '',
         email: instructor.email || '',
-        gdegree: instructor.graduation?.gdegree || '',
-        pdegree: instructor.postgraduation?.pdegree || '',
         expertise: Array.isArray(instructor.expertise) ? instructor.expertise.join(', ') : instructor.expertise || '',
         teachexp: instructor.teachexp || '',
         linkedin: instructor.linkedin || '',
@@ -44,6 +40,7 @@ const EditProfileModal = ({ instructor, onClose, onSave }) => {
     onSave(updatedData);
   };
 
+
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -52,8 +49,6 @@ const EditProfileModal = ({ instructor, onClose, onSave }) => {
           <input name="name" placeholder="Name" value={formData.name} onChange={handleChange} />
           <input name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} />
           <input name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
-          <input name="gdegree" placeholder="Graduation Degree" value={formData.gdegree} onChange={handleChange} />
-          <input name="pdegree" placeholder="PG Degree" value={formData.pdegree} onChange={handleChange} />
           <input name="expertise" placeholder="Expertise (comma separated)" value={formData.expertise} onChange={handleChange} />
           <input name="teachexp" placeholder="Teaching Experience (Years)" value={formData.teachexp} onChange={handleChange} />
           <input name="linkedin" placeholder="LinkedIn" value={formData.linkedin} onChange={handleChange} />
