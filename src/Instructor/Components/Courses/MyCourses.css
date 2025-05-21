@@ -1,0 +1,104 @@
+.mycourses-container {
+  padding: 20px;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns */
+  gap: 20px;
+}
+
+.course-card {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.course-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.course-card:hover img {
+  transform: scale(1.05);
+}
+
+.course-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.course-overlay h3 {
+  font-size: 22px;
+  margin: 0;
+  transition: all 0.3s ease;
+}
+
+.course-overlay p {
+  margin-top: 10px;
+  font-size: 14px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.course-card:hover .course-overlay h3 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.course-card:hover .course-overlay p {
+  max-height: 100px;
+  opacity: 1;
+}
+
+.loader {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+.course-detail-page {
+  padding: 20px;
+}
+
+.course-actions button {
+  margin-right: 10px;
+}
+
+.video-card {
+  margin: 10px 0;
+}
+
+.video-card video {
+  width: 100%;
+  max-width: 600px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  color: #007bff;
+}

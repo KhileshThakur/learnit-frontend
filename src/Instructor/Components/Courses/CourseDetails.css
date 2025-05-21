@@ -1,0 +1,256 @@
+.course-details-container {
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 0 20px;
+  font-family: Arial, sans-serif;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.course-main {
+  display: flex;
+  gap: 30px;
+}
+
+/* Left side: Title + description + buttons */
+.course-info {
+  flex: 1 1 40%;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-info h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #222;
+  font-weight: bold;
+}
+
+.course-description {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+}
+
+.course-buttons button {
+  margin-right: 12px;
+  padding: 10px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1.5px solid transparent;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.course-buttons button:hover {
+  background-color: #0073e6;
+  color: white;
+  border-color: #0073e6;
+}
+
+.danger-btn {
+  background-color: #e74c3c;
+  color: white;
+  border-color: #e74c3c;
+}
+
+.danger-btn:hover {
+  background-color: #c0392b;
+  border-color: #c0392b;
+}
+
+/* Right side: Video list */
+.video-list {
+  flex: 1 1 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 550px;
+  overflow-y: auto;
+  border-left: 1px solid #ddd;
+  padding-left: 20px;
+}
+
+.video-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.08);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.video-item:hover {
+  background-color: #e8f0fe;
+}
+
+.video-title {
+  flex: 1;
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.delete-video-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #cc0000;
+  cursor: pointer;
+  margin-left: 15px;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.delete-video-btn:hover {
+  color: #ff4444;
+}
+
+/* Popups */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.popup-content {
+  background: white;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90vw;
+  padding: 25px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+}
+
+.popup-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+.popup-form input[type="text"],
+.popup-form textarea,
+.popup-form input[type="file"] {
+  margin-top: 8px;
+  padding: 7px 10px;
+  font-size: 1rem;
+  border: 1.3px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+}
+
+.popup-form textarea {
+  min-height: 70px;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.popup-buttons button {
+  padding: 8px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1.5px solid transparent;
+  user-select: none;
+  transition: all 0.25s ease;
+}
+
+.popup-buttons button:hover {
+  background-color: #0073e6;
+  color: white;
+  border-color: #0073e6;
+}
+
+.cancel-btn {
+  background-color: #ccc;
+  color: #333;
+  border-color: #bbb;
+}
+
+.cancel-btn:hover {
+  background-color: #bbb;
+}
+
+.video-player-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.video-player-content {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 900px;
+  max-height: 600px;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden; /* prevent scrollbars */
+  position: relative;
+}
+
+.video-player-video {
+  width: 100%;
+  max-height: 450px;
+  border-radius: 6px;
+  background: black;
+  outline: none;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 28px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #333;
+  font-weight: bold;
+}
+.close-btn:hover {
+  color: #e74c3c;
+}
