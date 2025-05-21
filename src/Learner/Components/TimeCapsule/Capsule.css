@@ -52,6 +52,8 @@
 .capsule-tab-content {
   height: 72vh;
   padding: 5px;
+  overflow-y: scroll;
+  scrollbar-width: none;
 }
 .tab-content {
   font-size: 14px;

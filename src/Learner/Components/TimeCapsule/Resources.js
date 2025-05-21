@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "./Resources.css";
 
 const Resources = ({ capsuleId }) => {
   const backenduri = process.env.REACT_APP_BACKEND;
@@ -21,12 +22,12 @@ const Resources = ({ capsuleId }) => {
   useEffect(() => {
     const pathname = window.location.pathname;
     const parts = pathname.split("/");
-    const type = parts[1]; // learner or instructor
-    const id = parts[2];   // user id
+    const type = parts[1];
+    const id = parts[2];
     setUserInfo({ id, type });
 
     if (capsuleId) fetchResources();
-  }, [capsuleId,backenduri]);
+  }, [capsuleId, backenduri]);
 
   const handleUpload = async () => {
     if (!file || !customName) {
@@ -61,38 +62,31 @@ const Resources = ({ capsuleId }) => {
   };
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Resources</h2>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
+    <div className="resources-container">
+      <div className="resources-header">
+        <h2 className="resources-title">Resources</h2>
+        <button className="add-resource-button" onClick={() => setShowModal(true)}>
           + Add Resource
         </button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="resources-grid">
         {resources.map((resource) => (
-          <div
-            key={resource._id}
-            className="border rounded-lg p-3 bg-white shadow flex flex-col justify-between"
-          >
-            <div className="font-semibold text-gray-800 mb-2">{resource.fileName}</div>
-
-            <div className="flex gap-2 mt-auto">
+          <div key={resource._id} className="resource-card">
+            <div className="resource-name">📄 {resource.fileName}</div>
+            <div className="resource-actions">
               <a
                 href={resource.fileUrl}
                 download
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 bg-green-500 text-white px-2 py-1 rounded text-center text-sm hover:bg-green-600"
+                className="download-button"
               >
                 Download
               </a>
               <button
                 onClick={() => handleDelete(resource._id)}
-                className="flex-1 bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600"
+                className="delete-button"
               >
                 Delete
               </button>
@@ -102,33 +96,27 @@ const Resources = ({ capsuleId }) => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg p-6 w-80 space-y-4">
-            <h3 className="text-lg font-bold mb-2">Upload Resource</h3>
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3 className="modal-title">📤 Upload Resource</h3>
             <input
               type="text"
-              placeholder="Custom Resource Name"
+              placeholder="Enter custom name..."
               value={customName}
               onChange={(e) => setCustomName(e.target.value)}
-              className="border p-2 w-full rounded"
+              className="input-field"
             />
             <input
               type="file"
               accept=".pdf"
               onChange={(e) => setFile(e.target.files[0])}
-              className="border p-2 w-full rounded"
+              className="input-field"
             />
-            <div className="flex justify-end gap-2 mt-4">
-              <button
-                onClick={() => setShowModal(false)}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-              >
+            <div className="modal-buttons">
+              <button className="cancel-button" onClick={() => setShowModal(false)}>
                 Cancel
               </button>
-              <button
-                onClick={handleUpload}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
+              <button className="upload-button" onClick={handleUpload}>
                 Upload
               </button>
             </div>

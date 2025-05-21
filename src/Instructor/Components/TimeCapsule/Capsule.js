@@ -5,7 +5,7 @@ import Participants from "./Participants";
 import ScheduledMeetings from "./ScheduledMeetings";
 import CreateMeeting from "./CreateMeeting";
 import "./Capsule.css";
-import Resources from "./Resources";
+import Resources from "../../../Learner/Components/TimeCapsule/Resources";
 import CapsuleChat from "../../../Learner/Components/TimeCapsule/CapsuleChat";
 
 const Capsule = ({ capsule, onBack }) => {

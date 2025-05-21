@@ -73,7 +73,7 @@ const CreateMeeting = ({ capsuleId }) => {
       {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
 
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="form-group">
           <label htmlFor="scheduledFor">Scheduled For</label>
           <input
             type="datetime-local"
