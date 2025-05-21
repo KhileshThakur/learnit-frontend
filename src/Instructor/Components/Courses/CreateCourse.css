@@ -1,0 +1,81 @@
+.create-course-container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #777677;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.create-course-title {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 26px;
+  font-weight: 600;
+  color: #333;
+}
+
+.create-course-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.create-course-input,
+.create-course-textarea {
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  resize: vertical;
+}
+
+.create-course-textarea {
+  height: 100px;
+}
+
+.create-course-file {
+  margin-bottom: 16px;
+}
+
+.create-course-button {
+  padding: 12px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: relative;
+}
+
+.create-course-button:hover {
+  background-color: #0056b3;
+}
+
+.create-course-message {
+  margin-top: 20px;
+  text-align: center;
+  font-weight: 500;
+  color: #155724;
+}
+
+/* Loader Spinner */
+.loader {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #ffffff;
+  border-top: 3px solid #0056b3;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -28,7 +28,7 @@ const InsApp = () => {
       case 'Scheduled Meetings':
         return <InsScheduledMeetings />
       case 'My Courses':
-        return <MyCourses />
+        return <MyCourses instructorId={instructorId}/>
       case 'Create Course':
         return <CreateCourse instructorId={instructorId}/>
       case 'LearnAI':
