@@ -1,74 +1,87 @@
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-  }
-  
-  .modal-content {
-    background-color: #e3dfee;
-    padding: 30px;
-    border-radius: 20px;
-    width: 500px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  }
-  
-  .modal-content h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .modal-content input,
-  .modal-content textarea {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: none;
-    border-radius: 10px;
-    background-color: #4a4a4a;
-    color: white;
-  }
-  
-  .modal-content input::placeholder,
-  .modal-content textarea::placeholder {
-    color: #d3d3d3;
-  }
-  
-  .gender-options {
-    display: flex;
-    justify-content: space-evenly;
-    margin-bottom: 15px;
-    color: black;
-  }
-  
-  .modal-buttons {
-    display: flex;
-    justify-content: space-around;
-  }
-  
-  .btn-edit {
-    background-color: green;
-    color: white;
-    padding: 10px 25px;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  .btn-cancel {
-    background-color: red;
-    color: white;
-    padding: 10px 25px;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background-color: #e3dfee;
+  padding: 30px !important;
+  border-radius: 20px;
+  width: 558px !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-content h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.modal-content input,
+.modal-content textarea {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #4a4a4a;
+  color: white;
+  font-size: 1rem;
+}
+
+.modal-content input::placeholder,
+.modal-content textarea::placeholder {
+  color: #d3d3d3;
+}
+
+.gender-options {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.btn-edit {
+  background-color: green;
+  color: white;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-edit:hover {
+  background-color: darkgreen;
+}
+
+.btn-cancel {
+  background-color: red;
+  color: white;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background-color: darkred;
+}

@@ -94,7 +94,7 @@ const CreateCapsule = ({ instructorId }) => {
 
         <div className="form-date-group">
           <input
-            type="date"
+            type="date"           
             name="startDate"
             value={formData.startDate}
             onChange={handleChange}
@@ -102,7 +102,7 @@ const CreateCapsule = ({ instructorId }) => {
             required
           />
           <input
-            type="date"
+            type="date"          
             name="endDate"
             value={formData.endDate}
             onChange={handleChange}

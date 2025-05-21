@@ -1,0 +1,169 @@
+/* General container */
+.resources-container {
+    padding: 20px;
+    background-color: #121212;
+    min-height: 100vh;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    overflow-y: scroll;
+    scrollbar-width: none;
+  }
+  
+  /* Header */
+  .resources-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .resources-title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .add-resource-button {
+    background-color: #2563eb;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .add-resource-button:hover {
+    background-color: #1d4ed8;
+  }
+  
+  /* Resource grid */
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    
+  }
+  
+  /* Resource card */
+  .resource-card {
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .resource-name {
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  
+  /* Buttons */
+  .resource-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .download-button,
+  .delete-button {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: 0.3s;
+    color: white;
+  }
+  
+  .download-button {
+    background-color: #22c55e;
+  }
+  
+  .download-button:hover {
+    background-color: #16a34a;
+  }
+  
+  .delete-button {
+    background-color: #ef4444;
+    border: none;
+  }
+  
+  .delete-button:hover {
+    background-color: #dc2626;
+  }
+  
+  /* Modal styling */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  
+  .modal-content {
+    background-color: #1e1e1e;
+    padding: 24px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid #444;
+  }
+  
+  .modal-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background-color: #2a2a2a;
+    color: #fff;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .cancel-button,
+  .upload-button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.3s;
+  }
+  
+  .cancel-button {
+    background-color: #6b7280;
+    color: white;
+  }
+  
+  .cancel-button:hover {
+    background-color: #4b5563;
+  }
+  
+  .upload-button {
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  .upload-button:hover {
+    background-color: #2563eb;
+  }
+  

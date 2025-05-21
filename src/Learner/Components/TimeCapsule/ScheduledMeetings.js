@@ -27,21 +27,21 @@ const ScheduledMeetings = ({ capsuleId }) => {
   }, [capsuleId,backenduri]);
 
   return (
-    <div>
-      <h2>Scheduled Meetings</h2>
+    <div className="scheduled-meetings">
+      
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
 
-      {meetings.length === 0 && <p>No meetings scheduled yet.</p>}
+      {meetings.length === 0 && <p className="no-meetings">No meetings scheduled yet.</p>}
 
-      <ul>
+      <ul className="meeting-list">
         {meetings.map((meeting, index) => (
-          <li key={index} style={{ marginBottom: "1rem", borderBottom: "1px solid #ccc", paddingBottom: "0.5rem" }}>
+          <li key={index} className="meeting-card">
             <p><strong>Date & Time:</strong> {new Date(meeting.scheduledFor).toLocaleString()}</p>
             <p><strong>Room Name:</strong> {meeting.roomName}</p>
             <p><strong>Join Link:</strong> <a href={meeting.joinUrl} target="_blank" rel="noopener noreferrer">{meeting.joinUrl}</a></p>
             <details>
-              <summary style={{ cursor: "pointer", color: "blue" }}>How to Join</summary>
+              <summary className="how-to-join">How to Join</summary>
               <ul>
                 <li>Click on the join link above.</li>
                 <li>A new page will open.</li>

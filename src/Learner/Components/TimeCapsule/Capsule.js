@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import CapsuleDetails from "./CapsuleDetails";
 import Participants from "./Participants";
 import ScheduledMeetings from "./ScheduledMeetings";
 import Resources from "./Resources";
 import "./Capsule.css";
 import CapsuleChat from "./CapsuleChat";
-
+import CapsuleDetails from "../../../Instructor/Components/TimeCapsule/CapsuleDetails"
 const Capsule = ({learnerId , capsule, onBack}) => {
   const [activeTab, setActiveTab] = useState("details");
 
@@ -20,7 +19,7 @@ const Capsule = ({learnerId , capsule, onBack}) => {
   const renderTabContent = () => {
     switch (activeTab) {
       case "details":
-        return <CapsuleDetails capsule={capsule._id}  learnerId={learnerId}/>;
+        return <CapsuleDetails capsule={capsule}  learnerId={learnerId}/>;
       case "participants":
         return <Participants capsuleId={capsule._id} learnerId={learnerId}/>;
       case "resources":

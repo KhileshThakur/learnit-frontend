@@ -40,13 +40,11 @@ const Participants = ({ capsuleId }) => {
   if (loading) return <p>Loading participants...</p>;
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-semibold mb-4">Capsule Participants</h2>
-
+    <div className="participants-container">
       {/* Instructor */}
       {instructor && (
         <div
-          className="bg-blue-100 hover:bg-blue-200 cursor-pointer p-2 rounded mb-3"
+          className="participant-card instructor-card"
           onClick={() => openPopup({ ...instructor, role: "Instructor" })}
         >
           👨‍🏫 <strong>{instructor.name}</strong> — Instructor
@@ -57,7 +55,7 @@ const Participants = ({ capsuleId }) => {
       {participants.map((p) => (
         <div
           key={p._id}
-          className="bg-gray-100 hover:bg-gray-200 cursor-pointer p-2 rounded mb-2"
+          className="participant-card"
           onClick={() => openPopup({ ...p, role: "Participant" })}
         >
           👤 {p.name}
@@ -66,19 +64,18 @@ const Participants = ({ capsuleId }) => {
 
       {/* Popup Modal */}
       {selected && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
+        <div className="popup-overlay" onClick={closePopup}>
+          <div className="popup-modal" onClick={(e) => e.stopPropagation()}>
             <button
-              className="absolute top-2 right-3 text-xl text-gray-500 hover:text-red-600"
-              onClick={closePopup}
+              className="popup-close" onClick={closePopup}
             >
               &times;
             </button>
 
-            <h3 className="text-xl font-semibold mb-2">
+            <h3 className="popup-title">
               {selected.role}: {selected.name}
             </h3>
-            <div className="space-y-1">
+            <div className="popup-details">
               {selected.email && <p><strong>Email:</strong> {selected.email}</p>}
               {selected.phone && <p><strong>Phone:</strong> {selected.phone}</p>}
               {selected.expertise && <p><strong>Expertise:</strong> {selected.expertise.join(", ")}</p>}
@@ -89,7 +86,7 @@ const Participants = ({ capsuleId }) => {
               {selected.linkedin && (
                 <p>
                   <strong>LinkedIn:</strong>{" "}
-                  <a href={selected.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                  <a href={selected.linkedin} target="_blank" rel="noopener noreferrer">
                     {selected.linkedin}
                   </a>
                 </p>
@@ -97,7 +94,7 @@ const Participants = ({ capsuleId }) => {
               {selected.portfolio && (
                 <p>
                   <strong>Portfolio:</strong>{" "}
-                  <a href={selected.portfolio} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                  <a href={selected.portfolio} target="_blank" rel="noopener noreferrer" >
                     {selected.portfolio}
                   </a>
                 </p>

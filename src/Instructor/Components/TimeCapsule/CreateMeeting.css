@@ -4,15 +4,17 @@
     max-width: 500px;
     margin: 2rem auto;
     padding: 2rem;
-    border-radius: 12px;
+   
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
+    background-color: #5b57619c;
     font-family: Arial, sans-serif;
+    border: 3px solid #673AB7; /* full border */
+    border-radius: 16px;
   }
   
   .create-meeting-container h2 {
     text-align: center;
-    color: #333;
+    color: #fff;
     margin-bottom: 1.5rem;
   }
   
@@ -24,15 +26,19 @@
   .create-meeting-container label {
     margin-bottom: 0.5rem;
     font-weight: bold;
-    color: #444;
+    color: #fff;
+    padding-right: 9px;
+    padding-left: 45px;
+    font-size: 22px;
   }
   
   .create-meeting-container input[type="datetime-local"] {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
+    padding: 0.3rem;
+    border: 1px solid #673AB7;
     border-radius: 6px;
     margin-bottom: 1rem;
     font-size: 1rem;
+    background-color: #fff;
   }
   
   .create-meeting-container button {
@@ -44,6 +50,8 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-top: 24px;
+    font-size: 16px;
   }
   
   .create-meeting-container button:hover {
@@ -60,6 +68,10 @@
   }
   
   .create-meeting-container p[style*="green"] {
-    color: green;
+    color: rgb(255, 255, 255);
   }
   
+  .form-group {
+    padding: 20px 0 3px 0;
+}
+
