@@ -54,6 +54,8 @@ const LeaMakeRequest = () => {
                 status: 'pending',
             });
             setSuccessMsg('✅ Meeting request sent successfully!');
+            setIsModalOpen(false);
+            setSelectedInstructor(null);
             setTimeout(() => setSuccessMsg(''), 2500);
         } catch (error) {
             setErrorMsg('Failed to send meeting request.');
@@ -134,6 +136,7 @@ const LeaMakeRequest = () => {
             {isModalOpen && selectedInstructor && (
                 <InstructorProfileModal
                     instructor={selectedInstructor}
+                    visible={isModalOpen}
                     onClose={handleCloseModal}
                     onRequest={() => handleRequest(selectedInstructor)}
                 />
@@ -143,7 +146,7 @@ const LeaMakeRequest = () => {
             <style>{`
                 .make-request-container {
                     max-width: 1200px;
-                    min-height: 75vh;
+                    height: 90vh;
                     margin: 40px auto;
                     background: #23232b;
                     border-radius: 28px;
@@ -173,7 +176,9 @@ const LeaMakeRequest = () => {
                     color: #fff;
                 }
                 .instructor-list-scroll-wrapper {
-                    max-height: 70vh;
+                    flex: 1 1 auto;
+                    max-height: unset;
+                    height: 100%;
                     overflow-y: auto;
                     margin-bottom: 8px;
                     padding-right: 12px;

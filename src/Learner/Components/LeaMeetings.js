@@ -12,6 +12,7 @@ const LeaMeetings = () => {
     const [status, setStatus] = useState('scheduled');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [copyMsg, setCopyMsg] = useState('');
 
     useEffect(() => {
         const fetchMeetings = async () => {
@@ -21,7 +22,13 @@ const LeaMeetings = () => {
                 const response = await axios.get(`${backendurl}/meeting/${status}`, {
                     params: { learner_id: learnerId }
                 });
-                setMeetings(response.data);
+                let data = response.data;
+                // Filter out past scheduled meetings
+                if (status === 'scheduled') {
+                    const now = new Date();
+                    data = data.filter(meeting => new Date(meeting.time) > now);
+                }
+                setMeetings(data);
             } catch (error) {
                 console.error('Error fetching meetings:', error);
                 setError('Failed to load meetings. Please try again later.');
@@ -64,6 +71,23 @@ const LeaMeetings = () => {
         }).join('\n');
     };
 
+    const handleJoinMeet = async (meeting) => {
+        if (meeting.joinUrl) {
+            // Copy room name to clipboard
+            if (meeting.roomName) {
+                try {
+                    await navigator.clipboard.writeText(meeting.roomName);
+                    setCopyMsg('Room name copied!');
+                    setTimeout(() => setCopyMsg(''), 2000);
+                } catch (err) {
+                    setCopyMsg('Could not copy room name');
+                    setTimeout(() => setCopyMsg(''), 2000);
+                }
+            }
+            window.open(meeting.joinUrl, '_blank', 'noopener,noreferrer');
+        }
+    };
+
     return (
         <div className="lea-meetings-container">
             <div className="lea-meetings-tabs">
@@ -89,63 +113,83 @@ const LeaMeetings = () => {
 
             {loading && <p className="lea-meetings-loading">Loading meetings...</p>}
             {error && <p className="lea-meetings-error">{error}</p>}
-            
+            {copyMsg && <div className="lea-meetings-copy-msg">{copyMsg}</div>}
             <div className="lea-meetings-card-list">
                 {meetings.length > 0 ? (
-                    meetings.map((meeting) => (
-                        <div className={`lea-meeting-card lea-meeting-${status}`} key={meeting._id}>
-                            <div className="lea-meeting-card-left">
-                                <img
-                                    src={`${process.env.PUBLIC_URL}/default-profile.png`}
-                                    alt={meeting.instructor_id?.name}
-                                    className="lea-meeting-avatar"
-                                />
-                                <div className="lea-meeting-instructor-info">
-                                    <h3 className="lea-meeting-instructor-name">
-                                        {meeting.instructor_id?.name}
-                                    </h3>
-                                    <p className="lea-meeting-instructor-qual">
-                                        {formatQualification(meeting.instructor_id)}
-                                    </p>
+                    <>
+                        {meetings.map((meeting) => (
+                            <div className={`lea-meeting-card lea-meeting-${status}`} key={meeting._id}>
+                                <div className="lea-meeting-card-left">
+                                    <img
+                                        src={`${process.env.PUBLIC_URL}/default-profile.png`}
+                                        alt={meeting.instructor_id?.name}
+                                        className="lea-meeting-avatar"
+                                    />
+                                    <div className="lea-meeting-instructor-info">
+                                        <h3 className="lea-meeting-instructor-name">
+                                            {meeting.instructor_id?.name}
+                                        </h3>
+                                        <p className="lea-meeting-instructor-qual">
+                                            {formatQualification(meeting.instructor_id)}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="lea-meeting-center">
+                                    {status === 'scheduled' && (
+                                        <>
+                                            <p className="lea-meeting-date">Date: {formatDateTime(meeting.time).date}</p>
+                                            <p className="lea-meeting-time">Time: {formatDateTime(meeting.time).time}</p>
+                                        </>
+                                    )}
+                                    {status === 'rejected' && (
+                                        <div className="lea-meeting-reject-reason">
+                                            {meeting.rejectReason ? meeting.rejectReason : ''}
+                                        </div>
+                                    )}
+                                    {status === 'pending' && (
+                                        <div className="lea-meeting-status-label">Request Pending</div>
+                                    )}
+                                </div>
+
+                                <div className="lea-meeting-card-right">
+                                    {status === 'scheduled' && (
+                                        <>
+                                            <button
+                                                className="lea-meeting-status-btn join"
+                                                onClick={() => handleJoinMeet(meeting)}
+                                                disabled={!meeting.joinUrl}
+                                            >
+                                                Join Meet
+                                            </button>
+                                            <div className="lea-meeting-how-to-join" style={{marginTop: 10, background: '#23232b', borderRadius: 8, padding: 12, color: '#fff', maxWidth: 340, marginLeft: 'auto', marginRight: 'auto', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', fontSize: '0.97em'}}>
+                                                <details>
+                                                    <summary style={{fontWeight: 700, fontSize: '1.05rem'}}>How to Join</summary>
+                                                    <ul style={{marginTop: 8, marginBottom: 0, paddingLeft: 18}}>
+                                                        <li>Click the <b>Join Meet</b> button for your meeting.</li>
+                                                        <li>A new page will open.</li>
+                                                        <li>Switch to the "Join" tab.</li>
+                                                        <li>Paste the <b>Room Name</b> (already copied to your clipboard).</li>
+                                                        <li>Enter your name and join.</li>
+                                                    </ul>
+                                                </details>
+                                            </div>
+                                        </>
+                                    )}
+                                    {status === 'rejected' && (
+                                        <button className="lea-meeting-status-btn rejected">
+                                            Rejected
+                                        </button>
+                                    )}
+                                    {status === 'pending' && (
+                                        <button className="lea-meeting-status-btn pending">
+                                            Pending
+                                        </button>
+                                    )}
                                 </div>
                             </div>
-
-                            <div className="lea-meeting-center">
-                                {status === 'scheduled' && (
-                                    <>
-                                        <p className="lea-meeting-date">Date: {formatDateTime(meeting.time).date}</p>
-                                        <p className="lea-meeting-time">Time: {formatDateTime(meeting.time).time}</p>
-                                    </>
-                                )}
-                                {status === 'rejected' && meeting.rejectReason && (
-                                    <div className="lea-meeting-reject-reason">
-                                        {meeting.rejectReason}
-                                    </div>
-                                )}
-                                {status === 'pending' && (
-                                    <div className="lea-meeting-status-label">Request Pending</div>
-                                )}
-                            </div>
-
-                            <div className="lea-meeting-card-right">
-                                {status === 'scheduled' && (
-                                    <button className="lea-meeting-status-btn join">
-                                        Join Meet
-                                    </button>
-                                )}
-                                {status === 'rejected' && (
-                                    <button className="lea-meeting-status-btn rejected">
-                                        Rejected
-                                    </button>
-                                )}
-                                {status === 'pending' && (
-                                    <button className="lea-meeting-status-btn pending">
-                                        Pending
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    ))
+                        ))}
+                    </>
                 ) : (
                     <p className="lea-meetings-empty">No {status} meetings found.</p>
                 )}

@@ -12,7 +12,10 @@ const InsScheduledMeetings = () => {
         const fetchScheduledMeetings = async () => {
             try {
                 const response = await axios.get(`${backendurl}/meeting/scheduled/${instructorId}`);
-                setMeetings(response.data);
+                // Filter out past meetings
+                const now = new Date();
+                const upcomingMeetings = response.data.filter(meeting => new Date(meeting.time) > now);
+                setMeetings(upcomingMeetings);
             } catch (error) {
                 console.error('Error fetching scheduled meetings:', error);
             }
@@ -35,9 +38,9 @@ const InsScheduledMeetings = () => {
     };
 
     const handleStartMeeting = (meeting) => {
-        // For now, just alert. Replace with real navigation/logic later.
-        alert(`Starting meeting with ${meeting.learner_id?.name} on topic: ${meeting.topic}`);
-        // Example: navigate(`/classroom/${meeting._id}`);
+        if (meeting.joinUrl) {
+            window.open(meeting.joinUrl, '_blank', 'noopener,noreferrer');
+        }
     };
 
     return (
@@ -47,38 +50,66 @@ const InsScheduledMeetings = () => {
                 {meetings.length === 0 ? (
                     <div className="no-meetings">No scheduled meetings.</div>
                 ) : (
-                    meetings.map((meeting) => (
-                        <div className="ins-meeting-card" key={meeting._id}>
-                            <div className="ins-meeting-avatar">
-                                <div className="avatar-circle">
-                                    {getInitials(meeting.learner_id?.name)}
+                    <>
+                        {meetings.map((meeting) => (
+                            <div className="ins-meeting-card" key={meeting._id}>
+                                <div className="ins-meeting-avatar">
+                                    <div className="avatar-circle">
+                                        {getInitials(meeting.learner_id?.name)}
+                                    </div>
+                                </div>
+                                <div className="ins-meeting-info">
+                                    <div className="ins-meeting-row">
+                                        <span className="ins-meeting-learner"><b>{meeting.learner_id?.name}</b></span>
+                                        <span className="ins-meeting-email">{meeting.learner_id?.email}</span>
+                                    </div>
+                                    <div className="ins-meeting-row">
+                                        <span className="ins-meeting-label">Subject:</span>
+                                        <span className="ins-meeting-value">{meeting.subject}</span>
+                                    </div>
+                                    <div className="ins-meeting-row">
+                                        <span className="ins-meeting-label">Topic:</span>
+                                        <span className="ins-meeting-value">{meeting.topic}</span>
+                                    </div>
+                                    <div className="ins-meeting-row">
+                                        <span className="ins-meeting-label">Scheduled:</span>
+                                        <span className="ins-meeting-value">{formatDateTime(meeting.time)}</span>
+                                    </div>
+                                    {meeting.roomName && (
+                                        <div className="ins-meeting-row">
+                                            <span className="ins-meeting-label">Room Name:</span>
+                                            <span className="ins-meeting-value">{meeting.roomName}</span>
+                                        </div>
+                                    )}
+                                    {meeting.joinUrl && (
+                                        <div className="ins-meeting-row">
+                                            <span className="ins-meeting-label">Join Link:</span>
+                                            <a href={meeting.joinUrl} target="_blank" rel="noopener noreferrer">{meeting.joinUrl}</a>
+                                        </div>
+                                    )}
+                                    {meeting.joinUrl && (
+                                        <div className="ins-meeting-how-to-join" style={{marginTop: 10, background: '#23232b', borderRadius: 8, padding: 12, color: '#fff', maxWidth: 400, boxShadow: '0 1px 4px rgba(0,0,0,0.06)'}}>
+                                            <details>
+                                                <summary style={{fontWeight: 600, fontSize: '1rem'}}>How to Join</summary>
+                                                <ul style={{marginTop: 8}}>
+                                                    <li>Click the <b>Start Meeting</b> button for your meeting.</li>
+                                                    <li>A new page will open.</li>
+                                                    <li>Switch to the "Join" tab.</li>
+                                                    <li>Paste the <b>Room Name</b> (copied from above).</li>
+                                                    <li>Enter your name and join.</li>
+                                                </ul>
+                                            </details>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="ins-meeting-actions">
+                                    <button className="start-btn" onClick={() => handleStartMeeting(meeting)} disabled={!meeting.joinUrl}>
+                                        Start Meeting
+                                    </button>
                                 </div>
                             </div>
-                            <div className="ins-meeting-info">
-                                <div className="ins-meeting-row">
-                                    <span className="ins-meeting-learner"><b>{meeting.learner_id?.name}</b></span>
-                                    <span className="ins-meeting-email">{meeting.learner_id?.email}</span>
-                                </div>
-                                <div className="ins-meeting-row">
-                                    <span className="ins-meeting-label">Subject:</span>
-                                    <span className="ins-meeting-value">{meeting.subject}</span>
-                                </div>
-                                <div className="ins-meeting-row">
-                                    <span className="ins-meeting-label">Topic:</span>
-                                    <span className="ins-meeting-value">{meeting.topic}</span>
-                                </div>
-                                <div className="ins-meeting-row">
-                                    <span className="ins-meeting-label">Scheduled:</span>
-                                    <span className="ins-meeting-value">{formatDateTime(meeting.time)}</span>
-                                </div>
-                            </div>
-                            <div className="ins-meeting-actions">
-                                <button className="start-btn" onClick={() => handleStartMeeting(meeting)}>
-                                    Start Meeting
-                                </button>
-                            </div>
-                        </div>
-                    ))
+                        ))}
+                    </>
                 )}
             </div>
             <style>{`

@@ -76,7 +76,7 @@
   border-radius: 12px;
   padding: 16px 24px;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 180px 1fr auto;
   gap: 24px;
   align-items: center;
   border: 1px solid rgba(53, 52, 58, 0.3);
@@ -159,6 +159,10 @@
 }
 
 .lea-meeting-rejected .lea-meeting-center {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
   gap: 12px;
 }
 
@@ -179,22 +183,31 @@
 }
 
 .lea-meeting-reject-reason {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: 6px;
-  padding: 8px 16px;
-  color: #EF4444;
-  font-size: 0.85rem;
-  text-align: center;
-  max-width: 400px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  background: transparent;
+  border: 1px solid #ef4444;
+  border-radius: 5px;
+  padding: 6px 14px;
+  color: #ef4444;
+  font-size: 0.92em;
+  font-weight: 400;
+  margin: 8px 0 0 0;
   width: 100%;
-  margin: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  line-height: 1.5;
+  word-break: break-word;
 }
 
 .lea-meeting-reject-reason::before {
   content: "Reason: ";
   font-weight: 600;
-  color: #EF4444;
+  margin-right: 4px;
+  color: #ef4444;
 }
 
 /* Right section with button */

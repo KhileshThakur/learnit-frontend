@@ -1,37 +1,48 @@
+/* Modern Instructor Profile Modal - Unified, Clean, and Beautiful */
+
 .instructor-profile-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(24, 18, 43, 0.85); /* #18122B with opacity */
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     z-index: 1000;
 }
 
 .instructor-profile-modal {
-    background: #1a1a1a;
-    width: 90%;
-    max-width: 400px;
-    border-radius: 12px;
+    background: #18122B;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(165, 123, 255, 0.18); /* purple shadow */
+    width: 100%;
+    max-width: 410px;
+    padding: 36px 32px 32px 32px;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
+    animation: fadeIn 0.3s;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .modal-close-btn {
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: 18px;
+    right: 18px;
     background: none;
     border: none;
-    color: #888;
-    font-size: 24px;
+    font-size: 1.5rem;
+    color: #A57BFF;
     cursor: pointer;
-    padding: 4px;
+    transition: color 0.2s;
     z-index: 2;
 }
 
@@ -39,133 +50,324 @@
     color: #fff;
 }
 
-.modal-header {
-    width: 100%;
-    padding: 32px 24px 24px;
-    text-align: center;
-}
-
 .instructor-avatar-large {
-    width: 70px;
-    height: 70px;
-    margin: 0 auto 16px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
-    border: 2px solid #8B5CF6;
-    padding: 2px;
+    background: linear-gradient(135deg, #A57BFF 0%, #6a4aff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 16px rgba(165, 123, 255, 0.18);
+    overflow: hidden;
+    border: 4px solid #18122B;
 }
 
 .instructor-avatar-large img {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
     object-fit: cover;
+    border-radius: 50%;
+}
+
+.modal-header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 .modal-header h2 {
+    font-size: 1.6rem;
+    font-weight: 800;
     color: #fff;
-    font-size: 1.5rem;
-    margin: 0;
-    font-weight: 500;
+    margin: 0 0 2px 0;
+    letter-spacing: 0.2px;
+    text-align: center;
+}
+
+.modal-header .subtitle {
+    font-size: 1rem;
+    color: #A57BFF;
+    margin-bottom: 0;
 }
 
 .modal-content {
-    width: 90%;
-    padding: 0 0 24px;
-}
-
-.info-grid {
-    background: #242424;
-    border-radius: 12px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    overflow: hidden;
+    width: 100%;
+    padding: 0 0 0 0;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
 }
 
 .info-section {
-    background: #1e1e1e;
-    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 18px 32px 10px 32px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.info-section:last-child {
+    border-bottom: none;
 }
 
 .info-section h3 {
-    color: #8B5CF6;
-    font-size: 0.9rem;
-    margin: 0 0 12px 0;
+    font-size: 0.92rem;
+    color: #A57BFF;
+    font-weight: 700;
+    margin: 0 0 4px 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .info-section p {
-    color: #e0e0e0;
-    font-size: 0.95rem;
     margin: 0;
-    line-height: 1.4;
+    color: #fff;
+    font-size: 1.08rem;
+    font-weight: 400;
+    word-break: break-word;
 }
 
 .expertise-tags {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 8px;
+    margin-top: 2px;
 }
 
 .expertise-tag {
-    color: #e0e0e0;
-    font-size: 0.95rem;
-    line-height: 1.4;
+    background: #6a4aff22;
+    color: #A57BFF;
+    border-radius: 12px;
+    padding: 4px 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(165,123,255,0.03);
 }
 
 .modal-footer {
     width: 100%;
-    padding: 0 24px 24px;
     display: flex;
     justify-content: center;
+    margin-top: 24px;
 }
 
 .request-meeting-btn {
-    background: #8B5CF6;
-    color: white;
+    background: linear-gradient(90deg, #A57BFF 0%, #6a4aff 100%);
+    color: #fff;
     border: none;
-    padding: 12px 24px;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    font-weight: 500;
+    padding: 16px 0;
+    border-radius: 10px;
+    font-size: 1.15rem;
+    font-weight: 800;
     cursor: pointer;
+    box-shadow: 0 2px 8px rgba(165,123,255,0.10);
+    transition: background 0.2s, transform 0.15s;
     width: 100%;
-    max-width: 250px;
-    text-align: center;
+    letter-spacing: 0.5px;
 }
 
 .request-meeting-btn:hover {
-    background: #7c3aed;
+    background: linear-gradient(90deg, #6a4aff 0%, #673AB7 100%);
+    transform: translateY(-2px) scale(1.03);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
     .instructor-profile-modal {
-        width: 95%;
+        max-width: 98vw;
+        padding: 24px 6px 18px 6px;
     }
-
-    .info-grid {
-        grid-template-columns: 1fr;
-    }
-
     .modal-content {
-        width: 95%;
+        padding: 0;
+    }
+}
+
+/* Remove .info-grid if present */
+.info-grid { display: unset !important; background: none !important; border-radius: 0 !important; padding: 0 !important; box-shadow: none !important; }
+
+/* Ant Design Modal Customization for Instructor Profile */
+
+.instructor-profile-ant-modal .ant-modal-content {
+  background: #18122B !important;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(165, 123, 255, 0.18);
+  padding: 0 0 24px 0;
+  max-width: 340px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.instructor-profile-ant-modal .ant-modal {
+  max-width: 340px !important;
+  width: 98vw !important;
+  margin: 0 auto;
+  box-sizing: border-box;
     }
 
-    .modal-header {
-        padding: 24px 16px 16px;
+.instructor-profile-ant-modal .ant-modal-header {
+  background: transparent;
+  border-bottom: none;
+  padding: 24px 16px 0 16px;
+  text-align: center;
     }
 
     .instructor-avatar-large {
-        width: 60px;
-        height: 60px;
-    }
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #A57BFF 0%, #6a4aff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px auto;
+  box-shadow: 0 2px 8px rgba(165, 123, 255, 0.10);
+  overflow: hidden;
+  border: 3px solid #18122B;
+  max-width: 100%;
+  box-sizing: border-box;
+}
 
-    .info-section {
-        padding: 12px;
+.modal-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 6px;
+  background: transparent;
+}
+
+.modal-header h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 2px 0;
+  letter-spacing: 0.2px;
+  text-align: center;
+}
+
+.modal-content {
+  width: 100%;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 16px 6px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.info-section:last-child {
+  border-bottom: none;
+}
+
+.info-section h3 {
+  font-size: 0.85rem;
+  color: #A57BFF;
+  font-weight: 700;
+  margin: 0 0 2px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.info-section p {
+  margin: 0;
+  color: #fff;
+  font-size: 0.98rem;
+  font-weight: 400;
+  word-break: break-word;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.expertise-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+  max-width: 100%;
+}
+
+.expertise-tag {
+  background: #6a4aff22;
+  color: #A57BFF;
+  border-radius: 12px;
+  padding: 3px 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(165,123,255,0.03);
+  max-width: 100%;
     }
 
     .modal-footer {
-        padding: 0 16px 16px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.request-meeting-btn {
+  background: linear-gradient(90deg, #A57BFF 0%, #6a4aff 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  padding: 12px 0 !important;
+  border-radius: 8px !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px rgba(165,123,255,0.10);
+  width: 100%;
+  letter-spacing: 0.5px;
+  margin-top: 0 !important;
+  max-width: 100%;
+  box-sizing: border-box;
     }
-} 
+.request-meeting-btn:hover {
+  background: linear-gradient(90deg, #6a4aff 0%, #673AB7 100%) !important;
+  color: #fff !important;
+}
+
+@media (max-width: 400px) {
+  .instructor-profile-ant-modal .ant-modal-content,
+  .instructor-profile-ant-modal .ant-modal {
+    max-width: 98vw !important;
+    padding: 0 2vw !important;
+  }
+  .modal-content, .info-section, .modal-footer {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+}
+
+.modal-content, .info-section {
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  border: none !important;
+}
+
+/* Remove any light backgrounds from Ant Design inner wrappers */
+.instructor-profile-ant-modal .ant-modal-body {
+  background: transparent !important;
+  padding: 0;
+}
