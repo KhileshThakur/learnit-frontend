@@ -15,6 +15,9 @@ const LeaMakeRequest = () => {
     const [errorMsg, setErrorMsg] = useState('');
     const [selectedInstructor, setSelectedInstructor] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [requestSubject, setRequestSubject] = useState('');
+    const [requestObjective, setRequestObjective] = useState('');
+    const [showRequestModal, setShowRequestModal] = useState(false);
 
     useEffect(() => {
         const fetchInstructors = async () => {
@@ -73,6 +76,34 @@ const LeaMakeRequest = () => {
         setSelectedInstructor(null);
     };
 
+    const handleRequestSubmit = async () => {
+        try {
+            await axios.post(`${backendurl}/meeting/request`, {
+                learner_id: learnerId,
+                instructor_id: selectedInstructor._id,
+                subject: requestSubject,
+                topic: requestSubject,
+                time: new Date(),
+                objective: requestObjective
+            });
+            setShowRequestModal(false);
+            setRequestSubject('');
+            setRequestObjective('');
+            setSuccessMsg('✅ Meeting request sent successfully!');
+            setTimeout(() => setSuccessMsg(''), 3000);
+        } catch (error) {
+            setErrorMsg('Failed to send meeting request.');
+            setTimeout(() => setErrorMsg(''), 3000);
+            console.error('Error sending request:', error);
+        }
+    };
+
+    const handleOpenRequestModal = (instructor) => {
+        setIsModalOpen(false);
+        setSelectedInstructor(instructor);
+        setShowRequestModal(true);
+    };
+
     return (
         <div className="make-request-container">
             <h2 className="make-request-title">Make Request</h2>
@@ -121,7 +152,8 @@ const LeaMakeRequest = () => {
                                         className="request-btn" 
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            handleRequest(instructor);
+                                            setSelectedInstructor(instructor);
+                                            setShowRequestModal(true);
                                         }}
                                     >
                                         Request
@@ -139,7 +171,42 @@ const LeaMakeRequest = () => {
                     visible={isModalOpen}
                     onClose={handleCloseModal}
                     onRequest={() => handleRequest(selectedInstructor)}
+                    onOpenRequestModal={handleOpenRequestModal}
                 />
+            )}
+
+            {showRequestModal && (
+                <div className="lea-request-modal">
+                    <div className="lea-request-modal-content" style={{padding: 28, minWidth: 340, maxWidth: 420, borderRadius: 12, boxShadow: '0 4px 24px rgba(0,0,0,0.18)'}}>
+                        <h2 style={{margin: 0, marginBottom: 18, fontWeight: 700, fontSize: '1.3rem', color: '#23232b', textAlign: 'center'}}>Request a Meeting</h2>
+                        <div style={{marginBottom: 16}}>
+                            <label htmlFor="subject" style={{fontWeight: 600, display: 'block', marginBottom: 6}}>Subject</label>
+                            <input
+                                id="subject"
+                                type="text"
+                                value={requestSubject}
+                                onChange={e => setRequestSubject(e.target.value)}
+                                placeholder="Enter subject (e.g. Math, Science)"
+                                style={{ width: '100%', padding: 10, borderRadius: 6, border: '1px solid #bbb', fontSize: '1rem' }}
+                            />
+                        </div>
+                        <div style={{marginBottom: 18}}>
+                            <label htmlFor="objective" style={{fontWeight: 600, display: 'block', marginBottom: 6}}>Objective</label>
+                            <textarea
+                                id="objective"
+                                value={requestObjective}
+                                onChange={e => setRequestObjective(e.target.value)}
+                                placeholder="Briefly describe the objective of your meeting..."
+                                style={{ width: '100%', padding: 10, borderRadius: 6, border: '1px solid #bbb', minHeight: 90, fontSize: '1rem', resize: 'vertical' }}
+                            />
+                        </div>
+                        <div style={{borderTop: '1px solid #eee', margin: '18px 0'}}></div>
+                        <div style={{display: 'flex', justifyContent: 'flex-end', gap: 12}}>
+                            <button onClick={handleRequestSubmit} style={{background: '#6c63ff', color: '#fff', border: 'none', borderRadius: 6, padding: '10px 22px', fontWeight: 600, fontSize: '1rem', cursor: 'pointer'}}>Submit</button>
+                            <button onClick={() => setShowRequestModal(false)} style={{background: '#eee', color: '#23232b', border: 'none', borderRadius: 6, padding: '10px 22px', fontWeight: 600, fontSize: '1rem', cursor: 'pointer'}}>Cancel</button>
+                        </div>
+                    </div>
+                </div>
             )}
 
             {/* Inline minimal styles for layout, expect full CSS in .css file */}

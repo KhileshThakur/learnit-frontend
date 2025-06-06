@@ -67,10 +67,12 @@ const InsScheduledMeetings = () => {
                                         <span className="ins-meeting-label">Subject:</span>
                                         <span className="ins-meeting-value">{meeting.subject}</span>
                                     </div>
-                                    <div className="ins-meeting-row">
-                                        <span className="ins-meeting-label">Topic:</span>
-                                        <span className="ins-meeting-value">{meeting.topic}</span>
-                                    </div>
+                                    {meeting.objective && (
+                                        <div className="ins-meeting-row">
+                                            <span className="ins-meeting-label">Objective:</span>
+                                            <span className="ins-meeting-value">{meeting.objective}</span>
+                                        </div>
+                                    )}
                                     <div className="ins-meeting-row">
                                         <span className="ins-meeting-label">Scheduled:</span>
                                         <span className="ins-meeting-value">{formatDateTime(meeting.time)}</span>

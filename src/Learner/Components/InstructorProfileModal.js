@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Modal, Button } from 'antd';
 import './InstructorProfileModal.css';
 
-const InstructorProfileModal = ({ instructor, visible, onClose, onRequest }) => {
+const InstructorProfileModal = ({ instructor, visible, onClose, onRequest, onOpenRequestModal }) => {
     const formatQualification = (instructor) => {
         const qualifications = [];
         if (instructor?.qualification?.gdegree) {
@@ -63,7 +63,7 @@ const InstructorProfileModal = ({ instructor, visible, onClose, onRequest }) => 
                     type="primary"
                     block
                     size="large"
-                        onClick={() => onRequest(instructor)}
+                        onClick={() => { onClose(); onOpenRequestModal(instructor); }}
                     style={{ fontWeight: 800, fontSize: '1.1rem', background: 'linear-gradient(90deg, #A57BFF 0%, #6a4aff 100%)', border: 'none' }}
                     >
                         Request One-on-One Meeting

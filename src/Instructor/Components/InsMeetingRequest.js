@@ -13,6 +13,7 @@ const InsMeetingRequest = () => {
     const [showRejectModal, setShowRejectModal] = useState(false);
     const [rejectReason, setRejectReason] = useState('');
     const [rejectingMeetingId, setRejectingMeetingId] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchMeetings = async () => {
@@ -36,6 +37,7 @@ const InsMeetingRequest = () => {
     };
 
     const handleConfirmSchedule = async (meeting) => {
+        setIsLoading(true);
         try {
             await axios.put(`${backendurl}/meeting/${meeting._id}`, {
                 action: 'schedule',
@@ -52,6 +54,8 @@ const InsMeetingRequest = () => {
             setNewTime('');
         } catch (error) {
             console.error('Error scheduling meeting:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -114,10 +118,12 @@ const InsMeetingRequest = () => {
                     <span className="ins-meeting-label">Subject:</span>
                     <span className="ins-meeting-value">{meeting.subject}</span>
                 </div>
-                <div className="ins-meeting-row">
-                    <span className="ins-meeting-label">Topic:</span>
-                    <span className="ins-meeting-value">{meeting.topic}</span>
-                </div>
+                {meeting.objective && (
+                    <div className="ins-meeting-row">
+                        <span className="ins-meeting-label">Objective:</span>
+                        <span className="ins-meeting-value">{meeting.objective}</span>
+                    </div>
+                )}
                 <div className="ins-meeting-row">
                     <span className="ins-meeting-label">Requested:</span>
                     <span className="ins-meeting-value">{formatDateTime(meeting.time)}</span>
@@ -130,8 +136,8 @@ const InsMeetingRequest = () => {
                             onChange={e => setNewTime(e.target.value)}
                             className="schedule-input"
                     />
-                        <button className="schedule-confirm-btn" onClick={() => handleConfirmSchedule(meeting)}>
-                            Confirm
+                        <button className="schedule-confirm-btn" onClick={() => handleConfirmSchedule(meeting)} disabled={isLoading}>
+                            {isLoading ? 'Confirming...' : 'Confirm'}
                         </button>
                         <button className="schedule-cancel-btn" onClick={() => setSchedulingId(null)}>
                             Cancel
